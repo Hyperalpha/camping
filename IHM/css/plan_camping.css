@@ -1,0 +1,50 @@
+@CHARSET "ISO-8859-1";
+
+/* Boutons */
+#boutonPlanningReservation span.ui-icon {
+	margin: 0 0 0 0.6em;
+}
+#boutonPlanningReservation span {
+	display: inline-block;
+}
+
+/* Plan */
+#planCamping {
+	height: 530px;
+	width: 1166px;
+}
+
+/* Blocs d'emplacement */
+.bloc-emplacement {
+	border-radius: 15px;
+	cursor: pointer;
+	height: 2.1em;
+	position: absolute;
+	width: 110px;
+}
+.bloc-emplacement span.text-bloc-emplacement {
+	display: block;
+	height: 1.3em;
+	margin-top: 0.4em;
+	margin-left: 5px;
+	overflow: hidden;
+	width: 100px;
+}
+.bloc-camping-car {background-color: #8C00FF;}
+.bloc-van {background-color: #DD0000;}
+.bloc-caravane {background-color: #3BAAE3;}
+.bloc-grande-tente {background-color: #F6A828;}
+.bloc-petite-tente {background-color: #459e00;}
+.pancarte-emplacement {
+	background-image: url(../images/emplacement.png);
+	height: 64px;
+	margin: -50px 0 0 -25px;
+    position: absolute;
+    width: 64px;
+}
+.pancarte-emplacement div {
+	font-size: 1.5em;
+	margin: 10px 0 0 15px;
+	text-align: center;
+	width: 1.4em;
+}

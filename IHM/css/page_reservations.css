@@ -1,0 +1,402 @@
+@CHARSET "ISO-8859-1";
+
+.texte-moyen {
+	font-size: 11px;
+}
+.texte-moyen-gras {
+	font-size: 11px;
+	font-weight: bold;
+}
+.texte-moyen2 {
+	font-size: 13px;
+}
+.texte-moyen-gras2 {
+	font-size: 12px;
+	font-weight: bold;
+}
+.texte-moyen3 {
+	font-size: 13px;
+}
+.texte-moyen-gras3 {
+	font-size: 13px;
+	font-weight: bold;
+}
+input.texte-gras1, label.texte-gras1, span.texte-gras1 {
+	font-size: 18px;
+	font-weight: bold;
+}
+.texte-gras2 {
+	font-size: 25px;
+	font-weight: bold;
+}
+.no-border {
+	border: none;
+}
+.non-resizable {
+	resize: none;
+}
+
+.draggable {
+	border-radius: 15px;
+	cursor: pointer;
+	height: 50px;
+	position: absolute;
+}
+.logo-habitation-mini {height: 25px; padding-top: 14px;}
+.logo-habitation-mini span {
+	background-repeat: no-repeat;
+    display: block;
+	height: 25px;
+	margin-top: -8px;
+	width: 25px;
+}
+.logo-habitation-moyen span {
+	height: 50px;
+	width: 50px;
+	background-repeat: no-repeat;
+    display: block;
+}
+.logo-camping-car-mini, .logo-camping-car-moyen {background-color: #8C00FF;}
+.logo-camping-car-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: -50px 0;
+}
+.logo-camping-car-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: -100px 0;
+}
+.logo-van-mini, .logo-van-moyen {background-color: #DD0000;}
+.logo-van-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: 0 0;
+}
+.logo-van-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: 0 0;
+}
+.logo-caravane-mini, .logo-caravane-moyen {background-color: #3BAAE3;}
+.logo-caravane-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: 0 -25px;
+}
+.logo-caravane-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: 0 -50px;
+}
+.logo-grande-tente-mini, .logo-grande-tente-moyen {background-color: #F6A828;}
+.logo-grande-tente-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: -25px -25px;
+}
+.logo-grande-tente-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: -50px -50px;
+}
+.logo-petite-tente-mini, .logo-petite-tente-moyen {background-color: #459e00;}
+.logo-petite-tente-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: -25px 0;
+}
+.logo-petite-tente-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: -50px 0;
+}
+.logo-electricite-moyen {
+	background-image: url(../images/prise_courant-moyen.png);
+	background-repeat: no-repeat;
+    display: block;
+	height: 50px;
+	margin-left: 10px;
+	width: 50px;
+}
+.logo-animal-moyen {
+	background-image: url(../images/animal-moyen.png);
+	background-repeat: no-repeat;
+    display: block;
+	height: 50px;
+	margin-left: 10px;
+	width: 50px;
+}
+.div-interne-reservation {
+	background-color: #FFFFFF;
+	border-radius: 15px;
+	height: 23px;
+	margin: -24px 8px 8px 33px;
+	overflow: hidden;
+	padding: 2px 0 0 2px;
+}
+#boutonAjouterReservation span.ui-icon {
+	margin: 0 0.6em 0 0.6em;
+}
+#boutonAjouterReservation span, #boutonCreerClient span {
+	display: inline-block;
+}
+
+#boutonEmplacementReservation {
+	margin-left: 50px;
+}
+#boutonEmplacementReservation span img {
+	margin: -5px 5px -9px -5px;
+}
+
+#boutonReglages {
+	margin-left: 50px;
+}
+#boutonReglages span img {
+	margin: -5px 5px -9px -5px;
+}
+
+/* Tableau des réservations */
+table.tableau_calendrier {
+	font-family: "Trebuchet MS", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.4em;
+    font-style: normal;
+    border-collapse: separate;
+}
+table.tableau_calendrier th {
+	color:#fff;
+	text-shadow:1px 1px 1px #568F23;
+	border:1px solid #93CE37;
+	background-color:#9DD929;
+}
+table.tableau_calendrier th.header_annees_calendrier {
+    background:-webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.02, rgba(85,166,22,0.6)),
+        color-stop(0.51, rgba(123,192,67,0.6)),
+        color-stop(0.87, rgba(139,198,66,0.6))
+        );
+    background: -moz-linear-gradient(
+        center bottom,
+        rgba(85,166,22,0.6) 2%,
+        rgba(123,192,67,0.6) 51%,
+        rgba(139,198,66,0.6) 87%
+        );
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	height: 20px;
+}
+table.tableau_calendrier th.header_mois_calendrier {
+    background:-webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.02, rgba(85,166,22,0.7)),
+        color-stop(0.51, rgba(123,192,67,0.7)),
+        color-stop(0.87, rgba(139,198,66,0.7))
+        );
+    background: -moz-linear-gradient(
+        center bottom,
+        rgba(85,166,22,0.7) 2%,
+        rgba(123,192,67,0.7) 51%,
+        rgba(139,198,66,0.7) 87%
+        );
+	border-bottom:3px solid #8dc71b;
+	height: 20px;
+}
+table.tableau_calendrier th.header_jours_calendrier {
+    background:-webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.02, rgba(85,166,22,1)),
+        color-stop(0.51, rgba(123,192,67,1)),
+        color-stop(0.87, rgba(139,198,66,1))
+        );
+    background: -moz-linear-gradient(
+        center bottom,
+        rgba(85,166,22,1) 2%,
+        rgba(123,192,67,1) 51%,
+        rgba(139,198,66,1) 87%
+        );
+	border-bottom:3px solid #8dc71b;
+	border-top-left-radius:10px;
+	border-top-right-radius:10px;
+	font-size: 11px;
+	height: 40px;
+	width: 25px;
+}
+.tableau_calendrier td.cellule_calendrier {
+	background-color:#DEF3CA;
+    border: 2px solid #E7EFE0;
+	border-radius:2px;
+	color:#666;
+	height: 33px;
+	text-align:center;
+	text-shadow:1px 1px 1px #fff;
+	-webkit-border-radius:2px;
+}
+.cellule_stat_personnes_calendrier {
+	background-color: none;
+	border: 2px solid #DEF3CA;
+	text-align: center;
+}
+.cellule_stat_personnes_calendrier label {
+	display: block;
+	font-size: 14px;
+	overflow: hidden;
+	width: 20px;
+}
+.cellule_stat_emplacements_calendrier {
+	background-color: #FFFF00;
+	border: 2px solid #FFFF00;
+	overflow: hidden;
+	text-align: center;
+	width: 20px;
+}
+.cellule_stat_emplacements_calendrier label {
+	display: block;
+	font-size: 14px;
+	overflow: hidden;
+	width: 20px;
+}
+
+/* Bloc des statistiques pour la saison */
+#statistiquesSaison {
+	border: 3px solid #327E04;
+	border-radius: 10px;
+	display: inline-block;
+	margin: 20px 0 0 30px;
+	padding: 10px;
+}
+#statistiquesSaison label {font-size: 20px; font-weight: bold;}
+
+/* Popups */
+/**********/
+/* Popup ajouter/modifier réservation */
+.bloc_popup_ajout_modif_reservation {margin: 15px 0 10px 0;}
+#popupAjoutModifReservation a#boutonImprimerClient {visibility: hidden; position: absolute; right: 15px; top: 10px;}
+#popupAjoutModifReservation input {margin: 2px 10px 0 0;}
+#popupAjoutModifReservation input#nomClientPopupAjoutReservation {font-size: 1.2em; font-weight: bold; width: 150px;}
+#popupAjoutModifReservation input#prenomClientPopupAjoutReservation {font-size: 1.2em; font-weight: bold; width: 150px;}
+#popupAjoutModifReservation input#rueClientPopupAjoutReservation {width: 280px;}
+#popupAjoutModifReservation input#complementAdresseClientPopupAjoutReservation {margin-left: 10px; width: 350px;}
+#popupAjoutModifReservation input#codePostalClientPopupAjoutReservation {width: 50px;}
+#popupAjoutModifReservation input#villeClientPopupAjoutReservation {width: 200px;}
+#popupAjoutModifReservation input#paysClientPopupAjoutReservation {width: 150px;}
+#popupAjoutModifReservation input#portableClientPopupAjoutReservation {width: 110px;}
+#popupAjoutModifReservation input#emailClientPopupAjoutReservation {width: 200px;}
+#popupAjoutModifReservation input#arrhesClientPopupAjoutReservation {margin: 2px 0 0 2px; width: 30px;}
+#popupAjoutModifReservation input#dateArriveeClientPopupAjoutReservation {width: 70px;}
+#popupAjoutModifReservation input#dateDepartClientPopupAjoutReservation {width: 70px;}
+#popupAjoutModifReservation input#nbAdultesClientPopupAjoutReservation {margin: 2px 0 0 0; width: 30px;}
+#popupAjoutModifReservation input#nbEnfantsClientPopupAjoutReservation {margin: 2px 0 0 50px; width: 30px;}
+#popupAjoutModifReservation input#nbAnimauxClientPopupAjoutReservation {margin: 2px 0 0 60px; width: 30px;}
+#popupAjoutModifReservation input#nbPetiteTenteClientPopupAjoutReservation {margin: 2px 0 0 0; width: 30px;}
+#popupAjoutModifReservation input#nbGrandeTenteClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
+#popupAjoutModifReservation input#nbCaravaneClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
+#popupAjoutModifReservation input#nbVanClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
+#popupAjoutModifReservation input#nbCampingCarClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
+#popupAjoutModifReservation input#electriciteClientPopupAjoutReservation {margin: 2px 11px 0 10px;}
+#popupAjoutModifReservation input#nbNuitsVisiteursClientPopupAjoutReservation {margin: 2px 0 0 47px; width: 30px;}
+#popupAjoutModifReservation textarea#observationsClientPopupAjoutReservation {width: 580px;}
+
+/* Popup détail réservation */
+#caseElectricitePopupDetailsReservation {
+	border-bottom: 3px solid #D4CCB0;
+	height: 50px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 70px;
+}
+#caseLogoLogementPopupDetailsReservation {
+	border-bottom: 3px solid #D4CCB0;
+	height: 50px;
+	padding-left: 10px;
+	position: absolute;
+	left: 0px;
+	top: 53px;
+	width: 60px;
+}
+#caseNumEmplacementPopupDetailsReservation {
+	border-bottom: 3px solid #D4CCB0;
+	height: 50px;
+	position: absolute;
+	left: 0px;
+	top: 106px;
+	width: 70px;
+}
+#numEmplacementClientPopupDetailsReservation {
+	background-color: #FFFF00;
+	border: none;
+	text-align: center;
+	width: 50px;
+}
+#caseNumEmplacementPopupDetailsReservation, #caseNumFichePopupDetailsReservation {
+	height: 45px;
+	padding-top: 10px;
+	position: absolute;
+	left: 0px;
+	text-align: center;
+	width: 70px;
+}
+#caseNumEmplacementPopupDetailsReservation {
+	background-color: #FFFF00;
+}
+#caseNumFichePopupDetailsReservation {
+	background-color: #D0FFB7;
+	top: 164px;
+}
+#caseDetailsClientPopupDetailsReservation {
+	border-bottom: 3px solid #D4CCB0;
+	border-left: 3px solid #D4CCB0;
+	font-size: 16px;
+	height: 106px;
+	padding: 10px;
+	position: absolute;
+	left: 70px;
+	top: 0px;
+	width: 280px;
+}
+#nomClientPopupDetailsReservation {
+	display: inline-block;
+	height: 20px;
+	overflow: hidden;
+}
+#blocAnimalPopupDetailsReservation {
+	position: absolute;
+	right: 30px;
+	top: 55px;
+}
+#caseObservationsPopupDetailsReservation {
+	border-left: 3px solid #D4CCB0;
+	height: 90px;
+	position: absolute;
+	left: 70px;
+	top: 129px;
+	width: 300px;
+}
+#caseObservationsPopupDetailsReservation textarea {
+	background-color: #E9E9E9;
+	margin-top: 10px;
+	height: 64px;
+    width: 300px;
+}
+.ui-dialog-buttonpane button.bouton-details-reservation {margin-left: 20px;}
+
+/* Popup réglages */
+#ongletsPopupReglages li {font-size: 15px;}
+#ongletsPopupReglages img {margin: 0 5px -4px -5px;}
+#ongletsPopupReglages #ongletPrix input {text-align: right; width: 50px;}
+#ongletsPopupReglages #ongletCalendrier input {text-align: center; width: 75px;}
+#ongletsPopupReglages .droite-popup-reglages {
+	display: inline-block;
+	position: absolute;
+	right: 30px;
+	text-align: right;
+	width: 250px;
+}
+#ongletsPopupReglages .gauche-popup-reglages {
+	display: inline-block;
+	text-align: right;
+	width: 250px;
+}
+#ongletsPopupReglages #blocRoulotteRouge {border: 3px solid #DD0000; border-radius: 12px; padding: 10px;}
+#ongletsPopupReglages #blocRoulotteBleue {border: 3px solid #3BAAE3; border-radius: 12px; padding: 10px;}
+#ongletsPopupReglages #dateDebutPeriodeHauteRoulottePopupReglages {margin-left: 50px;}
+

@@ -1,0 +1,122 @@
+	<div id="popupReglages" title="Réglages" class="popup texte-moyen">
+		<form id="formulairePopupReglages" method="post" action="enregistrer_reglages.php">
+			<div id="ongletsPopupReglages">
+				<ul>
+					<li><a href="#ongletPrix">
+						<img alt="Prix" src="images/argent.png" height="20px" width="20px">Prix</a>
+						</li>
+					<li><a href="#ongletCalendrier">
+						<img alt="Prix" src="images/calendrier.png" height="20px" width="20px">Calendrier</a>
+						</li>
+				</ul>
+				<div id="ongletPrix">
+					<div class="gauche-popup-reglages">
+						<label>Nuitée campeur adulte : </label>
+							<input id="prixNuitAdultePopupReglages" class="champ-decimal"
+								name="Prix/nuitée campeur adulte" type="text" value="{{PRIX_NUIT_ADULTE}}"/>
+						<label>€</label>
+					</div>
+					<div class="droite-popup-reglages">
+						<label>Nuitée campeur enfant : </label>
+							<input id="prixNuitEnfantPopupReglages" class="champ-decimal"
+								name="Prix/nuitée campeur enfant" type="text" value="{{PRIX_NUIT_ENFANT}}"/>
+						<label>€</label>
+					</div>
+					<br/><br/>
+					<div class="gauche-popup-reglages">
+						<label>Nuitée animal : </label>
+							<input id="prixNuitAnimalPopupReglages" class="champ-decimal"
+								name="Prix/nuitée animal" type="text" value="{{PRIX_NUIT_ANIMAL}}"/>
+						<label>€</label>
+					</div>
+					<br/><br/>
+					<div class="gauche-popup-reglages">
+						<label>Nuitée petit emplacement : </label>
+							<input id="prixNuitPetitEmplacementPopupReglages" class="champ-decimal"
+								name="Prix/nuitée petit emplacement" type="text" value="{{PRIX_NUIT_PETIT_EMPLACEMENT}}"/>
+						<label>€</label>
+					</div>
+					<div class="droite-popup-reglages">
+						<label>Nuitée grand emplacement : </label>
+							<input id="prixNuitGrandEmplacementPopupReglages" class="champ-decimal"
+								name="Prix/nuitée grand emplacement" type="text" value="{{PRIX_NUIT_GRAND_EMPLACEMENT}}"/>
+						<label>€</label>
+					</div>
+					<br/><br/>
+					<div class="gauche-popup-reglages">
+						<label>Nuitée emplacement camping car : </label>
+							<input id="prixNuitEmplacementCampingCarPopupReglages" class="champ-decimal"
+								name="Prix/nuitée emplacement camping car" type="text" value="{{PRIX_NUIT_EMPLACEMENT_CAMPING_CAR}}"/>
+						<label>€</label>
+					</div>
+					<div class="droite-popup-reglages">
+						<label>Nuitée électricité : </label>
+							<input id="prixNuitElectricitePopupReglages" class="champ-decimal"
+								name="Prix/nuitée électricité" type="text" value="{{PRIX_NUIT_ELECTRICITE}}"/>
+						<label>€</label>
+					</div>
+					<br/><br/>
+					<div class="gauche-popup-reglages">
+						<label>Nuitée véhicule supplémentaire : </label>
+							<input id="prixNuitVehiculeSupplementairePopupReglages" class="champ-decimal"
+								name="Prix/nuitée véhicule supplémentaire" type="text" value="{{PRIX_NUIT_VEHICULE_SUPP}}"/>
+						<label>€</label>
+					</div>
+					<div class="droite-popup-reglages">
+						<label>Nuitée visiteur : </label>
+							<input id="prixNuitVisiteurPopupReglages" class="champ-decimal"
+								name="Prix/nuitée visiteur" type="text" value="{{PRIX_NUIT_VISITEUR}}"/>
+						<label>€</label>
+					</div>
+					<br/><br/>
+					<label class="texte-moyen-gras3">Prix roulotte rouge </label>
+					<div id="blocRoulotteRouge">
+						<div class="gauche-popup-reglages">
+							<label>Période basse : </label>
+								<input id="prixRoulotteRougePeriodeBassePopupReglages" class="champ-decimal"
+									name="Prix roulotte rouge période basse" type="text" value="{{PRIX_ROULOTTE_ROUGE_PERIODE_BASSE}}"/>
+							<label>€</label>
+						</div>
+						<div class="gauche-popup-reglages">
+							<label>Période haute : </label>
+								<input id="prixRoulotteRougePeriodeHautePopupReglages" class="champ-decimal"
+									name="Prix roulotte rouge période haute" type="text" value="{{PRIX_ROULOTTE_ROUGE_PERIODE_HAUTE}}"/>
+							<label>€</label>
+						</div>
+					</div>
+					<br/><br/>
+					<label class="texte-moyen-gras3">Prix roulotte bleue</label>
+					<div id="blocRoulotteBleue">
+						<div class="gauche-popup-reglages">
+							<label>Période basse : </label>
+								<input id="prixRoulotteBleuePeriodeBassePopupReglages" class="champ-decimal"
+									name="Prix roulotte bleue période basse" type="text" value="{{PRIX_ROULOTTE_BLEUE_PERIODE_BASSE}}"/>
+							<label>€</label>
+						</div>
+						<div class="gauche-popup-reglages">
+							<label>Période haute : </label>
+								<input id="prixRoulotteBleuePeriodeHautePopupReglages" class="champ-decimal"
+									name="Prix roulotte bleue période haute" type="text" value="{{PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE}}"/>
+							<label>€</label>
+						</div>
+					</div>
+				</div>
+				<div id="ongletCalendrier">
+					<br/>
+					<label class="texte-moyen2">Affichage du tableau des réservations du</label>
+					<input id="dateDebutAffichageTableauReservationsPopupReglages" class="champ-date-sans-annees"
+						name="Date de début du tableau des réservation" type="text" value="{{DATE_DEBUT_TABLEAU_RESERVATIONS}}"/>
+					<label class="texte-moyen2">au</label>
+					<input id="dateFinAffichageTableauReservationsPopupReglages" class="champ-date-sans-annees"
+						name="Date de fin du tableau des réservation" type="text" value="{{DATE_FIN_TABLEAU_RESERVATIONS}}"/>
+					<br/><br/><br/>
+					<label class="texte-moyen2">Date de début de la période haute pour les roulottes : </label>
+					<br/>
+					<input id="dateDebutPeriodeHauteRoulottePopupReglages" class="champ-date-sans-annees"
+						name="Date de début de la période haute des roulottes" type="text" value="{{DATE_DEBUT_PERIODE_HAUTE_ROULOTTE}}"/>
+					<label> (le jour donné est compté dans la période haute) : </label>
+					<br/><br/>
+				</div>
+			</div>
+		</form>
+	</div>
