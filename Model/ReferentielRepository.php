@@ -468,7 +468,7 @@ class ReferentielRepository {
 	 * @param \DateTime $valeur Date de début de la période haute pour les roulottes
 	 * @param Boolean $flush Enregistrer ou pas en base de données
 	 */
-	public function setDateDebutPeriodeHauteRoulotte(\DateTime $valeur, $flush = false) {
+	public function setDateDebutPeriodeHauteRoulotte(\DateTime $valeur = null, $flush = false) {
 		//Mise en forme
 		if (!is_null($valeur)) {
 			$valeur = $valeur->format('Y-m-d');
@@ -499,7 +499,7 @@ class ReferentielRepository {
 	 * @param \DateTime $valeur Date de début de l'affichage du tableau de réservations
 	 * @param Boolean $flush Enregistrer ou pas en base de données
 	 */
-	public function setDebutAffichageTableauReservations(\DateTime $valeur, $flush = false) {
+	public function setDebutAffichageTableauReservations(\DateTime $valeur = null, $flush = false) {
 		//Mise en forme
 		if (!is_null($valeur)) {
 			$valeur = $valeur->format('Y-m-d');
@@ -530,7 +530,7 @@ class ReferentielRepository {
 	 * @param \DateTime $valeur Date de fin de l'affichage du tableau de réservations
 	 * @param Boolean $flush Enregistrer ou pas en base de données
 	 */
-	public function setFinAffichageTableauReservations(\DateTime $valeur, $flush = false) {
+	public function setFinAffichageTableauReservations(\DateTime $valeur = null, $flush = false) {
 		//Mise en forme
 		if (!is_null($valeur)) {
 			$valeur = $valeur->format('Y-m-d');
@@ -660,7 +660,7 @@ class ReferentielRepository {
 		if (!is_null($this->referentiel)) {
 			foreach ($this->referentiel as $key => $objRef) {
 				//Si l'id de l'objet n'existe pas, on créé une ligne en BDD sinon on la modifie
-				if (!is_null($objRef)) {
+				if (!is_null($objRef) && !is_null($objRef->getValeur())) {
 					if (is_null($objRef->getId())) {
 						//Requête de création du référentiel
 						$sql .= "\n INSERT INTO referentiel (code, valeur, annee_validite) "

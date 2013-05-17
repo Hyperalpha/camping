@@ -3,6 +3,8 @@ include_once 'Reservation.php';
 include_once 'Client.php';
 include_once 'ClientRepository.php';
 include_once 'Constante.php';
+include_once 'ReferentielRepository.php';
+include_once 'FactureRepository.php';
 
 /**
  * Copyright Arnaud DUPUIS 2012
@@ -17,11 +19,17 @@ class ReservationRepository {
 	 */
 	private $mysqli;
 
+	private $referentielRepository;
+
 	private $clientRepository;
+	
+	private $factureRepository;
 
 	public function __construct() {
 		//Construction des singleton
+		$this->referentielRepository = new ReferentielRepository();
 		$this->clientRepository = new ClientRepository();
+		$this->factureRepository = new FactureRepository();
 	}
 
 	/**
@@ -78,13 +86,13 @@ class ReservationRepository {
 		if (!is_null($mois) and !is_null($mois)) {
 			$where = "(r.date_arrivee <= '" . $annee . "-" . $mois . "-" . $jour
 			. " 23:59:59' AND  r.date_depart >= '"
-			. $annee . "-" . $mois . "-" . $jour . " 00:00:00')";
+					. $annee . "-" . $mois . "-" . $jour . " 00:00:00')";
 		}
 		else {
 			$where = "(r.date_arrivee > '" . $annee . "-01-01 00:00:00' AND r.date_arrivee < '"
-			. ($annee + 1) . "-01-01 00:00:00') OR (r.date_depart > '"
-			. $annee . "-01-01 00:00:00' AND r.date_depart < '"
-			. ($annee + 1) . "-01-01 00:00:00')";
+					. ($annee + 1) . "-01-01 00:00:00') OR (r.date_depart > '"
+							. $annee . "-01-01 00:00:00' AND r.date_depart < '"
+									. ($annee + 1) . "-01-01 00:00:00')";
 		}
 
 		return $this->rechercherReservations($where);
@@ -102,6 +110,13 @@ class ReservationRepository {
 
 		//On enregistre d'abord le client
 		$this->clientRepository->enregistrerClient($client);
+		
+		//On enregistre la facture
+		$refFacture = null;
+		if (!is_null($reservation->getFacture())) {
+			$facture = $this->factureRepository->enregistrerFacture($reservation->getFacture());
+			$refFacture = $facture->getId();
+		}
 
 		//On regarde si on doit faire une création ou une modification de réservation
 		if (is_null($reservation->getReference()) or $reservation->getReference() == '') {
@@ -134,57 +149,64 @@ class ReservationRepository {
 			$this->initBdd();
 			//A la création des coordonnées X et Y sont initialisés à 0
 			$sql = "INSERT INTO reservation (reference, id_client, date_arrivee, date_depart, "
-			. "piece_id_presentee, arrhes, nombre_adultes, nombre_enfants, nombre_animaux, "
-			. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
-			. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
-			. "observations, numero_emplacement, coordonnees_x_emplacement, "
-			. "coordonnees_y_emplacement) "
-			. "VALUES ("
-			. "'" . $referenceReservation. "', "
-			. "'" . $reservation->getClient()->getId(). "', "
-			. "'" . $reservation->getDateArrivee()->format('Y-m-d H:i:s') . "', "
-			. "'" . $reservation->getDateDepart()->format('Y-m-d H:i:s') . "', "
-			. "'" . $reservation->getPieceIdPresentee() . "', "
-			. "'" . intval($reservation->getArrhes()) . "', "
-			. "'" . intval($reservation->getNombreAdultes()) . "', "
-			. "'" . intval($reservation->getNombreEnfants()) . "', "
-			. "'" . intval($reservation->getNombreAnimaux()) . "', "
-			. "'" . intval($reservation->getNombrePetitesTentes()) . "', "
-			. "'" . intval($reservation->getNombreGrandesTentes()) . "', "
-			. "'" . intval($reservation->getNombreCaravanes()) . "', "
-			. "'" . intval($reservation->getNombreVans()) . "', "
-			. "'" . intval($reservation->getNombreCampingCars()) . "', "
-			. "'" . $reservation->getElectricite() . "', "
-			. "'" . intval($reservation->getNombreNuitesVisiteur()) . "', "
-			. "'" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
-			. "'" . intval($reservation->getNumeroEmplacement()) . "', "
-			. "'0', "
-			. "'0' "
-			. ");";
+				. "piece_id_presentee, arrhes, nombre_adultes, nombre_enfants, nombre_animaux, "
+				. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
+				. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
+				. "roulotte_rouge, roulotte_bleue, observations, "
+				. "reference_facture, numero_emplacement, coordonnees_x_emplacement, "
+				. "coordonnees_y_emplacement) "
+				. "VALUES ("
+				. "'" . $referenceReservation. "', "
+				. "'" . $reservation->getClient()->getId(). "', "
+				. "'" . $reservation->getDateArrivee()->format('Y-m-d H:i:s') . "', "
+				. "'" . $reservation->getDateDepart()->format('Y-m-d H:i:s') . "', "
+				. "'" . $reservation->getPieceIdPresentee() . "', "
+				. "'" . floatval($reservation->getArrhes()) . "', "
+				. "'" . intval($reservation->getNombreAdultes()) . "', "
+				. "'" . intval($reservation->getNombreEnfants()) . "', "
+				. "'" . intval($reservation->getNombreAnimaux()) . "', "
+				. "'" . intval($reservation->getNombrePetitesTentes()) . "', "
+				. "'" . intval($reservation->getNombreGrandesTentes()) . "', "
+				. "'" . intval($reservation->getNombreCaravanes()) . "', "
+				. "'" . intval($reservation->getNombreVans()) . "', "
+				. "'" . intval($reservation->getNombreCampingCars()) . "', "
+				. "'" . $reservation->getElectricite() . "', "
+				. "'" . intval($reservation->getNombreNuitesVisiteur()) . "', "
+				. "'" . intval($reservation->getRoulotteRouge()) . "', "
+				. "'" . intval($reservation->getRoulotteBleue()) . "', "
+				. "'" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
+				. "'" . $this->mysqli->real_escape_string($refFacture) . "', "
+				. "'" . intval($reservation->getNumeroEmplacement()) . "', "
+				. "'0', "
+				. "'0' "
+				. ");";
 		}
 		else {
 			$this->initBdd();
 			//Modification de la réservation
 			$sql = "UPDATE reservation r SET "
-			. "r.date_arrivee = '" . $reservation->getDateArrivee()->format('Y-m-d H:i:s')  . "', "
-			. "r.date_depart = '" . $reservation->getDateDepart()->format('Y-m-d H:i:s')  . "', "
-			. "r.piece_id_presentee = '" . $reservation->getPieceIdPresentee() . "', "
-			. "r.arrhes = '" . intval($reservation->getArrhes()) . "', "
-			. "r.nombre_adultes = '" . intval($reservation->getNombreAdultes()) . "', "
-			. "r.nombre_enfants = '" . intval($reservation->getNombreEnfants()) . "', "
-			. "r.nombre_animaux = '" . intval($reservation->getNombreAnimaux()) . "', "
-			. "r.nombre_petites_tentes = '" . intval($reservation->getNombrePetitesTentes()) . "', "
-			. "r.nombre_grandes_tentes = '" . intval($reservation->getNombreGrandesTentes()) . "', "
-			. "r.nombre_caravanes = '" . intval($reservation->getNombreCaravanes()) . "', "
-			. "r.nombre_vans = '" . intval($reservation->getNombreVans()) . "', "
-			. "r.nombre_camping_cars = '" . intval($reservation->getNombreCampingCars()) . "', "
-			. "r.electricite = '" . $reservation->getElectricite() . "', "
-			. "r.nombre_nuitees_visiteur = '" . intval($reservation->getNombreNuitesVisiteur()) . "', "
-			. "r.observations = '" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
-			. "r.numero_emplacement = '" . intval($reservation->getNumeroEmplacement()) . "', "
-			. "coordonnees_x_emplacement = '" . intval($reservation->getCoordonneesXEmplacement()) . "', "
-			. "coordonnees_y_emplacement = '" . intval($reservation->getCoordonneesYEmplacement()) . "' "
-			. " WHERE r.id = " . $reservation->getId();
+				. "r.date_arrivee = '" . $reservation->getDateArrivee()->format('Y-m-d H:i:s')  . "', "
+				. "r.date_depart = '" . $reservation->getDateDepart()->format('Y-m-d H:i:s')  . "', "
+				. "r.piece_id_presentee = '" . $reservation->getPieceIdPresentee() . "', "
+				. "r.arrhes = '" . floatval($reservation->getArrhes()) . "', "
+				. "r.nombre_adultes = '" . intval($reservation->getNombreAdultes()) . "', "
+				. "r.nombre_enfants = '" . intval($reservation->getNombreEnfants()) . "', "
+				. "r.nombre_animaux = '" . intval($reservation->getNombreAnimaux()) . "', "
+				. "r.nombre_petites_tentes = '" . intval($reservation->getNombrePetitesTentes()) . "', "
+				. "r.nombre_grandes_tentes = '" . intval($reservation->getNombreGrandesTentes()) . "', "
+				. "r.nombre_caravanes = '" . intval($reservation->getNombreCaravanes()) . "', "
+				. "r.nombre_vans = '" . intval($reservation->getNombreVans()) . "', "
+				. "r.nombre_camping_cars = '" . intval($reservation->getNombreCampingCars()) . "', "
+				. "r.electricite = '" . $reservation->getElectricite() . "', "
+				. "r.nombre_nuitees_visiteur = '" . intval($reservation->getNombreNuitesVisiteur()) . "', "
+				. "r.roulotte_rouge = '" . intval($reservation->getRoulotteRouge()) . "', "
+				. "r.roulotte_bleue = '" . intval($reservation->getRoulotteBleue()) . "', "
+				. "r.observations = '" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
+				. "r.reference_facture = '" . $this->mysqli->real_escape_string($refFacture) . "', "
+				. "r.numero_emplacement = '" . intval($reservation->getNumeroEmplacement()) . "', "
+				. "coordonnees_x_emplacement = '" . intval($reservation->getCoordonneesXEmplacement()) . "', "
+				. "coordonnees_y_emplacement = '" . intval($reservation->getCoordonneesYEmplacement()) . "' "
+				. " WHERE r.id = " . $reservation->getId();
 		}
 
 		//On envoie la requête
@@ -214,11 +236,14 @@ class ReservationRepository {
 			$refReservation = substr($refReservation, 1);
 		}
 
-		$sql = "DELETE FROM reservation WHERE reservation.reference = '" . $refReservation . "';";
-
 		$this->initBdd();
-
+		
+		//On supprime d'abord les factures pointant sur la réservation
+		$sql = "DELETE FROM facture WHERE facture.reference_reservation = '" . $this->mysqli->real_escape_string($refReservation) . "';";
+		$result = $this->executerSQL($sql);
+		
 		//On envoie la requête de suppression
+		$sql = "DELETE FROM reservation WHERE reservation.reference = '" . $this->mysqli->real_escape_string($refReservation) . "';";
 		$result = $this->executerSQL($sql);
 
 		$this->fermerBdd();
@@ -237,7 +262,7 @@ class ReservationRepository {
 
 		if (!is_null($annee)) {
 			$sql .= " WHERE r.date_arrivee <= '" . $annee . "-12-31 00:00:00'"
-			. " AND r.date_arrivee >= '" . $annee . "-01-01 00:00:00'";
+					. " AND r.date_arrivee >= '" . $annee . "-01-01 00:00:00'";
 		}
 
 		$this->initBdd();
@@ -253,6 +278,113 @@ class ReservationRepository {
 		$this->fermerBdd();
 
 		return $retour;
+	}
+
+	/**
+	 * Calcul le CA total pour les réservations passées en paramètre
+	 * @author Arnaud DUPUIS
+	 * @param array#Reservation $tabReservations Le calcul du CA se fait sur ces réservations
+	 * @return float Renvoie le CA calculé
+	 */
+	public function calculerCATotalReservations($tabReservations) {
+		$prixCampeurAdulte = $this->referentielRepository->getPrixCampeurAdulte();
+		$prixCampeurEnfant = $this->referentielRepository->getPrixCampeurEnfant();
+		$prixAnimal = $this->referentielRepository->getPrixAnimal();
+		$prixPetitEmplacement = $this->referentielRepository->getPrixPetiteTenteVan();
+		$prixGrandEmplacement = $this->referentielRepository->getPrixGrandeTenteCaravane();
+		$prixCampingCar = $this->referentielRepository->getPrixCampingCar();
+		$prixElectricite = $this->referentielRepository->getPrixElectricite();
+		$prixVehiculeSupp = $this->referentielRepository->getPrixVehiculeSupp();
+		$prixVisiteur = $this->referentielRepository->getPrixVisiteur();
+		/**
+		 * @todo: Prix matériel?
+		*/
+		$cATotal = 0;
+		$cAReservation = 0;
+
+		if (!is_null($tabReservations)) {
+			foreach ($tabReservations as $reservation) {
+				//On fait la somme de toute les prestations de la réservation (sans compter les roulottes)
+				if (($reservation->getRoulotteRouge() != true) and ($reservation->getRoulotteBleue() != true)) {
+					$cAReservation = 0;
+					$cAReservation += $prixCampeurAdulte * $reservation->getNombreAdultes();
+					$cAReservation += $prixCampeurEnfant * $reservation->getNombreEnfants();
+					$cAReservation += $prixAnimal * $reservation->getNombreAnimaux();
+					$cAReservation += $prixPetitEmplacement * $reservation->getNombrePetitesTentes();
+					$cAReservation += $prixPetitEmplacement * $reservation->getNombreVans();
+					$cAReservation += $prixGrandEmplacement * $reservation->getNombreGrandesTentes();
+					$cAReservation += $prixGrandEmplacement * $reservation->getNombreCaravanes();
+					$cAReservation += $prixCampingCar * $reservation->getNombreCampingCars();
+					$cAReservation += $prixElectricite * $reservation->getElectricite();
+					/**
+					 * @todo: nb de véhicules supp
+					*/
+					//$cAReservation += $prixVehiculeSupp * $reservation->getNombreEnfants();
+					$cAReservation += $prixVisiteur * $reservation->getNombreNuitesVisiteur();
+					
+					//On multiplie par le nombre de nuitées
+					$dateArrivee = $reservation->getDateArrivee();
+					$dateDepart = $reservation->getDateDepart();
+					$interval = $dateDepart->diff($dateArrivee);
+					$nbNuitees = intval($interval->format('%a'));
+					$cAReservation *= $nbNuitees;
+					
+					$cATotal += $cAReservation;
+				}
+			}
+		}
+
+		return $cATotal;
+	}
+	
+	/**
+	 * Calcul le CA total pour les roulottes
+	 * @author Arnaud DUPUIS
+	 * @param array#Reservation $tabReservations Le calcul du CA se fait sur ces réservations
+	 * @return float Renvoie le CA calculé
+	 */
+	public function calculerCATotalRoulottes($tabReservations) {
+		$prixRoulotteRougePeriodeBasse = $this->referentielRepository->getPrixRoulotteRougePeriodeBasse();
+		$prixRoulotteRougePeriodeHaute = $this->referentielRepository->getPrixRoulotteRougePeriodeHaute();
+		$prixRoulotteBleuePeriodeBasse = $this->referentielRepository->getPrixRoulotteBleuePeriodeBasse();
+		$prixRoulotteBleuePeriodeHaute = $this->referentielRepository->getPrixRoulotteBleuePeriodeHaute();
+		$dateDebutPeriodeHaute = $this->referentielRepository->getDateDebutPeriodeHauteRoulotte();
+		$cATotal = 0;
+		$cAReservation = 0;
+		
+		if (!is_null($tabReservations)) {
+			foreach ($tabReservations as $reservation) {
+				//On fait la somme des roulottes (en suivant la période haute ou basse)
+				$caRoulotte = 0;
+				$dateArrivee = $reservation->getDateArrivee();
+				$dateDepart = $reservation->getDateDepart();
+				$interval = $dateDepart->diff($dateArrivee);
+				$nbNuitees = intval($interval->format('%a'));
+				
+				if ($reservation->getRoulotteRouge() == true) {
+					if ($dateDepart->getTimestamp() < $dateDebutPeriodeHaute->getTimestamp()) {
+						$caRoulotte += $prixRoulotteRougePeriodeBasse;
+					}
+					else {
+						$caRoulotte += $prixRoulotteRougePeriodeHaute;
+					}
+				}
+				if ($reservation->getRoulotteBleue() == true) {
+					if ($dateDepart->getTimestamp() < $dateDebutPeriodeHaute->getTimestamp()) {
+						$caRoulotte += $prixRoulotteBleuePeriodeBasse;
+					}
+					else {
+						$caRoulotte += $prixRoulotteBleuePeriodeHaute;
+					}
+				}
+				
+				//On multiplie par le nombre de nuitées
+				$caRoulotte *= ($nbNuitees / 7);
+				$cATotal += $caRoulotte;
+			}
+		}
+	
+		return $cATotal;
 	}
 
 	/**
@@ -299,18 +431,15 @@ class ReservationRepository {
 
 		//Requête SQL pour récupérer les réservations
 		$sql = 'SELECT r.id, r.reference, r.id_client, r.date_arrivee, r.date_depart, '
-		. 'r.piece_id_presentee, r.arrhes, r.nombre_adultes, r.nombre_enfants, r.nombre_animaux, '
-		. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
-		. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
-		. 'r.observations, r.reference_facture, r.numero_emplacement, '
-		. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
-		. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res, '
-		. 'c.reference, c.nom, c.prenom, c.adresse1, c.adresse2, c.code_postal, '
-		. 'c.ville, c.pays, c.telephone, c.telephone_portable, c.email, '
-		. 'c.date_creation as date_creation_client, '
-		. 'c.date_modification as date_modification_client '
-		. 'FROM reservation r LEFT JOIN client c ON r.id_client = c.id';
-
+			. 'r.piece_id_presentee, r.arrhes, r.nombre_adultes, r.nombre_enfants, r.nombre_animaux, '
+			. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
+			. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
+			. 'r.roulotte_rouge, r.roulotte_bleue, '
+			. 'r.observations, r.reference_facture, r.numero_emplacement, '
+			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
+			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res '
+			. 'FROM reservation r';
+	
 		if (!is_null($where)) {
 			$sql .= ' WHERE ' . $where;
 		}
@@ -336,40 +465,41 @@ class ReservationRepository {
 			$newRes->setNombreCaravanes($data[12]);
 			$newRes->setNombreVans($data[13]);
 			$newRes->setNombreCampingCars($data[14]);
-			$newRes->setNombreNuitesVisiteur($data[15]);
 			$elec = false;
-			if ($data[16] == "1" or $data[16] == true) {
+			if ($data[15] == "1" or $data[15] == true) {
 				$elec = true;
 			}
 			$newRes->setElectricite($elec);
-			$newRes->setObservations($data[17]);
-			//$newRes->setReferenceFacture($referenceFacture);
-			$newRes->setNumeroEmplacement($data[19]);
-			$newRes->setCoordonneesXEmplacement($data[20]);
-			$newRes->setCoordonneesYEmplacement($data[21]);
-			$newRes->setDateCreation(new DateTime($data[22]));
-			$newRes->setDateModification(new DateTime($data[23]));
-
-			//Création du client
-			if ($data[2]) {
-				$client = new Client();
-				$client->setId($data[2]);
-				$client->setReference($data[24]);
-				$client->setNom($data[25]);
-				$client->setPrenom($data[26]);
-				$client->setAdresse1($data[27]);
-				$client->setAdresse2($data[28]);
-				$client->setCodePostal($data[29]);
-				$client->setVille($data[30]);
-				$client->setPays($data[31]);
-				$client->setTelephone($data[32]);
-				$client->setTelephonePortable($data[33]);
-				$client->setEmail($data[34]);
-				$client->setDateCreation(new DateTime($data[35]));
-				$client->setDateModification(new DateTime($data[36]));
-				$newRes->setClient($client);
+			$newRes->setNombreNuitesVisiteur($data[16]);
+			$roulotteRouge = false;
+			if ($data[17] == "1" or $data[17] == true) {
+				$roulotteRouge = true;
 			}
-				
+			$newRes->setRoulotteRouge($roulotteRouge);
+			$roulotteBleue = false;
+			if ($data[18] == "1" or $data[18] == true) {
+				$roulotteBleue = true;
+			}
+			$newRes->setRoulotteBleue($roulotteBleue);
+			$newRes->setObservations($data[19]);
+			$newRes->setNumeroEmplacement($data[21]);
+			$newRes->setCoordonneesXEmplacement($data[22]);
+			$newRes->setCoordonneesYEmplacement($data[23]);
+			$newRes->setDateCreation(new DateTime($data[24]));
+			$newRes->setDateModification(new DateTime($data[25]));
+
+			//Récupération du client
+			if ($data[2]) {
+				$clients = $this->clientRepository->rechercherClientsCriteres(Array('id' => $data[2]));
+				$newRes->setClient($clients[0]);
+			}
+			
+			//Récupération de la facture
+			if ($data[20]) {
+				$factures = $this->factureRepository->rechercherFacture($data[1]);
+				$newRes->setFacture($factures[0]);
+			}
+
 			$retour[] = $newRes;
 		}
 
@@ -390,7 +520,7 @@ class ReservationRepository {
 
 		if (!is_null($annee)) {
 			$sql .= " WHERE r.date_arrivee <= '" . $annee . "-12-31 00:00:00'"
-			. " AND r.date_arrivee >= '" . $annee . "-01-01 00:00:00'";
+					. " AND r.date_arrivee >= '" . $annee . "-01-01 00:00:00'";
 		}
 
 		$this->initBdd();

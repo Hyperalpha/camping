@@ -108,6 +108,18 @@ class Reservation {
 	private $nombreNuitesVisiteur;
 
 	/**
+	 * Réservation de la roulotte rouge
+	 * @var boolean
+	 */
+	private $roulotteRouge;
+
+	/**
+	 * Réservation de la roulotte bleue
+	 * @var boolean
+	 */
+	private $roulotteBleue;
+
+	/**
 	 * Observations sur la réservation
 	 * @var string
 	 */
@@ -120,10 +132,10 @@ class Reservation {
 	private $arrhes;
 
 	/**
-	 * Référence de la facture
+	 * Facture rattachée à la réservation
 	 * @var string
 	 */
-	private $referenceFacture;
+	private $facture;
 
 	/**
 	 * Numéro de l'emplacement
@@ -412,6 +424,38 @@ class Reservation {
 	}
 
 	/**
+	 * Getter pour la roulotte rouge
+	 * @return boolean
+	 */
+	public function getRoulotteRouge() {
+		return $this->roulotteRouge;
+	}
+
+	/**
+	 * Setter pour la roulotte rouge
+	 * @var boolean
+	 */
+	public function setRoulotteRouge($roulotteRouge) {
+		$this->roulotteRouge = $roulotteRouge;
+	}
+
+	/**
+	 * Getter pour la roulotte bleue
+	 * @return boolean
+	 */
+	public function getRoulotteBleue() {
+		return $this->roulotteBleue;
+	}
+
+	/**
+	 * Setter pour la roulotte bleue
+	 * @var boolean
+	 */
+	public function setRoulotteBleue($roulotteBleue) {
+		$this->roulotteBleue = $roulotteBleue;
+	}
+
+	/**
 	 * Getter pour les observations sur la réservation
 	 * @return string
 	 */
@@ -429,7 +473,7 @@ class Reservation {
 
 	/**
 	 * Getter pour les arrhes sur la réservation
-	 * @return integer
+	 * @return float
 	 */
 	public function getArrhes() {
 		return $this->arrhes;
@@ -437,26 +481,26 @@ class Reservation {
 
 	/**
 	 * Setter pour les arrhes sur la réservation
-	 * @var integer
+	 * @var float
 	 */
 	public function setArrhes($arrhes) {
 		$this->arrhes = $arrhes;
 	}
 
 	/**
-	 * Getter pour la référence de la facture
+	 * Getter pour la facture
 	 * @return string
 	 */
-	public function getReferenceFacture() {
-		return $this->referenceFacture;
+	public function getFacture() {
+		return $this->facture;
 	}
 
 	/**
-	 * Setter pour la référence de la facture
+	 * Setter pour la facture
 	 * @var string
 	 */
-	public function setReferenceFacture($referenceFacture) {
-		$this->referenceFacture = $referenceFacture;
+	public function setFacture($facture) {
+		$this->facture = $facture;
 	}
 
 	/**

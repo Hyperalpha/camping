@@ -148,7 +148,7 @@ function mettreAJourValeursPopupReglages() {
  * @author adupuis
  */
 function restaurerAnciennesValeursPopupReglages() {
-	var key;
+	var key = null;
 
 	for (key in tableauAncienneValeurs) {
 		$('#popupReglages').find('#' + key).val(tableauAncienneValeurs[key]);
@@ -269,90 +269,4 @@ function verifContraintesFormAjoutRes2(formulaire, nbNuites) {
 	}
 
 	return erreur;
-}
-
-/**
- * Fonction qui supprime une réservation
- * 
- * @author adupuis
- * @param idBlocReservation
- *            string Id du bloc de réservation à supprimer
- */
-function supprimerReservation2(idBlocReservation) {
-	var tabDonnees = parseInfosReservation($("#" + idBlocReservation).find(
-			'input[id^="infosdraggable"]').val());
-
-	// Suppression en AJAX
-	$.ajax({
-		type : "POST",
-		url : "supprimer_reservation.php",
-		data : {
-			idFiche : tabDonnees.idFiche
-		},
-		success : function(data) {
-			if (data == "1") {
-
-				// Fermeture de la popup
-				$("#popupAjoutModifReservation").dialog("close");
-
-				// Suppression du bloc
-				$("#" + idBlocReservation).remove();
-
-				// Recalcul des statistiques
-				calculStatistiquesParJour();
-
-				alertPop(RESERVATION_SUPPRIMEE);
-			} else {
-				alertPop(ERREUR_INCONNUE);
-			}
-		},
-		error : function() {
-			alertPop(ERREUR_INCONNUE);
-		}
-	});
-}
-
-/**
- * Enregistre le numéro d'emplacement d'une réservation en AJAX
- * 
- * @author adupuis
- * @param idFiche
- *            Référence de la réservation
- * @param numeroEmplacement
- *            Numéro de l'emplacement
- */
-function enregistrerReglages(idFiche, numeroEmplacement) {
-
-	// // Sauvegarde en AJAX
-	// $.ajax({
-	// type : "POST",
-	// url : "enregistrer_emplacement.php",
-	// data : {
-	// refFiche : idFiche,
-	// numeroEmplacement : numeroEmplacement
-	// },
-	// success : function(data) {
-	// var strInfos = null;
-	// var tabInfos = null;
-	//
-	// if (data == true) {
-	// // On met à jour les données de l'emplacement
-	// strInfos = $('#popupDetailsReservation').find(
-	// "#infosPopupDetailsReservation").val();
-	// tabInfos = parseInfosReservation(strInfos);
-	// tabInfos.numeroEmplacement = numeroEmplacement;
-	//
-	// $("#" + tabInfos.idReservation).find(
-	// 'input[id^="infosdraggable"]').val(
-	// serialiserInfosReservation(tabInfos));
-	//
-	// alertPop(EMPLACEMENT_ENREGISTRE);
-	// } else {
-	// alertPop(ERREUR_INCONNUE);
-	// }
-	// },
-	// error : function() {
-	// alertPop(ERREUR_INCONNUE);
-	// }
-	// });
 }

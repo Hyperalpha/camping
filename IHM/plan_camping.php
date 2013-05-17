@@ -28,6 +28,10 @@ include_once '../Controller/PlanningCampingController.php';
 		class="ui-icon ui-icon-arrowthick-1-w ui-span-button">&nbsp;</span> <span
 		class="ui-button-text ui-span-button">Retour planning réservations</span>
 	</a>
+	<a id="boutonImprimerEmplacements"> <img
+		alt="Imprimer les emplacements" src="images/print.png" height="40px"
+		width="40px" />
+	</a>
 	<br />
 	<br />
 
@@ -51,36 +55,37 @@ include_once '../Controller/PlanningCampingController.php';
 			$nomPrenomClient = str_replace('"', '\\"', $client->getPrenom() . ' ' . $client->getNom());
 			$labelLogement = "";
 			$classLogement = "";
+			$roulotte = false;
 
 			//On définit le type de logement
+			if ($reservation->getRoulotteRouge() > 0) {
+				//Roulotte rouge
+				$roulotte = true;
+			}
+			if ($reservation->getRoulotteBleue() > 0) {
+				//Roulotte bleue
+				$roulotte = true;
+			}
 			if ($reservation->getNombreCampingCars() > 0) {
 				//Camping-car
 				$labelLogement = "Camping-car : ";
 				$classLogement = "bloc-camping-car";
-			} else {
-				if ($reservation->getNombreVans() > 0) {
-					//Van
-					$labelLogement = "Van : ";
-					$classLogement = "bloc-van";
-				} else {
-					if ($reservation->getNombreCaravanes() > 0) {
-						//Caravane
-						$labelLogement = "Caravane : ";
-						$classLogement = "bloc-caravane";
-					} else {
-						if ($reservation->getNombreGrandesTentes() > 0) {
-							//Grande tente
-							$labelLogement = "Grande tente : ";
-							$classLogement = "bloc-grande-tente";
-						} else {
-							if ($reservation->getNombrePetitesTentes() > 0) {
-								//Petite tente
-								$labelLogement = "Petite tente : ";
-								$classLogement = "bloc-petite-tente";
-							}
-						}
-					}
-				}
+			} elseif ($reservation->getNombreVans() > 0) {
+				//Van
+				$labelLogement = "Van : ";
+				$classLogement = "bloc-van";
+			} elseif ($reservation->getNombreCaravanes() > 0) {
+				//Caravane
+				$labelLogement = "Caravane : ";
+				$classLogement = "bloc-caravane";
+			} elseif ($reservation->getNombreGrandesTentes() > 0) {
+				//Grande tente
+				$labelLogement = "Grande tente : ";
+				$classLogement = "bloc-grande-tente";
+			} elseif ($reservation->getNombrePetitesTentes() > 0) {
+				//Petite tente
+				$labelLogement = "Petite tente : ";
+				$classLogement = "bloc-petite-tente";
 			}
 
 			//Si la réservation n'a jamais été placée, on la dépose à un endroit calculé
@@ -88,16 +93,37 @@ include_once '../Controller/PlanningCampingController.php';
 				$reservation->setCoordonneesYEmplacement($yNonPlaceEnCours);
 				$yNonPlaceEnCours += $pasYEntreEmplacementsNonPlace;
 			}
-
+		
 			//On crée les emplacements des réservations
-			echo '<div id="emplacementNumero' . $reservation->getReference()
-			. '" class="bloc-emplacement draggable ' . $classLogement . '" title="'
-			. $labelLogement . $nomPrenomClient .'"
-				 style="top: ' . $reservation->getCoordonneesYEmplacement()
-			. 'px; left: ' . $reservation->getCoordonneesXEmplacement() . 'px;">
-			<div class="pancarte-emplacement" title="Emplacement ' . '">
-				<div>' . $reservation->getNumeroEmplacement() .'</div></div>
-			<span class="text-bloc-emplacement">' . $nomPrenomClient .'</span></div>';
+			if ($roulotte == false) {
+				echo '<div id="emplacementNumero' . $reservation->getReference()
+					. '" class="bloc-emplacement draggable ' . $classLogement . '" title="'
+					. $labelLogement . $nomPrenomClient
+					. '"style="top: ' . $reservation->getCoordonneesYEmplacement()
+					. 'px; left: ' . $reservation->getCoordonneesXEmplacement()
+					. 'px;"><div class="pancarte-emplacement" title="Emplacement '
+					. $reservation->getNumeroEmplacement() . '"><img alt="Emplacement '
+					. $reservation->getNumeroEmplacement() . '" src="images/emplacement.png"><div>'
+					. $reservation->getNumeroEmplacement()
+					. '</div></div><span class="text-bloc-emplacement">'
+					. $nomPrenomClient .'</span></div>';
+			}
+			else {
+				if ($reservation->getRoulotteRouge() > 0) {
+					//On ajoute l'emplacement de la roulotte rouge
+					echo '<div id="emplacementRoulotteRouge" class="bloc-emplacement" '
+						. 'title="Roulotte rouge : ' . $nomPrenomClient . '" '
+						. 'style="top: 298px; left: 118px;">'
+						. '<span class="text-bloc-emplacement">' . $nomPrenomClient .'</span></div>';
+				}
+				if ($reservation->getRoulotteBleue() > 0) {
+					//On ajoute l'emplacement de la roulotte bleue
+					echo '<div id="emplacementRoulotteBleue" class="bloc-emplacement" '
+						. 'title="Roulotte rouge : ' . $nomPrenomClient . '" '
+						. 'style="top: 385px; left: 125px;">'
+						. '<span class="text-bloc-emplacement">' . $nomPrenomClient .'</span></div>';
+				}
+			}
 		}
 	} ?>
 </body>

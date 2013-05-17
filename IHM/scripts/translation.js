@@ -7,6 +7,8 @@ var CONFIRMATION_SUPPRESSION_RESERVATION = "Etes-vous sûr de supprimer cette r�
 var CONFIRMATION_CREATION_CLIENT = "Ce client n'existe pas. Voulez vous le créer?";
 var CREER_MODIFIER = "Créer/Modifier";
 var DEPLACER_DATE_RESERVATION = "Voulez vous déplacer la date de réservation?";
+var DEVISE = "€";
+var ECRASEMENT_CLIENT = 'Attention!!! <br/>Vous allez supprimer le client "{{ANCIEN_CLIENT}}" et créer le client "{{NOUVEAU_CLIENT}}".<br/><br/>Voulez-vous continuer?';
 var EMPLACEMENT_ENREGISTRE = "L'emplacement a été sauvegardé.";
 var ENREGISTRER = "Enregistrer";
 var ENREGISTRER_FICHE_RESERVATION = "Attention, vous devez enregistrer la fiche de réservation pour que les modifications soient prise en compte dans word.<br/><br/>Afficher le document quand même?";
@@ -21,6 +23,7 @@ var NOMBRE_PERSONNES_INCORRECT = "Il faut au moins 1 adulte ou 1 enfant.\n\n";
 var NON = "Non";
 var OK = "Ok";
 var OUI = "Oui";
+var REGENERER_FACTURE = "Attention, la facture a déjà été générée. <br/><br/>Pour l'écraser, cliquez sur 'Oui'. <br/>Pour afficher l'ancienne facture, cliquez sur 'Non'";
 var RESERVATION_EN_DEHORS_TABLEAU = "La date de la réservation n'est pas dans le tableau!"
 	 + "<br/>La réservation ne sera pas prise en compte.";
 var RESERVATION_ENREGISTREE = "La réservation a été enregistrée.";

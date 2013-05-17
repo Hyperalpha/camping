@@ -7,10 +7,17 @@
 #boutonPlanningReservation span {
 	display: inline-block;
 }
+#boutonImprimerEmplacements img {
+	cursor: pointer;
+	margin: 10px 0 -15px 40px;
+}
 
 /* Plan */
 #planCamping {
 	height: 530px;
+	left: 9px;
+	position: absolute;
+	top: 75px;
 	width: 1166px;
 }
 
@@ -36,7 +43,6 @@
 .bloc-grande-tente {background-color: #F6A828;}
 .bloc-petite-tente {background-color: #459e00;}
 .pancarte-emplacement {
-	background-image: url(../images/emplacement.png);
 	height: 64px;
 	margin: -50px 0 0 -25px;
     position: absolute;
@@ -44,7 +50,8 @@
 }
 .pancarte-emplacement div {
 	font-size: 1.5em;
-	margin: 10px 0 0 15px;
+	margin: -55px 0 0 15px;
 	text-align: center;
 	width: 1.4em;
 }
+#emplacementRoulotteRouge, #emplacementRoulotteBleue {text-align: center;}

@@ -35,6 +35,9 @@ input.texte-gras1, label.texte-gras1, span.texte-gras1 {
 .non-resizable {
 	resize: none;
 }
+.desactive {
+	opacity: 0.35;
+}
 
 .draggable {
 	border-radius: 15px;
@@ -100,6 +103,25 @@ input.texte-gras1, label.texte-gras1, span.texte-gras1 {
 .logo-petite-tente-moyen span {
 	background-image: url(../images/logo-logement-moyen.png);
 	background-position: -50px 0;
+}
+.logo-roulotte-rouge-mini, .logo-roulotte-rouge-moyen {background-color: #DD0000;}
+.logo-roulotte-rouge-mini {height: 23px; padding-top: 12px;}
+.logo-roulotte-bleue-mini, .logo-roulotte-bleue-moyen {background-color: #3BAAE3;}
+.logo-roulotte-bleue-mini {height: 23px; padding-top: 12px;}
+.logo-roulotte-rouge-mini span, .logo-roulotte-bleue-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: -50px -25px;
+}
+.logo-roulotte-rouge-moyen span, .logo-roulotte-bleue-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: -100px -50px;
+}
+.logo-electricite-mini {
+	background-image: url(../images/prise_courant-petit.png);
+	background-repeat: no-repeat;
+    display: block;
+	height: 25px;
+	width: 25px;
 }
 .logo-electricite-moyen {
 	background-image: url(../images/prise_courant-moyen.png);
@@ -230,6 +252,14 @@ table.tableau_calendrier th.header_jours_calendrier {
 	text-shadow:1px 1px 1px #fff;
 	-webkit-border-radius:2px;
 }
+.tableau_calendrier .ligne_roulotte_rouge {
+	background-color: rgba(221, 0, 0, 0.4);
+	height: 35px;
+}
+.tableau_calendrier .ligne_roulotte_bleue {
+	background-color: rgba(59, 170, 227, 0.4);
+	height: 35px;
+}
 .cellule_stat_personnes_calendrier {
 	background-color: none;
 	border: 2px solid #DEF3CA;
@@ -286,11 +316,30 @@ table.tableau_calendrier th.header_jours_calendrier {
 #popupAjoutModifReservation input#nbAdultesClientPopupAjoutReservation {margin: 2px 0 0 0; width: 30px;}
 #popupAjoutModifReservation input#nbEnfantsClientPopupAjoutReservation {margin: 2px 0 0 50px; width: 30px;}
 #popupAjoutModifReservation input#nbAnimauxClientPopupAjoutReservation {margin: 2px 0 0 60px; width: 30px;}
-#popupAjoutModifReservation input#nbPetiteTenteClientPopupAjoutReservation {margin: 2px 0 0 0; width: 30px;}
-#popupAjoutModifReservation input#nbGrandeTenteClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
-#popupAjoutModifReservation input#nbCaravaneClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
-#popupAjoutModifReservation input#nbVanClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
-#popupAjoutModifReservation input#nbCampingCarClientPopupAjoutReservation {margin: 2px 0 0 10px; width: 30px;}
+#popupAjoutModifReservation #logoPetiteTentePopupAjoutReservation,
+#popupAjoutModifReservation #logoGrandeTentePopupAjoutReservation,
+#popupAjoutModifReservation #logoCaravanePopupAjoutReservation,
+#popupAjoutModifReservation #logoVanPopupAjoutReservation,
+#popupAjoutModifReservation #logoCampingCarPopupAjoutReservation,
+#popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation,
+#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation {border-radius: 8px; display: inline-block; height: 20px; width: 35px;}
+#popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation {margin-left: 85px;}
+#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation {margin-left: 52px;}
+#popupAjoutModifReservation #logoPetiteTentePopupAjoutReservation span,
+#popupAjoutModifReservation #logoGrandeTentePopupAjoutReservation span,
+#popupAjoutModifReservation #logoCaravanePopupAjoutReservation span,
+#popupAjoutModifReservation #logoVanPopupAjoutReservation span,
+#popupAjoutModifReservation #logoCampingCarPopupAjoutReservation span {margin-left: 4px;}
+#popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation span,
+#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation span {margin-left: 4px; margin-top:0 ;position: relative; top: -8px;}
+#popupAjoutModifReservation input.spinner {font-size: 13px; font-weight: bold; text-align: center; width: 35px;}
+#popupAjoutModifReservation span.ui-spinner {margin: 10px 30px 0px 0px;}
+#popupAjoutModifReservation div.div-input-logo {display: inline-block;}
+#popupAjoutModifReservation div#divInputNbPetiteTenteClientPopupAjoutReservation a {background: #459E00; border-color: #459E00;}
+#popupAjoutModifReservation div#divInputNbGrandeTenteClientPopupAjoutReservation a {background: #F6A828; border-color: #F6A828;}
+#popupAjoutModifReservation div#divInputNbCaravaneClientPopupAjoutReservation a {background: #3BAAE3; border-color: #3BAAE3;}
+#popupAjoutModifReservation div#divInputNbVanClientPopupAjoutReservation a {background: #DD0000; border-color: #DD0000;}
+#popupAjoutModifReservation div#divInputNbCampingCarClientPopupAjoutReservationn a {background: #8C00FF; border-color: #8C00FF;}
 #popupAjoutModifReservation input#electriciteClientPopupAjoutReservation {margin: 2px 11px 0 10px;}
 #popupAjoutModifReservation input#nbNuitsVisiteursClientPopupAjoutReservation {margin: 2px 0 0 47px; width: 30px;}
 #popupAjoutModifReservation textarea#observationsClientPopupAjoutReservation {width: 580px;}
@@ -314,7 +363,6 @@ table.tableau_calendrier th.header_jours_calendrier {
 	width: 60px;
 }
 #caseNumEmplacementPopupDetailsReservation {
-	border-bottom: 3px solid #D4CCB0;
 	height: 50px;
 	position: absolute;
 	left: 0px;
@@ -340,7 +388,8 @@ table.tableau_calendrier th.header_jours_calendrier {
 }
 #caseNumFichePopupDetailsReservation {
 	background-color: #D0FFB7;
-	top: 164px;
+	border-top: 3px solid #D4CCB0;
+	top: 161px;
 }
 #caseDetailsClientPopupDetailsReservation {
 	border-bottom: 3px solid #D4CCB0;
@@ -357,11 +406,18 @@ table.tableau_calendrier th.header_jours_calendrier {
 	display: inline-block;
 	height: 20px;
 	overflow: hidden;
+	width: 280px;
 }
 #blocAnimalPopupDetailsReservation {
 	position: absolute;
-	right: 30px;
-	top: 55px;
+	left: 130px;
+	top: 63px;
+}
+#blocFacturePopupDetailsReservation {
+	cursor: pointer;
+	position: absolute;
+	right: 20px;
+	top: 63px;
 }
 #caseObservationsPopupDetailsReservation {
 	border-left: 3px solid #D4CCB0;

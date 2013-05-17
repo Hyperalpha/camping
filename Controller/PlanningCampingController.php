@@ -2,6 +2,7 @@
 include_once '../Model/ExportExcelRepository.php';
 include_once '../Model/ReferentielRepository.php';
 include_once '../Model/ReservationRepository.php';
+include_once '../Model/FactureRepository.php';
 include_once '../Model/Reservation.php';
 include_once '../Model/Client.php';
 
@@ -16,29 +17,33 @@ class PlanningCampingController {
 	private $reservationRepository;
 	private $exportExcelRepository;
 	private $referentielRepository;
+	private $factureRepository;
 	
 	const DEFAULT_DATE_DEBUT = "15 June";
 	const DEFAULT_DATE_FIN = "15 September";
 
-	//Une erreur se déclanche si plus de x jours sont présents dans une année
+	//Une erreur se dÃ©clanche si plus de x jours sont prÃ©sents dans une annÃ©e
 	const WATCHDOG_JOURS_ANNEE = 370;
+	
+	const SEPARATEUR_RETOUR = '|';
 
 	public function __construct() {
 		//Construction des singleton
 		$this->reservationRepository = new ReservationRepository();
 		$this->exportExcelRepository = new ExportExcelRepository();
 		$this->referentielRepository = new ReferentielRepository();
+		$this->factureRepository = new FactureRepository();
 	}
 
 	/**
-	 * Renvoie un tableau contenant toutes les réservations de l'année en cours
+	 * Renvoie un tableau contenant toutes les rÃ©servations de l'annÃ©e en cours
 	 * @author Arnaud DUPUIS
-	 * @return array Renvoie un tableau de réservation
+	 * @return array Renvoie un tableau de rÃ©servation
 	 */
 	public function recupererToutesReservations() {
 		$retour = array();
 
-		//On récupère toute les réservations
+		//On rÃ©cupÃ¨re toute les rÃ©servations
 		$annee = date("Y");
 		$retour = $this->reservationRepository->rechercherToutesReservations($annee);
 
@@ -46,14 +51,14 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Renvoie un tableau contenant toutes les réservations de la journée en cours
+	 * Renvoie un tableau contenant toutes les rÃ©servations de la journÃ©e en cours
 	 * @author Arnaud DUPUIS
-	 * @return array Renvoie un tableau de réservation
+	 * @return array Renvoie un tableau de rÃ©servation
 	 */
 	public function recupererReservationsDuJour() {
 		$retour = array();
 
-		//On récupère toute les réservations
+		//On rÃ©cupÃ¨re toute les rÃ©servations
 		$annee = date("Y");
 		$mois = date("m");
 		$jour = date("d");
@@ -63,23 +68,23 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Génération du calendrier de l'année
+	 * GÃ©nÃ©ration du calendrier de l'annÃ©e
 	 * @author Arnaud DUPUIS
-	 * @return array Renvoie un tableau contenant les jours et les mois de l'année
+	 * @return array Renvoie un tableau contenant les jours et les mois de l'annÃ©e
 	 */
 	public function construireCalendrierReservations() {
-		//Timestamp de début et de fin du tableau
+		//Timestamp de dÃ©but et de fin du tableau
 		/**
 		 * @TODO: reste un bug : si on change l'interval d'affichage, il n'est pas pris en compte directement. Il faut recharger la page//
 		 */
 		$dateDebut = $this->referentielRepository->getDebutAffichageTableauReservations();
 		$dateFin = $this->referentielRepository->getFinAffichageTableauReservations();
 		if (is_null($dateDebut)) {
-			//Dates par défaut
+			//Dates par dÃ©faut
 			$dateDebut = new DateTime(self::DEFAULT_DATE_DEBUT);
 		}
 		if (is_null($dateFin)) {
-			//Dates par défaut
+			//Dates par dÃ©faut
 			$dateFin = new DateTime(self::DEFAULT_DATE_FIN);
 		}
 		$timestpEnCours = $dateDebut->getTimestamp();
@@ -88,18 +93,18 @@ class PlanningCampingController {
 		$i = 0;
 		//Traduction des mois
 		$tabTransMois = array("",
-		Translation::JANVIER,
-		Translation::FEVRIER,
-		Translation::MARS,
-		Translation::AVRIL,
-		Translation::MAI,
-		Translation::JUIN,
-		Translation::JUILLET,
-		Translation::AOUT,
-		Translation::SEPTEMBRE,
-		Translation::OCTOBRE,
-		Translation::NOVEMBRE,
-		Translation::DECEMBRE,
+				Translation::JANVIER,
+				Translation::FEVRIER,
+				Translation::MARS,
+				Translation::AVRIL,
+				Translation::MAI,
+				Translation::JUIN,
+				Translation::JUILLET,
+				Translation::AOUT,
+				Translation::SEPTEMBRE,
+				Translation::OCTOBRE,
+				Translation::NOVEMBRE,
+				Translation::DECEMBRE,
 		);
 
 		while (($timestpEnCours <= $timestpFin) && ($i < self::WATCHDOG_JOURS_ANNEE)) {
@@ -112,7 +117,7 @@ class PlanningCampingController {
 
 			$tabCalendrier[$annee][$strMois][$jour] = $dateComplete;
 
-			//Incrément 1 jour
+			//IncrÃ©ment 1 jour
 			$timestpEnCours = strtotime('+1 day', $timestpEnCours);
 
 			//Watchdog
@@ -123,21 +128,51 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Enregistre une réservation à partir de données sérialisées en entrée
+	 * Calcul le CA total pour les rÃ©servations passÃ©es en paramÃ¨tre
+	 * @author Arnaud DUPUIS
+	 * @param array#Reservation $tabReservations Le calcul du CA se fait sur ces rÃ©servations
+	 * @return float Renvoie le CA calculÃ©
+	 */
+	public function calculerCATotalReservations($tabReservations) {
+		return $this->reservationRepository->calculerCATotalReservations($tabReservations);
+	}
+	
+	/**
+	 * Calcul le CA total des roulottes pour les rÃ©servations passÃ©es en paramÃ¨tre
+	 * @author Arnaud DUPUIS
+	 * @param array#Reservation $tabReservations Le calcul du CA se fait sur ces rÃ©servations
+	 * @return float Renvoie le CA calculÃ©
+	 */
+	public function calculerCATotalRoulottes($tabReservations) {
+		return $this->reservationRepository->calculerCATotalRoulottes($tabReservations);
+	}
+	
+	/**
+	 * Enregistre une rÃ©servation Ã  partir de donnÃ©es sÃ©rialisÃ©es en entrÃ©e
 	 * @author Arnaud DUPUIS
 	 * @param string $strReservation
-	 * @return integer Renvoie l'identifiant de la réservation. False sinon
+	 * @return integer Renvoie la rÃ©fÃ©rence de la rÃ©servation, la rÃ©fÃ©rence du
+	 * client, le CA total Camping et le CA total roulottes (sÃ©parÃ© pour des |). False sinon
 	 */
 	public function enregistrerReservation($strReservation) {
 		$retour = false;
 
 		try {
 			$reservation = $this->parseInfosReservation($strReservation);
+			$reservation = $this->reinitialiserChampsRoulotte($reservation);
 			if ($reservation) {
 				$newReservation = $this->reservationRepository->enregistrerReservation($reservation);
 			}
-			$retour = $newReservation->getReference() . "|"
-			. $newReservation->getClient()->getReference();
+
+			//Calcul des CA
+			$reservations = $this->recupererToutesReservations();
+			$caCamping = $this->calculerCATotalReservations($reservations);
+			$caRoulottes = $this->calculerCATotalRoulottes($reservations);
+			
+			//Construction du retour
+			$retour = $newReservation->getReference() . self::SEPARATEUR_RETOUR
+					. $newReservation->getClient()->getReference() . self::SEPARATEUR_RETOUR
+					. $caCamping . self::SEPARATEUR_RETOUR . $caRoulottes;
 		}
 		catch (\Exception $ex) {
 			$retour = false;
@@ -147,7 +182,7 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Enregistre le numéro de l'emplacement d'une réservation
+	 * Enregistre le numÃ©ro de l'emplacement d'une rÃ©servation
 	 * @author Arnaud DUPUIS
 	 * @param string $refFiche
 	 * @param integer $numeroEmplacement
@@ -163,7 +198,7 @@ class PlanningCampingController {
 				if (!is_null($reservation[0])) {
 					$reservation[0]->setNumeroEmplacement($numeroEmplacement);
 
-					//On enregistre les nouvelles coordonnées
+					//On enregistre les nouvelles coordonnÃ©es
 					$newReservation = $this->reservationRepository->enregistrerReservation($reservation[0]);
 
 					$retour = true;
@@ -178,7 +213,7 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Enregistre les coordonnées de l'emplacement d'une réservation
+	 * Enregistre les coordonnÃ©es de l'emplacement d'une rÃ©servation
 	 * @author Arnaud DUPUIS
 	 * @param string $refFiche
 	 * @param integer $coordonneesX
@@ -196,7 +231,7 @@ class PlanningCampingController {
 					$reservation[0]->setCoordonneesXEmplacement($coordonneesX);
 					$reservation[0]->setCoordonneesYEmplacement($coordonneesY);
 
-					//On enregistre les nouvelles coordonnées
+					//On enregistre les nouvelles coordonnÃ©es
 					$newReservation = $this->reservationRepository->enregistrerReservation($reservation[0]);
 
 					$retour = true;
@@ -211,10 +246,10 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Supprime une réservation à partir de l'id passé en entrée
+	 * Supprime une rÃ©servation Ã  partir de l'id passÃ© en entrÃ©e
 	 * @author Arnaud DUPUIS
-	 * @param string $idReservation Id de la réservation à supprimer
-	 * @return Boolean Renvoie true si réussit, false sinon
+	 * @param string $idReservation Id de la rÃ©servation Ã  supprimer
+	 * @return Boolean Renvoie true si rÃ©ussit, false sinon
 	 */
 	public function supprimerReservation($idReservation) {
 		$retour = false;
@@ -230,35 +265,35 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Sérialise un objet Reservation pour pouvoir le passer à l'IHM
+	 * SÃ©rialise un objet Reservation pour pouvoir le passer Ã  l'IHM
 	 * @author Arnaud DUPUIS
 	 * @param Reservation $reservation
-	 * @return string Renvoie les infos sérialisées
+	 * @return string Renvoie les infos sÃ©rialisÃ©es
 	 */
 	public function convertirReservationPourIHM(Reservation $reservation) {
 		$chaineRetour = "";
-		$sep = "|";
+		$sep = self::SEPARATEUR_RETOUR;
 		$client = $reservation->getClient();
 
 		//Version 1.0
 		$chaineRetour .= "v1.0" . $sep;
 		if (!is_null($client)) {
-			//Référence du client
+			//RÃ©fÃ©rence du client
 			$chaineRetour .= $client->getReference() . $sep;
 		}
 		else {
 			$chaineRetour .= $sep;
 		}
-		//Référence réservation
+		//RÃ©fÃ©rence rÃ©servation
 		$chaineRetour .= $reservation->getReference() . $sep;
 		if (!is_null($client)) {
 			//Nom
 			$chaineRetour .= $client->getNom() . $sep;
-			//Prénom
+			//PrÃ©nom
 			$chaineRetour .= $client->getPrenom() . $sep;
 			//Rue
 			$chaineRetour .= $client->getAdresse1() . $sep;
-			//Complément adresse
+			//ComplÃ©ment adresse
 			$chaineRetour .= $client->getAdresse2() . $sep;
 			//Code postal
 			$chaineRetour .= $client->getCodePostal() . $sep;
@@ -274,7 +309,7 @@ class PlanningCampingController {
 		else {
 			$chaineRetour .= $sep . $sep . $sep . $sep . $sep . $sep . $sep . $sep . $sep . $sep;
 		}
-		//Piece d'identité
+		//Piece d'identitÃ©
 		$piPresentee = $reservation->getPieceIdPresentee();
 
 		switch ($piPresentee) {
@@ -285,13 +320,13 @@ class PlanningCampingController {
 				$strPi = "autre";
 				break;
 			default:
-				$strPi = "autre";
+				$strPi = "";
 				break;
 		}
 		$chaineRetour .= $strPi . $sep;
-		//Date d'arrivée
+		//Date d'arrivÃ©e
 		$chaineRetour .= $reservation->getDateArrivee()->format('d/m/Y') . $sep;
-		//Date de départ
+		//Date de dÃ©part
 		$chaineRetour .= $reservation->getDateDepart()->format('d/m/Y') . $sep;
 		//Nombre d'adultes
 		$chaineRetour .= intval($reservation->getNombreAdultes()) . $sep;
@@ -309,31 +344,43 @@ class PlanningCampingController {
 		$chaineRetour .= intval($reservation->getNombreVans()) . $sep;
 		//Nombre de camping cars
 		$chaineRetour .= intval($reservation->getNombreCampingCars()) . $sep;
-		//Electricité
+		//ElectricitÃ©
 		$chaineRetour .= $reservation->getElectricite() . $sep;
-		//Nombre de nuités visiteur
+		//Nombre de nuitÃ©s visiteur
 		$chaineRetour .= intval($reservation->getNombreNuitesVisiteur()) . $sep;
 		//Observations
 		$chaineRetour .= $reservation->getObservations() . $sep;
-		//Id du bloc de réservation (non pris en charge par le PHP)
+		//Id du bloc de rÃ©servation (non pris en charge par le PHP)
 		$chaineRetour .= $sep;
-		//Arrhes sur la réservation
+		//Arrhes sur la rÃ©servation
 		$chaineRetour .= $reservation->getArrhes() . $sep;
-		// Numéro d'emplacement de la réservation
+		// NumÃ©ro d'emplacement de la rÃ©servation
 		$chaineRetour .= $reservation->getNumeroEmplacement() . $sep;
+		// Roulotte rouge
+		$chaineRetour .= $reservation->getRoulotteRouge() . $sep;
+		// Roulotte bleue
+		$chaineRetour .= $reservation->getRoulotteBleue() . $sep;
+		// RÃ©fÃ©rence facture
+		$facture = $reservation->getFacture();
+		if (!is_null($facture)) {
+			$chaineRetour .= $facture->getId() . $sep;
+		}
+		else {
+			$chaineRetour .= $sep;
+		}
 
 		return $chaineRetour;
 	}
 
 	/**
-	 * Exporte la réservation précisée vers un fichier Word ou Excel.
+	 * Exporte la rÃ©servation prÃ©cisÃ©e vers un fichier Word ou Excel.
 	 * Redirige la page pour afficher le document
 	 * @author Arnaud DUPUIS
-	 * @param string $idReservation Id de la réservation à exporter
+	 * @param string $idReservation Id de la rÃ©servation Ã  exporter
 	 */
 	public function exporterReservation($idReservation) {
 
-		//On récupère la réservation
+		//On rÃ©cupÃ¨re la rÃ©servation
 		$reservation = $this->reservationRepository->rechercherReservationParReference($idReservation);
 
 		if (count($reservation) == 1) {
@@ -344,11 +391,33 @@ class PlanningCampingController {
 			}
 		}
 	}
+	
+	/**
+	 * Exporte la facture de la rÃ©servation prÃ©cisÃ©e vers un fichier Word ou Excel.
+	 * Redirige la page pour afficher le document
+	 * @author Arnaud DUPUIS
+	 * @param string $idReservation Id de la rÃ©servation Ã  exporter
+	 * @param boolean $regenererFacture Doit-on regÃ©nÃ¨rer la facture ou afficher l'ancienne?
+	 */
+	public function exporterFacture($idReservation, $regenererFacture) {
+	
+		//On rÃ©cupÃ¨re la rÃ©servation
+		$reservation = $this->reservationRepository->rechercherReservationParReference($idReservation);
+	
+		if (count($reservation) == 1) {
+			//On exporte la facture
+			$urlDocument = $this->exportExcelRepository->exporterFactureReservation($reservation[0], $regenererFacture);
+	
+			if ($urlDocument) {
+				header('Location: ../Model/' . $urlDocument);
+			}
+		}
+	}
 
 	/**
-	 * Charge la popup de réglages avec les valeurs du référentiel
+	 * Charge la popup de rÃ©glages avec les valeurs du rÃ©fÃ©rentiel
 	 * @author Arnaud DUPUIS
-	 * @return string Renvoie la popup chargée
+	 * @return string Renvoie la popup chargÃ©e
 	 */
 	public function chargerPopupReglages() {
 		$retour = null;
@@ -356,7 +425,7 @@ class PlanningCampingController {
 		try {
 			$retour = file_get_contents('../IHM/popup_reglages.html');
 
-			//On remplit la popup avec les valeurs du référentiel
+			//On remplit la popup avec les valeurs du rÃ©fÃ©rentiel
 			$retour = str_replace('{{PRIX_NUIT_ADULTE}}', $this->referentielRepository->getPrixCampeurAdulte(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_ENFANT}}', $this->referentielRepository->getPrixCampeurEnfant(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_ANIMAL}}', $this->referentielRepository->getPrixAnimal(), $retour);
@@ -384,15 +453,15 @@ class PlanningCampingController {
 	}
 
 	/**
-	 * Enregistre la popup de réglages avec les valeurs du référentiel
+	 * Enregistre la popup de rÃ©glages avec les valeurs du rÃ©fÃ©rentiel
 	 * @author Arnaud DUPUIS
-	 * @param \stdClass $stdReglages Réglages à enregistrer sous forme de stdClass
-	 * @return string Redirige vers la page de consultation des réservations
+	 * @param \stdClass $stdReglages RÃ©glages Ã  enregistrer sous forme de stdClass
+	 * @return string Redirige vers la page de consultation des rÃ©servations
 	 */
 	public function enregistrerReglages($stdReglages) {
 		session_start();
 
-		//On set les valeurs sans mettre à jour la base de données
+		//On set les valeurs sans mettre Ã  jour la base de donnÃ©es
 		try {
 			$this->referentielRepository->setPrixCampeurAdulte($stdReglages->prixAdulte, false);
 			$this->referentielRepository->setPrixCampeurEnfant($stdReglages->prixEnfant, false);
@@ -417,42 +486,43 @@ class PlanningCampingController {
 			$_SESSION["message_flash"] = "Enregistrement des rÃ©glages rÃ©ussi";
 		}
 		catch (\Exception $ex) {
+			var_dump($ex); die;
 			$_SESSION["message_flash_statut"] = "error";
 			$_SESSION["message_flash"] = "Une erreur inconnue est survenue lors "
-			. "de l'enregistrement des rÃ©glages. Veuillez rÃ©essayer ou contacter "
-			. "le support technique.";
+					. "de l'enregistrement des rÃ©glages. Veuillez rÃ©essayer ou contacter "
+							. "le support technique.";
 		}
 
-		//On redirige vers la page de consultation des réservations
+		//On redirige vers la page de consultation des rÃ©servations
 		header('Location: index.php');
 	}
 
 	/**
-	 * Fonction découpant les données concaténées dans la chaine passée en
-	 * paramètre. Renvoie un tableau avec les données
+	 * Fonction dÃ©coupant les donnÃ©es concatÃ©nÃ©es dans la chaine passÃ©e en
+	 * paramÃ¨tre. Renvoie un tableau avec les donnÃ©es
 	 *
 	 * @author adupuis
 	 * @param string $strDonnees
-	 *            Concaténation des infos (le séparateur est le |)
-	 * @return Array Renvoie un tableau avec les données parsées
+	 *            ConcatÃ©nation des infos (le sÃ©parateur est le |)
+	 * @return Array Renvoie un tableau avec les donnÃ©es parsÃ©es
 	 */
 	private function parseInfosReservation($strDonnees) {
-		$tabDonnees = explode("|", $strDonnees);
+		$tabDonnees = explode(self::SEPARATEUR_RETOUR, $strDonnees);
 		$reservation = new Reservation();
 		$client = new Client();
 
 		if ($tabDonnees[0] == "v1.0") {
-			// Référence client
+			// RÃ©fÃ©rence client
 			$client->setReference($tabDonnees[1]);
-			// Référence réservation
+			// RÃ©fÃ©rence rÃ©servation
 			$reservation->setReference($tabDonnees[2]);
 			// Nom du client
 			$client->setNom($tabDonnees[3]);
-			// Prénom du client
+			// PrÃ©nom du client
 			$client->setPrenom($tabDonnees[4]);
 			// Rue du client
 			$client->setAdresse1($tabDonnees[5]);
-			// Complément adresse du client
+			// ComplÃ©ment adresse du client
 			$client->setAdresse2($tabDonnees[6]);
 			// Code postal du client
 			$client->setCodePostal($tabDonnees[7]);
@@ -464,14 +534,14 @@ class PlanningCampingController {
 			$client->setTelephonePortable($tabDonnees[10]);
 			// Email du client
 			$client->setEmail($tabDonnees[11]);
-			// Piece d'identité présentée
+			// Piece d'identitÃ© prÃ©sentÃ©e
 			$reservation->setPieceIdPresentee($tabDonnees[12]);
-			// Date d'arrivée
+			// Date d'arrivÃ©e
 			$tabDateArrivee = explode("/", $tabDonnees[13]);
 			$dateArrivee = new DateTime();
 			$dateArrivee->setDate($tabDateArrivee[2], $tabDateArrivee[1], $tabDateArrivee[0]);
 			$reservation->setDateArrivee($dateArrivee);
-			// Date de départ
+			// Date de dÃ©part
 			$tabDateDepart = explode("/", $tabDonnees[14]);
 			$dateDepart = new DateTime();
 			$dateDepart->setDate($tabDateDepart[2], $tabDateDepart[1], $tabDateDepart[0]);
@@ -492,58 +562,112 @@ class PlanningCampingController {
 			$reservation->setNombreVans($tabDonnees[21]);
 			// Nombre de camping cars
 			$reservation->setNombreCampingCars($tabDonnees[22]);
-			// Electricité
+			// ElectricitÃ©
 			if ($tabDonnees[23] == "1") {
 				$reservation->setElectricite(true);
 			}
 			else {
 				$reservation->setElectricite(false);
 			}
-			// Nombre de nuités visiteur
+			// Nombre de nuitÃ©s visiteur
 			$reservation->setNombreNuitesVisiteur($tabDonnees[24]);
 			// Observations
 			$reservation->setObservations($tabDonnees[25]);
 			// Arrhes
 			$reservation->setArrhes($tabDonnees[27]);
-			// Numéro d'emplacement
+			// NumÃ©ro d'emplacement
 			$reservation->setNumeroEmplacement($tabDonnees[28]);
+			// Roulotte rouge
+			if ($tabDonnees[29] == "1") {
+				$reservation->setRoulotteRouge(true);
+			}
+			else {
+				$reservation->setRoulotteRouge(false);
+			}
+			// Roulotte bleue
+			if ($tabDonnees[30] == "1") {
+				$reservation->setRoulotteBleue(true);
+			}
+			else {
+				$reservation->setRoulotteBleue(false);
+			}
+			// RÃ©fÃ©rence facture
+			$reservation->setFacture($this->factureRepository->rechercherFacture($tabDonnees[28]));
 
-			//On relie le client à la réservation
+			//On relie le client Ã  la rÃ©servation
 			$reservation->setClient($client);
 		}
 
 		return $reservation;
 	}
+	
+	/**
+	 * RÃ©initialise des champs dans le cas d'une rÃ©servation avec roulotte
+	 * @param Reservation $reservation
+	 * @return Reservation RÃ©servation mise Ã  jour
+	 */
+	private function reinitialiserChampsRoulotte(Reservation $reservation) {
+		
+		//Si la rÃ©servation comporte une roulotte, on rÃ©initialise les champs du camping
+		if ($reservation->getRoulotteRouge() or $reservation->getRoulotteBleue()) {
+			$reservation->setNombreAdultes(null);
+			// Nombre d'enfants
+			$reservation->setNombreEnfants(null);
+			// Nombre d'animaux
+			$reservation->setNombreAnimaux(null);
+			// Nombre de petites tentes
+			$reservation->setNombrePetitesTentes(null);
+			// Nombre de grandes tentes
+			$reservation->setNombreGrandesTentes(null);
+			// Nombre de caravanes
+			$reservation->setNombreCaravanes(null);
+			// Nombre de vans
+			$reservation->setNombreVans(null);
+			// Nombre de camping cars
+			$reservation->setNombreCampingCars(null);
+			// ElectricitÃ©
+			$reservation->setElectricite(null);
+			// Nombre de nuitÃ©s visiteur
+			$reservation->setNombreNuitesVisiteur(null);
+			// NumÃ©ro d'emplacement
+			$reservation->setNumeroEmplacement(null);
+		}
+		
+		return $reservation;
+	}
 
 	/**
-	 * Converti une chaine de caractère au format DateTime
-	 * @param string $date Date au format français sans année. Exemple : 2 Avril
+	 * Converti une chaine de caractÃ¨re au format DateTime
+	 * @param string $date Date au format franÃ§ais sans annÃ©e. Exemple : 2 Avril
 	 * @return \DateTime
 	 */
 	private function parseDateSansAnnee($date) {
+		$retour = null;
 
-		$date = str_ireplace("Janvier", "January",
-		str_ireplace("Février", "February",
-		str_ireplace("Mars", "March",
-		str_ireplace("Avril", "April",
-		str_ireplace("Mai", "May",
-		str_ireplace("Juin", "June",
-		str_ireplace("Juillet", "July",
-		str_ireplace("Août", "August",
-		str_ireplace("Septembre", "September",
-		str_ireplace("Octobre", "October",
-		str_ireplace("Novembre", "November",
-		str_ireplace("Décembre", "December", $date))))))))))));
+		if (!is_null($date)) {
+			$date = str_ireplace("Janvier", "January",
+			str_ireplace("FÃ©vrier", "February",
+			str_ireplace("Mars", "March",
+			str_ireplace("Avril", "April",
+			str_ireplace("Mai", "May",
+			str_ireplace("Juin", "June",
+			str_ireplace("Juillet", "July",
+			str_ireplace("AoÃ»t", "August",
+			str_ireplace("Septembre", "September",
+			str_ireplace("Octobre", "October",
+			str_ireplace("Novembre", "November",
+			str_ireplace("DÃ©cembre", "December", $date))))))))))));
 
-		$retour = new \DateTime($date);
+			$retour = new \DateTime($date);
+		}
 
 		return $retour;
 	}
 
 	/**
-	 * Converti un DateTime en chaine de caractère sans les années
+	 * Converti un DateTime en chaine de caractÃ¨re sans les annÃ©es
 	 * @param \DateTime $date
-	 * @return string Date au format français sans année. Exemple : 2 Avril
+	 * @return string Date au format franÃ§ais sans annÃ©e. Exemple : 2 Avril
 	 */
 	private function formatterDateSansAnnee(\DateTime $date = null) {
 		$retour = null;
@@ -552,17 +676,17 @@ class PlanningCampingController {
 			$retour = $date->format('j F');
 
 			$retour = str_ireplace("January", "Janvier",
-			str_ireplace("February", "Février",
+			str_ireplace("February", "FÃ©vrier",
 			str_ireplace("March", "Mars",
 			str_ireplace("April", "Avril",
 			str_ireplace("May", "Mai",
 			str_ireplace("June", "Juin",
 			str_ireplace("July", "Juillet",
-			str_ireplace("August", "Août",
+			str_ireplace("August", "AoÃ»t",
 			str_ireplace("September", "Septembre",
 			str_ireplace("October", "Octobre",
 			str_ireplace("November", "Novembre",
-			str_ireplace("December", "Décembre", $retour))))))))))));
+			str_ireplace("December", "DÃ©cembre", $retour))))))))))));
 		}
 
 		return $retour;

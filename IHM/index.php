@@ -79,6 +79,10 @@ $htmlJours .= "</tr>";
 			}
 		}
 		
+		//Calcul du CA
+		$caTotalCamping = $controleur->calculerCATotalReservations($tabReservations);
+		$caTotalRoulottes = $controleur->calculerCATotalRoulottes($tabReservations);
+		
 		//Gestion des messages Flash
 		if (array_key_exists('message_flash', $_SESSION)) {
 			if (array_key_exists('message_flash_statut', $_SESSION)) {
@@ -90,7 +94,7 @@ $htmlJours .= "</tr>";
 		} ?>
 		
 		//Calcul des statistiques par jour
-		calculStatistiquesParJour();
+		calculStatistiquesParJour('<?php echo $caTotalCamping;?>', '<?php echo $caTotalRoulottes;?>');
 
 	});
 	</script>
@@ -135,6 +139,32 @@ $htmlJours .= "</tr>";
 		?>
 		</thead>
 		<tbody>
+			<!-- Deux lignes pour les roulottes -->
+			<tr id="ligneRoulotteRouge" class="ligne_roulotte_rouge">
+			<?php
+			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+				?>
+				<td id="celluleRoulotteRouge_<?php echo $i; ?>"
+					 class=""
+					title="Roulotte rouge">
+					<label>&nbsp;</label></td>
+				<?php
+			}
+			?>
+			</tr>
+			<tr id="ligneRoulotteBleue" class="ligne_roulotte_bleue">
+			<?php
+			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+				?>
+				<td id="celluleRoulotteBleue_<?php echo $i; ?>"
+					 class=""
+					title="Roulotte bleue">
+					<label>&nbsp;</label></td>
+				<?php
+			}
+			?>
+			</tr>
+			
 			<!-- La première ligne (cachée) sert au dimensionnement des cellules -->
 			<tr id="ligneCalend_1" class="ligne_calendrier">
 			<?php
@@ -145,6 +175,7 @@ $htmlJours .= "</tr>";
 			}
 			?>
 			</tr>
+			
 			<!-- Les deux lignes à la fin servent aux statistiques -->
 			<tr id="ligneStatPersonnesCalendrier" class="ligne_stat_personnes_calendrier">
 			<?php
@@ -176,7 +207,7 @@ $htmlJours .= "</tr>";
 	<!-- Bloc des statistiques sur la saison -->
 	<div id="statistiquesSaison">
 		Moyenne de personnes jusqu'à aujourd'hui : <label id="moyennePersonnesJusquaAujourdhui">-</label><br/>
-		CA camping : <label id="caCamping">- €</label><br/>
+		CA camping : <label id="caCamping">-</label><br/>
 		CA camping + roulottes : <label id="caCampingEtRoulottes">- €</label><br/>
 	</div>
 

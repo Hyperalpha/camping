@@ -6,13 +6,18 @@ var sauvegardeY = null;
  */
 $(document).ready(function() {
 
-	$(".bloc-emplacement").draggable();
+	$(".draggable").draggable();
 
 	// Evenement onDragStart sur un emplacement
-	$(".bloc-emplacement").on("dragstart", onDragStartEmplacement);
+	$(".draggable").on("dragstart", onDragStartEmplacement);
 
 	// Evenement onDragStop sur un emplacement
-	$(".bloc-emplacement").on("dragstop", onDragStopEmplacement);
+	$(".draggable").on("dragstop", onDragStopEmplacement);
+	
+	//Evenement pour l'impression
+	$("#boutonImprimerEmplacements").on("click", function() {
+		window.print();
+	});
 
 });
 

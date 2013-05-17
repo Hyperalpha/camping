@@ -2,7 +2,10 @@
 include_once 'CommunModel.php';
 include_once 'Constante.php';
 include_once 'Reservation.php';
+include_once 'Facture.php';
 include_once 'ReferentielRepository.php';
+include_once 'FactureRepository.php';
+include_once 'ReservationRepository.php';
 
 /**
  * Copyright Arnaud DUPUIS 2012
@@ -12,6 +15,7 @@ include_once 'ReferentielRepository.php';
 class ExportExcelRepository {
 
 	const NOM_TEMPLATE_FICHE_INSCRIPTION = 'Fiche Inscription Camping-1.docx';
+	const NOM_TEMPLATE_FACTURE = 'Formulaire Facture Camping-1.docx';
 
 	const ASCII_CARTE_ID = 'F0A4';
 	const ASCII_AUTRE_ID = 'F0A5';
@@ -21,9 +25,19 @@ class ExportExcelRepository {
 	const ASCII_PAIEMENT_CV = 'F0A9';
 	const ASCII_CASE_PLEINE = 'F0A2';
 	const ASCII_CASE_VIDE = 'F0A3';
+	
+	const DEVISE = "€";
+	const SEPARATEUR_PRIX_FACTURE = " x ";
+	
+	private $referentielRepo;
+	private $factureRepository;
+	private $reservationRepository;
 
 	public function __construct() {
 		//Construction des singleton
+		$this->referentielRepo = new ReferentielRepository();
+		$this->factureRepository = new FactureRepository();
+		$this->reservationRepository = new ReservationRepository();
 	}
 
 	/**
@@ -41,6 +55,13 @@ class ExportExcelRepository {
 		$fichierDonneesZip = 'word/document.xml';
 		$nomFichierExport = 'Fiche1.docx';
 		$retour = '';
+		
+		//Le fichier exporté portera le nom du client et la date du jour
+		$client = $reservation->getClient();
+		if (!is_null($client)) {
+			$nomFichierExport = $client->getNom() . ' ' . $client->getPrenom() . ' ' 
+					. date('d-m-Y') . '.docx';
+		}
 
 		//On vide le répertoire des fichiers excel
 		if (is_dir($repertoireDonnees)) {
@@ -85,7 +106,122 @@ class ExportExcelRepository {
 
 		return $retour;
 	}
-
+	
+	/**
+	 * Export de la facture d'une réservation sous excel ou word
+	 * @author Arnaud DUPUIS
+	 * @param Reservation $reservation Réservation à exporter
+	 * @param boolean $regenererFacture Doit-on regénèrer la facture ou afficher l'ancienne?
+	 * @return string Renvoie l'adresse vers le document généré relative à ce fichier
+	 */
+	public function exporterFactureReservation(Reservation $reservation, $regenererFacture) {
+		$DS = DIRECTORY_SEPARATOR;
+		$repertoireTemplate = dirname(dirname(__FILE__)) . $DS . 'IHM' . $DS . 'template';
+		$repertoireTmp = dirname(__FILE__) . $DS . 'tmp';
+		$repertoireDonnees = $repertoireTmp . $DS . 'word';
+		$fichierDonnees = $repertoireDonnees . $DS . 'document.xml';
+		$fichierDonneesZip = 'word/document.xml';
+		$nomFichierExport = 'Facture1.docx';
+		$retour = '';
+	
+		//Le fichier exporté portera la référence de la réservation, du client ainsi que la date
+		$client = $reservation->getClient();
+		if (!is_null($client)) {
+			//On recherche la facture
+			$facture = $this->factureRepository
+				->rechercherFacture($reservation->getReference());
+			if (!is_null($facture)) {
+				$facture = $facture[0];
+			}
+			
+			//Si la facture n'existe pas, on la crée
+			if (is_null($facture) or $regenererFacture == true) {
+				if (is_null($facture)) {
+					$facture = new Facture();
+				}
+				$facture->setId('F' .  date('YmdHis') . '_' . $reservation->getReference() . '-'
+						. $client->getReference());
+				$facture->setReferenceReservation($reservation->getReference());
+				$facture->setDateGeneration(new \DateTime());
+				$facture->setDevise(self::DEVISE);
+				$facture->setCampeurAdulte(intval($reservation->getNombreAdultes()) 
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixCampeurAdulte());
+				$facture->setCampeurEnfant(intval($reservation->getNombreEnfants()) 
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixCampeurEnfant());
+				$facture->setAnimal(intval($reservation->getNombreAnimaux())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixAnimal());
+				$facture->setPetiteTente(intval($reservation->getNombrePetitesTentes())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixPetiteTenteVan());
+				$facture->setVan(intval($reservation->getNombreVans())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixPetiteTenteVan());
+				$facture->setGrandeTente(intval($reservation->getNombreGrandesTentes())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixGrandeTenteCaravane());
+				$facture->setCaravane(intval($reservation->getNombreCaravanes())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixGrandeTenteCaravane());
+				$facture->setCampingCar(intval($reservation->getNombreCampingCars())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixCampingCar());
+				$facture->setElectricite(intval($reservation->getElectricite())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixElectricite());
+				$facture->setVehiculeSupplementaire(intval(0)
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixVehiculeSupp());
+				$facture->setNombreVisiteurs(intval($reservation->getNombreNuitesVisiteur())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixVisiteur());
+				
+				//On relie la facture à la réservation
+				$reservation->setFacture($facture);
+				$this->reservationRepository->enregistrerReservation($reservation);
+			}
+			
+			$nomFichierExport = 'Facture ' .  $facture->getId() . '.docx';
+			/**
+			 * @TODO: revoir suppression réservation quand facture présente
+			 */
+		}
+	
+		//On vide le répertoire des fichiers excel
+		if (is_dir($repertoireDonnees)) {
+			CommunModel::supprimerRepertoire($repertoireDonnees);
+		}
+		if (file_exists($repertoireTmp . $DS . $nomFichierExport)) {
+			unlink($repertoireTmp . $DS . $nomFichierExport);
+		}
+	
+		//On copie le template de base en renommant le fichier
+		copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FACTURE,
+		$repertoireTmp . $DS . $nomFichierExport);
+	
+		//On ouvre le fichier XLSX comme un ZIP
+		$zip = new ZipArchive;
+		if ($zip->open($repertoireTmp . $DS . $nomFichierExport) === TRUE) {
+			//On extrait le fichier contenant les données
+			$zip->extractTo($repertoireTmp, array($fichierDonneesZip));
+	
+			//On modifie le fichier avec les données de la réservation
+			if (file_exists($fichierDonnees)) {
+				$contenu = file_get_contents($fichierDonnees);
+				$contenu = $this->remplirExcelFacture($contenu, $reservation);
+				//Enregistrement des modifications
+				$handle2 = fopen($fichierDonnees,'w+') or die("Une erreur est survenue lors de la génération du fichier Excel.");
+				fwrite($handle2, $contenu);
+				fclose($handle2);
+			}
+	
+			//On remplace le fichier du template par le fichier contenant les données
+			$zip->deleteName($fichierDonneesZip);
+			$zip->addFile($fichierDonnees, $fichierDonneesZip);
+	
+			//On ferme le fichier et on supprime les fichiers temporaires
+			$zip->close();
+			CommunModel::supprimerRepertoire($repertoireDonnees);
+	
+			$retour = 'tmp/' . $nomFichierExport;
+		} else {
+			$retour = false;
+		}
+	
+		return $retour;
+	}
+	
 	/**
 	 * Remplace le contenu du template Excel par les données de la réservation
 	 * @param string $contenu
@@ -101,7 +237,6 @@ class ExportExcelRepository {
 		self::ASCII_CASE_VIDE, self::ASCII_CASE_VIDE,
 		self::ASCII_CASE_VIDE, self::ASCII_CASE_VIDE);
 		$client = $reservation->getClient();
-		$referentielRepo = new ReferentielRepository();
 
 		//En tête
 		/********/
@@ -141,18 +276,18 @@ class ExportExcelRepository {
 		$nombreCampingCars = intval($reservation->getNombreCampingCars());
 		$electricite = intval($reservation->getElectricite());
 		$nombreVehiculesSupp = intval(0);
-		$nombreVisiteurs = $reservation->getNombreNuitesVisiteur();
+		$nombreVisiteurs = intval($reservation->getNombreNuitesVisiteur());
 		$pretMateriel = intval(0);
 
-		$prixAdulte = $referentielRepo->getPrixCampeurAdulte();
-		$prixEnfant = $referentielRepo->getPrixCampeurEnfant();
-		$prixAnimal = $referentielRepo->getPrixAnimal();
-		$prixPetiteTenteVan = $referentielRepo->getPrixPetiteTenteVan();
-		$prixGrandeTenteCaravane = $referentielRepo->getPrixGrandeTenteCaravane();
-		$prixCampingCar = $referentielRepo->getPrixCampingCar();
-		$prixElectricite = $referentielRepo->getPrixElectricite();
-		$prixVehiculeSupp = $referentielRepo->getPrixVehiculeSupp();
-		$prixVisiteur = $referentielRepo->getPrixVisiteur();
+		$prixAdulte = $this->referentielRepo->getPrixCampeurAdulte();
+		$prixEnfant = $this->referentielRepo->getPrixCampeurEnfant();
+		$prixAnimal = $this->referentielRepo->getPrixAnimal();
+		$prixPetiteTenteVan = $this->referentielRepo->getPrixPetiteTenteVan();
+		$prixGrandeTenteCaravane = $this->referentielRepo->getPrixGrandeTenteCaravane();
+		$prixCampingCar = $this->referentielRepo->getPrixCampingCar();
+		$prixElectricite = $this->referentielRepo->getPrixElectricite();
+		$prixVehiculeSupp = $this->referentielRepo->getPrixVehiculeSupp();
+		$prixVisiteur = $this->referentielRepo->getPrixVisiteur();
 
 		if (strcmp('carteId', $carteIdPres) === 0) {
 			//Première occurence du carré
@@ -236,8 +371,8 @@ class ExportExcelRepository {
 		str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu)))))))))))));
 
 		//Acompte
-		$acompte = intval($reservation->getArrhes());
-		if ($acompte !== 0) {
+		$acompte = floatval($reservation->getArrhes());
+		if ($acompte != 0) {
 			//Troisième occurence du carré
 			$replaceCarre[2] = self::ASCII_CASE_PLEINE;
 		}
@@ -246,6 +381,183 @@ class ExportExcelRepository {
 		//Remplacement des carrés
 		$newContenu = str_replace($searchCarre, $replaceCarre, $newContenu);
 
+		return $newContenu;
+	}
+	
+	/**
+	 * Remplace le contenu du template Excel par les données de la facture d'une réservation
+	 * @param string $contenu
+	 * @param Reservation $reservation Réservation de la facture à exporter
+	 * @return string Retourne le contenu avec les valeurs modifiées
+	 */
+	private function remplirExcelFacture($contenu, Reservation $reservation) {
+		$client = $reservation->getClient();
+		$facture = $reservation->getFacture();
+		
+		$nombreAdultes = null;
+		$nombreEnfants = null;
+		$nombreAnimaux = null;
+		$nombrePetitesTentes = null;
+		$nombreVans = null;
+		$nombreGrandesTentes = null;
+		$nombreCaravanes = null;
+		$nombreCampingCars = null;
+		$electricite = null;
+		$nombreVehiculesSupp = null;
+		$nombreVisiteurs = null;
+		$pretMateriel = null;
+		$prixAdulte = null;
+		$prixEnfant = null;
+		$prixAnimal = null;
+		$prixPetiteTenteVan = null;
+		$prixGrandeTenteCaravane = null;
+		$prixCampingCar = null;
+		$prixElectricite = null;
+		$prixVehiculeSupp = null;
+		$prixVisiteur = null;
+	
+		//En tête
+		/********/
+		$newContenu = str_replace('{{NOM}}', strtoupper($client->getNom()),
+			str_replace('{{PRENOM}}', ucfirst($client->getPrenom()), $contenu));
+	
+		//Partie réservation
+		/*******************/
+		/**
+		 * @TODO: rajouter champ nb véhicules supp et pret matériel
+		*/
+		//Décomposition des données de la facture
+		if (!is_null($facture)) {
+			$tabCampeurAdulte = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampeurAdulte());
+			$tabCampeurEnfant = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampeurEnfant());
+			$tabAnimal = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getAnimal());
+			$tabPetiteTente = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getPetiteTente());
+			$tabVan = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getVan());
+			$tabGrandeTente = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getGrandeTente());
+			$tabCaravane = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCaravane());
+			$tabCampingCar = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampingCar());
+			$tabElectricite = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getElectricite());
+			$tabVehiculeSupplementaire = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getVehiculeSupplementaire());
+			$tabNombreVisiteurs = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getNombreVisiteurs());
+			
+			if (count($tabCampeurAdulte) == 2) {
+				$nombreAdultes = intval($tabCampeurAdulte[0]);
+				$prixAdulte = floatval($tabCampeurAdulte[1]);
+			}
+			if (count($tabCampeurEnfant) == 2) {
+				$nombreEnfants = intval($tabCampeurEnfant[0]);
+				$prixEnfant = floatval($tabCampeurEnfant[1]);
+			}
+			if (count($tabAnimal) == 2) {
+				$nombreAnimaux = intval($tabAnimal[0]);
+				$prixAnimal = floatval($tabAnimal[1]);
+			}
+			if (count($tabPetiteTente) == 2) {
+				$nombrePetitesTentes = intval($tabPetiteTente[0]);
+				$prixPetiteTenteVan = floatval($tabPetiteTente[1]);
+			}
+			if (count($tabVan) == 2) {
+				$nombreVans = intval($tabVan[0]);
+				$prixPetiteTenteVan = floatval($tabVan[1]);
+			}
+			if (count($tabGrandeTente) == 2) {
+				$nombreGrandesTentes = intval($tabGrandeTente[0]);
+				$prixGrandeTenteCaravane = floatval($tabGrandeTente[1]);
+			}
+			if (count($tabCaravane) == 2) {
+				$nombreCaravanes = intval($tabCaravane[0]);
+				$prixGrandeTenteCaravane = floatval($tabCaravane[1]);
+			}
+			if (count($tabCampingCar) == 2) {
+				$nombreCampingCars = intval($tabCampingCar[0]);
+				$prixCampingCar = floatval($tabCampingCar[1]);
+			}
+			if (count($tabElectricite) == 2) {
+				$electricite = intval($tabElectricite[0]);
+				$prixElectricite = floatval($tabElectricite[1]);
+			}
+			if (count($tabVehiculeSupplementaire) == 2) {
+				$nombreVehiculesSupp = intval($tabVehiculeSupplementaire[0]);
+				$prixVehiculeSupp = floatval($tabVehiculeSupplementaire[1]);
+			}
+			if (count($tabNombreVisiteurs) == 2) {
+				$nombreVisiteurs = intval($tabNombreVisiteurs[0]);
+				$prixVisiteur = floatval($tabNombreVisiteurs[1]);
+			}
+		}
+	
+		$dateArrivee = $reservation->getDateArrivee();
+		if (!is_null($dateArrivee)) {
+			$newContenu = str_replace('{{DATE_ARRIVEE}}', $dateArrivee->format('d/m/Y'), $newContenu);
+		}
+		$dateDepart = $reservation->getDateDepart();
+		if (!is_null($dateDepart)) {
+			$newContenu = str_replace('{{DATE_DEPART}}', $dateDepart->format('d/m/Y'), $newContenu);
+		}
+		if ((!is_null($dateDepart)) and (!is_null($dateArrivee))) {
+			$interval = $dateDepart->diff($dateArrivee);
+			$newContenu = str_replace('{{NB_NUITS}}', $interval->format('%a'), $newContenu);
+		}
+	
+		//Prix
+		$newContenu = str_replace('{{PRIX_CAMPEUR_ADULTE}}', $prixAdulte,
+			str_replace('{{PRIX_CAMPEUR_ENFANT}}', $prixEnfant,
+			str_replace('{{PRIX_ANIMAL}}', $prixAnimal,
+			str_replace('{{PRIX_PETITE_TENTE_VAN}}', $prixPetiteTenteVan,
+			str_replace('{{PRIX_GRANDE_TENTE_CARAVANE}}', $prixGrandeTenteCaravane,
+			str_replace('{{PRIX_CAMPING_CAR}}', $prixCampingCar,
+			str_replace('{{PRIX_ELECTRICITE}}', $prixElectricite,
+			str_replace('{{PRIX_VEHICULE_SUPP}}', $prixVehiculeSupp,
+			str_replace('{{PRIX_VISITEUR}}', $prixVisiteur, $newContenu)))))))));
+	
+		//Nombre
+		$newContenu = str_replace('{{NB_ADULTES}}', $nombreAdultes,
+			str_replace('{{NB_ENFANTS}}', $nombreEnfants,
+			str_replace('{{NB_ANIMAUX}}', $nombreAnimaux,
+			str_replace('{{NB_PETITES_TENTES}}', $nombrePetitesTentes,
+			str_replace('{{NB_VANS}}', $nombreVans,
+			str_replace('{{NB_GRANDES_TENTES}}', $nombreGrandesTentes,
+			str_replace('{{NB_CARAVANES}}', $nombreCaravanes,
+			str_replace('{{NB_CAMPING_CAR}}', $nombreCampingCars,
+			str_replace('{{ELECTRICITE}}', $electricite,
+			str_replace('{{NB_VEHICULES_SUPP}}', $nombreVehiculesSupp,
+			str_replace('{{NB_VISITEURS}}', $nombreVisiteurs, $newContenu)))))))))));
+	
+		//Sous total
+		$sousTotalAdulte = $nombreAdultes * $prixAdulte;
+		$sousTotalEnfant = $nombreEnfants * $prixEnfant;
+		$sousTotalAnimal = $nombreAnimaux * $prixAnimal;
+		$sousTotalPetiteTente = $nombrePetitesTentes * $prixPetiteTenteVan;
+		$sousTotalVan = $nombreVans * $prixPetiteTenteVan;
+		$sousTotalGrandeTente = $nombreGrandesTentes * $prixGrandeTenteCaravane;
+		$sousTotalCaravane = $nombreCaravanes * $prixGrandeTenteCaravane;
+		$sousTotalCampingCar = $nombreCampingCars * $prixCampingCar;
+		$sousTotalElectricite = $electricite * $prixElectricite;
+		$sousTotalVehiculeSupp = $nombreVehiculesSupp * $prixVehiculeSupp;
+		$sousTotalVisiteur = $nombreVisiteurs * $prixVisiteur;
+		$sousTotalNuitees = $sousTotalAdulte + $sousTotalEnfant + $sousTotalAnimal +
+		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
+		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
+		$sousTotalVehiculeSupp + $sousTotalVisiteur;
+		/**
+		 * @TODO: Total séjour = pret matériel?
+		 */
+		$totalSejour = $sousTotalNuitees;
+	
+		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
+			str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,
+			str_replace('{{SOUS_TOTAL_ANIMAL}}', $sousTotalAnimal,
+			str_replace('{{SOUS_TOTAL_PETITE_TENTE}}', $sousTotalPetiteTente,
+			str_replace('{{SOUS_TOTAL_VAN}}', $sousTotalVan,
+			str_replace('{{SOUS_TOTAL_GRANDE_TENTE}}', $sousTotalGrandeTente,
+			str_replace('{{SOUS_TOTAL_CARAVANE}}', $sousTotalCaravane,
+			str_replace('{{SOUS_TOTAL_CAMPING_CAR}}', $sousTotalCampingCar,
+			str_replace('{{SOUS_TOTAL_ELECTRICITE}}', $sousTotalElectricite,
+			str_replace('{{SOUS_TOTAL_VEHICULE_SUPP}}', $sousTotalVehiculeSupp,
+			str_replace('{{SOUS_TOTAL_VISITEUR}}', $sousTotalVisiteur,
+			str_replace('{{SOUS_TOTAL_NUITEES}}', $sousTotalNuitees,
+			str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu)))))))))))));
+	
 		return $newContenu;
 	}
 }

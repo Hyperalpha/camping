@@ -1,5 +1,7 @@
-//Contient les lignes du tableau
+// Contient les lignes du tableau
 var tabLignesCalendrier = Array();
+// Contient les lignes du tableau réservées aux roulottes
+var tabLignesRoulottesCalendrier = Array();
 // Contient les colonnes du tableau
 var tabColonnesCalendrier = Array();
 // Contient les coordonées d'origine des blocs des réservation
@@ -28,7 +30,7 @@ $(document).ready(function() {
 
 	// goto popup_ajout_reservation.js
 	relierEvenementsAjoutReservation();
-	
+
 	// goto popup_reglages.js
 	relierEvenementsPopupReglages();
 });
@@ -40,9 +42,24 @@ $(document).ready(function() {
  * @author adupuis
  */
 function majLignesTableau() {
-	var jTabLignes = $(".ligne_calendrier");
+
+	// On liste toutes les lignes des réservations
+	tabLignesCalendrier = infosLignesTableau($(".ligne_calendrier"));
+
+	// On liste toutes les lignes des roulottes
+	tabLignesRoulottesCalendrier = infosLignesTableau($(".ligne_roulotte_rouge, .ligne_roulotte_bleue"));
+}
+
+/**
+ * Génère les données de la ligne du tableau de réservations
+ * 
+ * @author adupuis
+ * @param jQuery
+ *            Ligne
+ */
+function infosLignesTableau(jTabLignes) {
 	var tabLigne = null;
-	var element = null;
+	var tabRetour = Array();
 
 	// On liste toutes les lignes dans un tableau
 	for ( var i = 0; i < $(jTabLignes).size(); i++) {
@@ -65,8 +82,10 @@ function majLignesTableau() {
 		// On enregistre la largeur (width)
 		tabLigne["width"] = $(element).width();
 
-		tabLignesCalendrier[i] = tabLigne;
+		tabRetour[i] = tabLigne;
 	}
+
+	return tabRetour;
 }
 
 /**
@@ -180,10 +199,13 @@ function estDansTableau(elemUi, tabLignes, tabColonnes) {
 						}
 					});
 
+	retour = Array();
+	retour["estDansTableau"] = false;
+	retour["ligne"] = ligneBloc;
+	retour["colonne"] = colonneBloc;
+
 	if ((ligneBloc != null) && (colonneBloc != null)) {
-		retour = Array();
-		retour["ligne"] = ligneBloc;
-		retour["colonne"] = colonneBloc;
+		retour["estDansTableau"] = true;
 	}
 	return retour;
 }
@@ -306,6 +328,9 @@ function placerBlocReservationDate(blocReservation, dateDebut,
 	var differenceDate = null;
 	var retour = false;
 
+	tabDonnees = parseInfosReservation($(blocReservation).find(
+			'input[id^="infosdraggable"]').val());
+
 	if ((typeof dateDebut != "undefined") && (dateDebut != null)) {
 		if ($(thDateDebut).size() == 1) {
 			// On place le bloc au milieu de la colonne de la date de début
@@ -314,6 +339,33 @@ function placerBlocReservationDate(blocReservation, dateDebut,
 			$(blocReservation).offset({
 				left : (offsetGaucheThDateDebut + (largeurThDateDebut / 2))
 			});
+
+			// Si le bloc est une roulotte, on le place dans sur la ligne
+			// appropriée
+			if (tabDonnees.roulotteRouge > 0) {
+				for ( var i = 0; i < tabLignesRoulottesCalendrier.length; i++) {
+					if ('ligneRoulotteRouge' == tabLignesRoulottesCalendrier[i]['id']) {
+						$(blocReservation).offset({
+							top : tabLignesRoulottesCalendrier[i]['top']
+						});
+					}
+				}
+			} else if (tabDonnees.roulotteBleue > 0) {
+				for ( var i = 0; i < tabLignesRoulottesCalendrier.length; i++) {
+					if ('ligneRoulotteBleue' == tabLignesRoulottesCalendrier[i]['id']) {
+						$(blocReservation).offset({
+							top : tabLignesRoulottesCalendrier[i]['top']
+						});
+					}
+				}
+			}
+			// Si le bloc est une roulotte, on vérouille le déplacement vertical
+			if ((tabDonnees.roulotteRouge > 0)
+					|| (tabDonnees.roulotteBleue > 0)) {
+				$(blocReservation).off("drag", onDragBlocReservation);
+				$(blocReservation).draggable("option", "axis", "x");
+			}
+
 			retour = true;
 		} else {
 			// Si la date de la réservation n'est pas dans le tableau
@@ -324,8 +376,6 @@ function placerBlocReservationDate(blocReservation, dateDebut,
 
 	// Mise à jour des dates de réservation
 	if (mettreAJourDonnees == true) {
-		tabDonnees = parseInfosReservation($(blocReservation).find(
-				'input[id^="infosdraggable"]').val());
 		dateArriveeClient = tabDonnees.dateArriveeClient;
 		dateDepartClient = tabDonnees.dateDepartClient;
 		differenceDate = dateDebut - dateArriveeClient;
@@ -373,7 +423,7 @@ function onDragBlocReservation(event, ui) {
 
 	// Quand un bloc de réservation est dans le tableau, on fige le déplacement
 	// vertical
-	if (aDansTab != null) {
+	if (aDansTab["estDansTableau"] == true) {
 		$(this).offset({
 			top : tabLignesCalendrier[aDansTab["ligne"]]["top"]
 		});
@@ -392,19 +442,15 @@ function onDragBlocReservation(event, ui) {
  */
 function onDragStopBlocReservation(event, ui) {
 	var idElem = $(this).attr("id");
-	var topBlock = parseInt($(this).css("top"), 10);
-	var bottomBlock = parseInt($(this).css("top"), 10)
-			+ parseInt($(this).css("height"), 10);
-	var leftBlock = parseInt($(this).css("left"), 10);
-	var rightBlock = parseInt($(this).css("left"), 10)
-			+ parseInt($(this).css("width"), 10);
-	var besoinOptimTab = false;
 	var blocRes = $(this);
+	var roulotte = ($(this).hasClass('logo-roulotte-rouge-mini') | $(this)
+			.hasClass('logo-roulotte-bleue-mini'));
 
 	// On vérifie que le bloc est dans le tableau
 	aDansTab = estDansTableau(ui, tabLignesCalendrier, tabColonnesCalendrier);
 
-	if (aDansTab != null) {
+	if ((aDansTab["estDansTableau"] == true)
+			|| ((roulotte == true) && aDansTab["colonne"] != null)) {
 		// Confirmation de changement de la date de réservation
 		alertPop(
 				DEPLACER_DATE_RESERVATION,
@@ -431,9 +477,11 @@ function onDragStopBlocReservation(event, ui) {
 									+ (nbNuites * 1000 * 3600 * 24));
 
 					// On aligne le bloc avec les cellules du tableau
-					$(blocRes).offset({
-						top : tabLignesCalendrier[aDansTab["ligne"]]["top"]
-					});
+					if (roulotte == false) {
+						$(blocRes).offset({
+							top : tabLignesCalendrier[aDansTab["ligne"]]["top"]
+						});
+					}
 					rPlacer = placerBlocReservationDate(
 							$(blocRes),
 							$.datepicker
@@ -447,9 +495,10 @@ function onDragStopBlocReservation(event, ui) {
 															"input.date_jour_calendrier")
 													.val()), true);
 
-					if (rPlacer == true) {
-						optimiserTabReservation(tabColonnesCalendrier,
-								$(".draggable"));
+					if ((rPlacer == true) && (roulotte == false)) {
+						optimiserTabReservation(
+								tabColonnesCalendrier,
+								$('.draggable.logo-camping-car-mini, .draggable.logo-van-mini, .draggable.logo-caravane-mini, .draggable.logo-grande-tente-mini, .draggable.logo-petite-tente-mini'));
 					}
 
 					// On sauvegarde les modifications
@@ -457,7 +506,9 @@ function onDragStopBlocReservation(event, ui) {
 							"id"));
 
 					// Recalcul des statistiques
-					calculStatistiquesParJour();
+					if (roulotte == false) {
+						calculStatistiquesParJour();
+					}
 
 					$(this).dialog("close");
 				},
@@ -479,8 +530,10 @@ function onDragStopBlocReservation(event, ui) {
  * Calcul le nombre de personnes et d'emplacement par jour
  * 
  * @author adupuis
+ * @param integer caTotalCamping Chiffre d'affaire total du camping sur la saison (optionel)
+ * @param integer caTotalRoulottes Chiffre d'affaire total des roulottes sur la saison (optionel)
  */
-function calculStatistiquesParJour() {
+function calculStatistiquesParJour(caTotalCamping, caTotalRoulottes) {
 	var tableauStat = Array();
 	var stats = null;
 	var elemUi = Array();
@@ -534,7 +587,7 @@ function calculStatistiquesParJour() {
 						aDansTab = estDansTableau(elemUi, tabLignesCalendrier,
 								tabColonnesCalendrier);
 
-						if (aDansTab != null) {
+						if (aDansTab["estDansTableau"] == true) {
 
 							// Calcul du nombre de nuitées (on divise la largeur
 							// de la réservation par
@@ -593,6 +646,15 @@ function calculStatistiquesParJour() {
 		moyennePersonnes = 0;
 	}
 	$('label#moyennePersonnesJusquaAujourdhui').html(moyennePersonnes);
+
+	// Calcul du CA camping
+	if (typeof caTotalCamping != 'undefined') {
+		$('label#caCamping').html(caTotalCamping + ' ' + DEVISE);
+	}
+	
+	if (typeof caTotalRoulottes != 'undefined') {
+		$('label#caCampingEtRoulottes').html(caTotalRoulottes + ' ' + DEVISE);
+	}
 }
 
 /**
@@ -639,7 +701,8 @@ function triTableauIndexEntier(tableauATrier) {
  * @returns Boolean Renvoie true si l'objet est vide, false sinon
  */
 function estVide(obj) {
-	var prop;
+	var prop = null;
+
 	for (prop in obj) {
 		if (obj.hasOwnProperty(prop)) {
 			return false;

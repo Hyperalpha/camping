@@ -3,6 +3,8 @@
 			<div class="bloc_popup_ajout_modif_reservation">
 				<input id="idReservationPopupAjoutReservation" type="hidden"/>
 				<input id="refClientPopupAjoutReservation" type="hidden"/>
+				<input id="nomSauvClientPopupAjoutReservation" type="hidden"/>
+				<input id="prenomSauvClientPopupAjoutReservation" type="hidden"/>
 				<input id="idFichePopupAjoutReservation" type="hidden"/>
 				<input id="numEmplacementPopupAjoutReservation" type="hidden"/>
 				<label>Nom : </label>
@@ -57,7 +59,7 @@
 					name="pIdPresentClientPopupAjoutRes" value="autre"/>
 				<label>Arrhes : </label>
 				<input id="arrhesClientPopupAjoutReservation" 
-					class="champFormulaire champNombre" name="Arrhes" type="text"/>
+					class="champFormulaire champ-decimal" name="Arrhes" type="text"/>
 				<label>€</label>
 			</div>
 			<div class="bloc_popup_ajout_modif_reservation">
@@ -81,28 +83,60 @@
 				<label> animal(aux)</label>
 			</div>
 			<div class="bloc_popup_ajout_modif_reservation">
-				<input id="nbPetiteTenteClientPopupAjoutReservation" 
-					class="champFormulaire champNombre" name="Nombre de petites tentes" type="text"/>
-				<label> petite(s) tente(s)</label>
-				<input id="nbGrandeTenteClientPopupAjoutReservation" 
-					class="champFormulaire champNombre" name="Nombre de grandes tentes" type="text"/>
-				<label> grande(s) tente(s)</label>
-				<input id="nbCaravaneClientPopupAjoutReservation" 
-					class="champFormulaire champNombre" name="Nombre de caravanes" type="text"/>
-				<label> caravane(s)</label>
-				<input id="nbVanClientPopupAjoutReservation" 
-					class="champFormulaire champNombre" name="Nombre de vans" type="text"/>
-				<label> van(s)</label>
-				<input id="nbCampingCarClientPopupAjoutReservation" 
-					class="champFormulaire champNombre" name="Nombre de camping-car" type="text"/>
-				<label> camping car(s)</label>
+				<div id="logoPetiteTentePopupAjoutReservation" class="logo-habitation-mini logo-petite-tente-mini">
+					<span title="Petite tente">&nbsp;</span>
+				</div>
+				<div id="divInputNbPetiteTenteClientPopupAjoutReservation" class="div-input-logo">
+					<input id="nbPetiteTenteClientPopupAjoutReservation" title="Petite tente"
+						class="champFormulaire champNombre spinner" name="Nombre de petites tentes" type="text"/>
+				</div>
+				<div id="logoGrandeTentePopupAjoutReservation" class="logo-habitation-mini logo-grande-tente-mini">
+					<span title="Grande tente">&nbsp;</span>
+				</div>
+				<div id="divInputNbGrandeTenteClientPopupAjoutReservation" class="div-input-logo">
+					<input id="nbGrandeTenteClientPopupAjoutReservation" title="Grande tente"
+						class="champFormulaire champNombre spinner" name="Nombre de grandes tentes" type="text"/>
+				</div>
+				<div id="logoCaravanePopupAjoutReservation" class="logo-habitation-mini logo-caravane-mini">
+					<span title="Caravane">&nbsp;</span>
+				</div>
+				<div id="divInputNbCaravaneClientPopupAjoutReservation" class="div-input-logo">
+					<input id="nbCaravaneClientPopupAjoutReservation" title="Caravane"
+						class="champFormulaire champNombre spinner" name="Nombre de caravanes" type="text"/>
+				</div>
+				<div id="logoVanPopupAjoutReservation" class="logo-habitation-mini logo-van-mini">
+					<span title="Van">&nbsp;</span>
+				</div>
+				<div id="divInputNbVanClientPopupAjoutReservation" class="div-input-logo">
+					<input id="nbVanClientPopupAjoutReservation" title="Van"
+						class="champFormulaire champNombre spinner" name="Nombre de vans" type="text"/>
+				</div>
+				<div id="logoCampingCarPopupAjoutReservation" class="logo-habitation-mini logo-camping-car-mini">
+					<span title="Camping car">&nbsp;</span>
+				</div>
+				<div id="divInputNbCampingCarClientPopupAjoutReservationn" class="div-input-logo">
+					<input id="nbCampingCarClientPopupAjoutReservation" title="Camping car"
+						class="champFormulaire champNombre spinner" name="Nombre de camping-car" type="text"/>
+				</div>
 			</div>
 			<div class="bloc_popup_ajout_modif_reservation">
-				<input id="electriciteClientPopupAjoutReservation" type="checkbox" value="elec"/>
-				<label for="electriciteClientPopupAjoutReservation">Electricité</label>
+				<input id="electriciteClientPopupAjoutReservation" type="checkbox" value="elec"
+					title="Electricité"/>
+				<div id="logoElectriciteClientPopupAjoutReservation" class="logo-electricite-mini div-input-logo"
+				 	title="Electricité"></div>
 				<input id="nbNuitsVisiteursClientPopupAjoutReservation" 
 					class="champFormulaire champNombre" name="Nombre de nuits visiteurs" type="text"/>
 				<label> nuitées visiteurs</label>
+				<div id="logoRoulotteRougePopupAjoutReservation" class="logo-habitation-mini logo-roulotte-rouge-mini">
+					<span title="Roulotte rouge">&nbsp;</span>
+				</div>
+				<input id="roulotteRougePopupAjoutReservation" type="checkbox" value="roulotte-rouge"
+					title="Roulotte rouge"/>
+				<div id="logoRoulotteBleuePopupAjoutReservation" class="logo-habitation-mini logo-roulotte-bleue-mini">
+					<span title="Roulotte bleue">&nbsp;</span>
+				</div>
+				<input id="roulotteBleuePopupAjoutReservation" type="checkbox" value="roulotte-bleue"
+					title="Roulotte bleue"/>
 			</div>
 			<div class="bloc_popup_ajout_modif_reservation">
 				<label>Observations : </label>

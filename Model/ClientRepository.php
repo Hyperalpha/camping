@@ -33,6 +33,9 @@ class ClientRepository {
 		. 'c.date_creation as date_creation_client, '
 		. 'c.date_modification as date_modification_client '
 		. 'FROM client c';
+		if (array_key_exists('id', $criteres) && $criteres['id']) {
+			$where .= " c.id = '" . $criteres['id'] . "' AND";
+		}
 		if (array_key_exists('prenom', $criteres) && $criteres['prenom']) {
 			$where .= " c.prenom LIKE '" . $criteres['prenom'] . "' AND";
 		}
