@@ -59,13 +59,14 @@ class ExportExcelRepository {
 		//Le fichier exporté portera le nom du client et la date du jour
 		$client = $reservation->getClient();
 		if (!is_null($client)) {
-			$nomFichierExport = $client->getNom() . ' ' . $client->getPrenom() . ' ' 
-					. date('d-m-Y') . '.docx';
+			$nomExport = preg_replace("#[^a-zA-Z \-0-9]#", "", utf8_decode($client->getNom()
+					 . ' ' . $client->getPrenom() . ' ' . date('d-m-Y')));
+			$nomFichierExport = $nomExport . '.docx';
 		}
 
 		//On vide le répertoire des fichiers excel
-		if (is_dir($repertoireDonnees)) {
-			CommunModel::supprimerRepertoire($repertoireDonnees);
+		if (is_dir($repertoireTmp)) {
+			CommunModel::supprimerContenuRepertoire($repertoireTmp);
 		}
 		if (file_exists($repertoireTmp . $DS . $nomFichierExport)) {
 			unlink($repertoireTmp . $DS . $nomFichierExport);
@@ -172,12 +173,13 @@ class ExportExcelRepository {
 				$this->reservationRepository->enregistrerReservation($reservation);
 			}
 			
-			$nomFichierExport = 'Facture ' .  $facture->getId() . '.docx';
+			$nomFichierExport = preg_replace("#[^a-zA-Z \-_0-9]#", "", 
+					utf8_decode('Facture ' .  $facture->getId())). '.docx';
 		}
 	
 		//On vide le répertoire des fichiers excel
-		if (is_dir($repertoireDonnees)) {
-			CommunModel::supprimerRepertoire($repertoireDonnees);
+		if (is_dir($repertoireTmp)) {
+			CommunModel::supprimerContenuRepertoire($repertoireTmp);
 		}
 		if (file_exists($repertoireTmp . $DS . $nomFichierExport)) {
 			unlink($repertoireTmp . $DS . $nomFichierExport);
@@ -234,6 +236,11 @@ class ExportExcelRepository {
 		self::ASCII_CASE_VIDE, self::ASCII_CASE_VIDE,
 		self::ASCII_CASE_VIDE, self::ASCII_CASE_VIDE);
 		$client = $reservation->getClient();
+		
+		$dateArrivee = $reservation->getDateArrivee();
+		$dateDepart = $reservation->getDateDepart();
+		$interval = $dateDepart->diff($dateArrivee);
+		$nbNuitees = intval($interval->format('%a'));
 
 		//En tête
 		/********/
@@ -274,7 +281,6 @@ class ExportExcelRepository {
 		$electricite = intval($reservation->getElectricite());
 		$nombreVehiculesSupp = intval(0);
 		$nombreVisiteurs = intval($reservation->getNombreNuitesVisiteur());
-		$pretMateriel = intval(0);
 
 		$prixAdulte = $this->referentielRepo->getPrixCampeurAdulte();
 		$prixEnfant = $this->referentielRepo->getPrixCampeurEnfant();
@@ -295,17 +301,14 @@ class ExportExcelRepository {
 			$replaceCarre[1] = self::ASCII_CASE_PLEINE;
 		}
 
-		$dateArrivee = $reservation->getDateArrivee();
 		if (!is_null($dateArrivee)) {
 			$newContenu = str_replace('{{DATE_ARRIVEE}}', $dateArrivee->format('d/m/Y'), $newContenu);
 		}
-		$dateDepart = $reservation->getDateDepart();
 		if (!is_null($dateDepart)) {
 			$newContenu = str_replace('{{DATE_DEPART}}', $dateDepart->format('d/m/Y'), $newContenu);
 		}
 		if ((!is_null($dateDepart)) and (!is_null($dateArrivee))) {
-			$interval = $dateDepart->diff($dateArrivee);
-			$newContenu = str_replace('{{NB_NUITS}}', $interval->format('%a'), $newContenu);
+			$newContenu = str_replace('{{NB_NUITS}}', $nbNuitees, $newContenu);
 		}
 
 		//Prix
@@ -348,7 +351,7 @@ class ExportExcelRepository {
 		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
 		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
 		$sousTotalVehiculeSupp + $sousTotalVisiteur;
-		$totalSejour = $sousTotalNuitees;
+		$totalSejour = $sousTotalNuitees * $nbNuitees;
 
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
 		str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,
@@ -399,7 +402,6 @@ class ExportExcelRepository {
 		$electricite = null;
 		$nombreVehiculesSupp = null;
 		$nombreVisiteurs = null;
-		$pretMateriel = null;
 		$prixAdulte = null;
 		$prixEnfant = null;
 		$prixAnimal = null;
@@ -409,6 +411,10 @@ class ExportExcelRepository {
 		$prixElectricite = null;
 		$prixVehiculeSupp = null;
 		$prixVisiteur = null;
+		$dateArrivee = $reservation->getDateArrivee();
+		$dateDepart = $reservation->getDateDepart();
+		$interval = $dateDepart->diff($dateArrivee);
+		$nbNuitees = intval($interval->format('%a'));
 	
 		//En tête
 		/********/
@@ -480,17 +486,14 @@ class ExportExcelRepository {
 			}
 		}
 	
-		$dateArrivee = $reservation->getDateArrivee();
 		if (!is_null($dateArrivee)) {
 			$newContenu = str_replace('{{DATE_ARRIVEE}}', $dateArrivee->format('d/m/Y'), $newContenu);
 		}
-		$dateDepart = $reservation->getDateDepart();
 		if (!is_null($dateDepart)) {
 			$newContenu = str_replace('{{DATE_DEPART}}', $dateDepart->format('d/m/Y'), $newContenu);
 		}
 		if ((!is_null($dateDepart)) and (!is_null($dateArrivee))) {
-			$interval = $dateDepart->diff($dateArrivee);
-			$newContenu = str_replace('{{NB_NUITS}}', $interval->format('%a'), $newContenu);
+			$newContenu = str_replace('{{NB_NUITS}}', $nbNuitees, $newContenu);
 		}
 	
 		//Prix
@@ -533,7 +536,7 @@ class ExportExcelRepository {
 		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
 		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
 		$sousTotalVehiculeSupp + $sousTotalVisiteur;
-		$totalSejour = $sousTotalNuitees;
+		$totalSejour = $sousTotalNuitees * $nbNuitees;
 	
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
 			str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,

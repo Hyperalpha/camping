@@ -653,7 +653,12 @@ function calculStatistiquesParJour(caTotalCamping, caTotalRoulottes) {
 	}
 	
 	if (typeof caTotalRoulottes != 'undefined') {
-		$('label#caCampingEtRoulottes').html(caTotalRoulottes + ' ' + DEVISE);
+		$('label#caRoulottes').html(caTotalRoulottes + ' ' + DEVISE);
+	}
+	
+	if ((typeof caTotalCamping != 'undefined') && (typeof caTotalRoulottes != 'undefined')) {
+		$('label#caCampingEtRoulottes').html((parseFloat(caTotalCamping) 
+				+ parseFloat(caTotalRoulottes)) + ' ' + DEVISE);
 	}
 }
 

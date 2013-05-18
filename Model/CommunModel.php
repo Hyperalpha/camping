@@ -20,6 +20,31 @@ class CommunModel {
 		}
 
 		if (is_dir($cheminRepertoire)) {
+			//On supprime le contenu du répertoire
+			self::supprimerContenuRepertoire($cheminRepertoire);
+			//On supprime le répertoire
+			rmdir($cheminRepertoire);
+		}
+		else {
+			//Si c'est un fichier, on le supprime
+			unlink($cheminRepertoire);
+		}
+	}
+
+	/**
+	 * Supprime le contenu d'un répertoire (fichiers et sous-répertoires)
+	 * @author Arnaud DUPUIS
+	 * @param string $cheminRepertoire Chemin complet vers le répertoire
+	 * dont le contenu va être supprimé
+	 */
+	public static function supprimerContenuRepertoire($cheminRepertoire) {
+
+		//On rajoute le "/" à la fin
+		if ($cheminRepertoire[strlen($cheminRepertoire)-1] != '/') {
+			$cheminRepertoire .= '/';
+		}
+
+		if (is_dir($cheminRepertoire)) {
 			//Ouverture du répertoire
 			$dir = opendir($cheminRepertoire);
 			while ($f = readdir($dir)) {
@@ -28,7 +53,7 @@ class CommunModel {
 					$fichier = $cheminRepertoire . $f;
 					if (is_dir($fichier)) {
 						//Si le fichier est un répertoire => récursivité
-						sup_repertoire($fichier);
+						self::supprimerRepertoire($fichier);
 					}
 					else {
 						//Suppression du fichier
@@ -37,12 +62,6 @@ class CommunModel {
 				}
 			}
 			closedir($dir);
-			//On supprime le répertoire
-			rmdir($cheminRepertoire);
-		}
-		else {
-			//Si c'est un fichier, on le supprime
-			unlink($cheminRepertoire);
 		}
 	}
 }

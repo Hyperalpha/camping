@@ -208,7 +208,8 @@ $htmlJours .= "</tr>";
 	<div id="statistiquesSaison">
 		Moyenne de personnes jusqu'à aujourd'hui : <label id="moyennePersonnesJusquaAujourdhui">-</label><br/>
 		CA camping : <label id="caCamping">-</label><br/>
-		CA camping + roulottes : <label id="caCampingEtRoulottes">- €</label><br/>
+		CA roulottes : <label id="caRoulottes">- €</label><br/>
+		Total CA camping + roulottes : <label id="caCampingEtRoulottes">- €</label><br/>
 	</div>
 
 	<!-- Popup d'alert -->
