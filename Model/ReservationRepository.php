@@ -153,7 +153,7 @@ class ReservationRepository {
 				. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
 				. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
 				. "roulotte_rouge, roulotte_bleue, observations, "
-				. "reference_facture, numero_emplacement, coordonnees_x_emplacement, "
+				. "numero_emplacement, coordonnees_x_emplacement, "
 				. "coordonnees_y_emplacement) "
 				. "VALUES ("
 				. "'" . $referenceReservation. "', "
@@ -175,7 +175,6 @@ class ReservationRepository {
 				. "'" . intval($reservation->getRoulotteRouge()) . "', "
 				. "'" . intval($reservation->getRoulotteBleue()) . "', "
 				. "'" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
-				. "'" . $this->mysqli->real_escape_string($refFacture) . "', "
 				. "'" . intval($reservation->getNumeroEmplacement()) . "', "
 				. "'0', "
 				. "'0' "
@@ -202,7 +201,6 @@ class ReservationRepository {
 				. "r.roulotte_rouge = '" . intval($reservation->getRoulotteRouge()) . "', "
 				. "r.roulotte_bleue = '" . intval($reservation->getRoulotteBleue()) . "', "
 				. "r.observations = '" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
-				. "r.reference_facture = '" . $this->mysqli->real_escape_string($refFacture) . "', "
 				. "r.numero_emplacement = '" . intval($reservation->getNumeroEmplacement()) . "', "
 				. "coordonnees_x_emplacement = '" . intval($reservation->getCoordonneesXEmplacement()) . "', "
 				. "coordonnees_y_emplacement = '" . intval($reservation->getCoordonneesYEmplacement()) . "' "
@@ -296,9 +294,6 @@ class ReservationRepository {
 		$prixElectricite = $this->referentielRepository->getPrixElectricite();
 		$prixVehiculeSupp = $this->referentielRepository->getPrixVehiculeSupp();
 		$prixVisiteur = $this->referentielRepository->getPrixVisiteur();
-		/**
-		 * @todo: Prix matériel?
-		*/
 		$cATotal = 0;
 		$cAReservation = 0;
 
@@ -383,6 +378,9 @@ class ReservationRepository {
 				$cATotal += $caRoulotte;
 			}
 		}
+		
+		//On arroundi le CA à 2 chiffres après la virgule
+		$cATotal = (round($cATotal * 100) / 100);
 	
 		return $cATotal;
 	}
@@ -435,7 +433,7 @@ class ReservationRepository {
 			. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
 			. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
 			. 'r.roulotte_rouge, r.roulotte_bleue, '
-			. 'r.observations, r.reference_facture, r.numero_emplacement, '
+			. 'r.observations, r.numero_emplacement, '
 			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
 			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res '
 			. 'FROM reservation r';
@@ -482,11 +480,11 @@ class ReservationRepository {
 			}
 			$newRes->setRoulotteBleue($roulotteBleue);
 			$newRes->setObservations($data[19]);
-			$newRes->setNumeroEmplacement($data[21]);
-			$newRes->setCoordonneesXEmplacement($data[22]);
-			$newRes->setCoordonneesYEmplacement($data[23]);
-			$newRes->setDateCreation(new DateTime($data[24]));
-			$newRes->setDateModification(new DateTime($data[25]));
+			$newRes->setNumeroEmplacement($data[20]);
+			$newRes->setCoordonneesXEmplacement($data[21]);
+			$newRes->setCoordonneesYEmplacement($data[22]);
+			$newRes->setDateCreation(new DateTime($data[23]));
+			$newRes->setDateModification(new DateTime($data[24]));
 
 			//Récupération du client
 			if ($data[2]) {
@@ -495,10 +493,8 @@ class ReservationRepository {
 			}
 			
 			//Récupération de la facture
-			if ($data[20]) {
-				$factures = $this->factureRepository->rechercherFacture($data[1]);
-				$newRes->setFacture($factures[0]);
-			}
+			$factures = $this->factureRepository->rechercherFacture($data[1]);
+			$newRes->setFacture($factures[0]);
 
 			$retour[] = $newRes;
 		}

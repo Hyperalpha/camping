@@ -173,9 +173,6 @@ class ExportExcelRepository {
 			}
 			
 			$nomFichierExport = 'Facture ' .  $facture->getId() . '.docx';
-			/**
-			 * @TODO: revoir suppression réservation quand facture présente
-			 */
 		}
 	
 		//On vide le répertoire des fichiers excel
@@ -263,7 +260,7 @@ class ExportExcelRepository {
 		//Partie réservation
 		/*******************/
 		/**
-		 * @TODO: rajouter champ nb véhicules supp et pret matériel
+		 * @TODO: rajouter champ nb véhicules supp
 		 */
 		$carteIdPres = $reservation->getPieceIdPresentee();
 		$nombreAdultes = intval($reservation->getNombreAdultes());
@@ -351,9 +348,6 @@ class ExportExcelRepository {
 		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
 		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
 		$sousTotalVehiculeSupp + $sousTotalVisiteur;
-		/**
-		 * @TODO: Total séjour = pret matériel?
-		 */
 		$totalSejour = $sousTotalNuitees;
 
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
@@ -424,7 +418,7 @@ class ExportExcelRepository {
 		//Partie réservation
 		/*******************/
 		/**
-		 * @TODO: rajouter champ nb véhicules supp et pret matériel
+		 * @TODO: rajouter champ nb véhicules supp
 		*/
 		//Décomposition des données de la facture
 		if (!is_null($facture)) {
@@ -539,9 +533,6 @@ class ExportExcelRepository {
 		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
 		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
 		$sousTotalVehiculeSupp + $sousTotalVisiteur;
-		/**
-		 * @TODO: Total séjour = pret matériel?
-		 */
 		$totalSejour = $sousTotalNuitees;
 	
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,

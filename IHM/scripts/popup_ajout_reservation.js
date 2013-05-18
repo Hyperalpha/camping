@@ -16,26 +16,7 @@ function relierEvenementsAjoutReservation() {
 			function() {
 				// On vide les champs de la popup = nouvelle réservation
 				viderChampsPopup("popupAjoutModifReservation");
-				// On affiche les boutons de la popup de création
-				$("#popupAjoutModifReservation").find("#boutonCreerClient")
-						.css("visibility", "visible");
 				$("#creerModifPopupAjoutModifReservation span").html("Créer");
-				// Les champs adresse, ville, pays, etc sont grisés au
-				// chargement
-				$('#rueClientPopupAjoutReservation').attr('readonly',
-						'readonly');
-				$('#complementAdresseClientPopupAjoutReservation').attr(
-						'readonly', 'readonly');
-				$('#codePostalClientPopupAjoutReservation').attr('readonly',
-						'readonly');
-				$('#villeClientPopupAjoutReservation').attr('readonly',
-						'readonly');
-				$('#paysClientPopupAjoutReservation').attr('readonly',
-						'readonly');
-				$('#portableClientPopupAjoutReservation').attr('readonly',
-						'readonly');
-				$('#emailClientPopupAjoutReservation').attr('readonly',
-						'readonly');
 				// On ouvre la popup de création
 				$("#popupAjoutModifReservation").dialog("open");
 			});
@@ -108,7 +89,7 @@ function relierEvenementsAjoutReservation() {
 										// popup
 										$("#popupAjoutModifReservation").find(
 												"#boutonCreerClient").css(
-												"visibility", "hidden");
+												"visibility", "visible");
 										$(
 												"#creerModifPopupAjoutModifReservation span")
 												.html("Modifier");
@@ -163,23 +144,26 @@ function relierEvenementsAjoutReservation() {
 	/*
 	 * Champs et boutons du formulaire
 	 */
+	$("#popupAjoutModifReservation").find('#refClientPopupAjoutReservation')
+			.on(
+					'change',
+					function() {
+						if ($(this).val() == '') {
+							// Si la référence du client est vide, on masque le
+							// bouton
+							$("#popupAjoutModifReservation").find(
+									"#boutonCreerClient").css("visibility",
+									"hidden");
+						} else {
+							// Si la référence du client n'est pas vide, on
+							// affiche le bouton
+							$("#popupAjoutModifReservation").find(
+									"#boutonCreerClient").css("visibility",
+									"visible");
+						}
+					});
 	// Bouton créer client
-	$("a#boutonCreerClient").on(
-			"click",
-			function() {
-				viderChampsClientPopup();
-				// On dégrise les champs adresse, ville, pays, etc
-				$('#rueClientPopupAjoutReservation').removeAttr('readonly');
-				$('#complementAdresseClientPopupAjoutReservation').removeAttr(
-						'readonly');
-				$('#codePostalClientPopupAjoutReservation').removeAttr(
-						'readonly');
-				$('#villeClientPopupAjoutReservation').removeAttr('readonly');
-				$('#paysClientPopupAjoutReservation').removeAttr('readonly');
-				$('#portableClientPopupAjoutReservation')
-						.removeAttr('readonly');
-				$('#emailClientPopupAjoutReservation').removeAttr('readonly');
-			});
+	$("a#boutonCreerClient").on("click", viderChampsClientPopup);
 
 	// Bouton imprimer
 	$("a#boutonImprimerClient").on("click", function(event) {
@@ -738,10 +722,12 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	}
 	donnees.nbNuitsVisiteursClient = $(idFormulaire).find(
 			"#nbNuitsVisiteursClientPopupAjoutReservation").val();
+	donnees.roulotteRouge = '';
 	if ($(idFormulaire).find("#roulotteRougePopupAjoutReservation").is(
 			':checked') == true) {
 		donnees.roulotteRouge = 1;
 	}
+	donnees.roulotteBleue = '';
 	if ($(idFormulaire).find("#roulotteBleuePopupAjoutReservation").is(
 			':checked') == true) {
 		donnees.roulotteBleue = 1;
@@ -753,6 +739,8 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 			"#arrhesClientPopupAjoutReservation").val());
 	donnees.numeroEmplacement = parseInt($(idFormulaire).find(
 			"#numEmplacementPopupAjoutReservation").val());
+	donnees.referenceFacture = $(idFormulaire).find(
+			"#refFacturePopupAjoutReservation").val();
 
 	// Mise en forme des valeurs par défaut
 	if (isNaN(donnees.nbAdultesClient)) {
@@ -1053,12 +1041,15 @@ function afficherPopupDetails() {
 	$(popupDetailsReserv).find("a#boutonFactureReservation").on(
 			'click',
 			function(event) {
+				var popupDetailsRes = $("#popupDetailsReservation");
+				var strDonnees = null;
+
 				event.stopPropagation();
 				event.preventDefault();
 
 				if (tabDonnees.referenceFacture !== '') {
 					alertPop(REGENERER_FACTURE, TYPE_OUI_NON, function() {
-						document.location = $(popupDetailsReserv).find(
+						document.location = $(popupDetailsRes).find(
 								"#urlExportFacturePopupDetailsReservation")
 								.val()
 								+ '?idFiche='
@@ -1066,7 +1057,7 @@ function afficherPopupDetails() {
 								+ '&regenererFacture=true';
 						$(this).dialog("close");
 					}, function() {
-						document.location = $(popupDetailsReserv).find(
+						document.location = $(popupDetailsRes).find(
 								"#urlExportFacturePopupDetailsReservation")
 								.val()
 								+ '?idFiche='
@@ -1078,12 +1069,14 @@ function afficherPopupDetails() {
 					// On marque la facture comme générée (avec une valeur
 					// bidon)
 					tabDonnees.referenceFacture = 'GENERATED';
+					strDonnees = serialiserInfosReservation(tabDonnees);
 					$(reservationSelectionee).find(
-							'input[id^="infosdraggable"]').val(
-							serialiserInfosReservation(tabDonnees));
+							'input[id^="infosdraggable"]').val(strDonnees);
+					$(popupDetailsRes).find("#infosPopupDetailsReservation")
+							.val(strDonnees);
 
 					// Affichage de la facture
-					document.location = $(popupDetailsReserv).find(
+					document.location = $(popupDetailsRes).find(
 							"#urlExportFacturePopupDetailsReservation").val()
 							+ '?idFiche='
 							+ tabDonnees.idFiche
@@ -1095,7 +1088,7 @@ function afficherPopupDetails() {
 	$(popupDetailsReserv).find("#observationsPopupDetailsReservation").html(
 			tabDonnees.observationsClient);
 	// Sauvegarde des données
-	$("#infosPopupDetailsReservation").val(strDonnees);
+	$(popupDetailsReserv).find("#infosPopupDetailsReservation").val(strDonnees);
 	sauvegardeEmplacement = $(popupDetailsReserv).find(
 			"#numEmplacementClientPopupDetailsReservation").val();
 
@@ -1160,15 +1153,17 @@ function onSelectNomPrenomPopupAjoutModifReservation(event, ui) {
 	$(popupAjoutModifRes).find("#emailClientPopupAjoutReservation").val(
 			objClient.emailClient);
 
-	// Les champs adresse, ville, pays, etc sont grisés au chargement
-	$('#rueClientPopupAjoutReservation').attr('readonly', 'readonly');
-	$('#complementAdresseClientPopupAjoutReservation').attr('readonly',
-			'readonly');
-	$('#codePostalClientPopupAjoutReservation').attr('readonly', 'readonly');
-	$('#villeClientPopupAjoutReservation').attr('readonly', 'readonly');
-	$('#paysClientPopupAjoutReservation').attr('readonly', 'readonly');
-	$('#portableClientPopupAjoutReservation').attr('readonly', 'readonly');
-	$('#emailClientPopupAjoutReservation').attr('readonly', 'readonly');
+	if (objClient.referenceClient == '') {
+		// Si la référence du client est vide, on masque le
+		// bouton
+		$("#popupAjoutModifReservation").find("#boutonCreerClient").css(
+				"visibility", "hidden");
+	} else {
+		// Si la référence du client n'est pas vide, on
+		// affiche le bouton
+		$("#popupAjoutModifReservation").find("#boutonCreerClient").css(
+				"visibility", "visible");
+	}
 }
 
 /**
@@ -1325,6 +1320,9 @@ function remplirChampsPopupModifReservation(tabDonnees) {
 		// Numéro d'emplacement
 		$(popupAjoutModifRes).find("#numEmplacementPopupAjoutReservation").val(
 				tabDonnees.numeroEmplacement);
+		// Référence facture
+		$(popupAjoutModifRes).find("#refFacturePopupAjoutReservation").val(
+				tabDonnees.referenceFacture);
 
 		// Calcul du nombre de nuités
 		recalculNbNuitesPopupAjoutRes();
@@ -1533,6 +1531,10 @@ function viderChampsPopup(idPopupAVider) {
 	$("#" + idPopupAVider).find("#boutonImprimerClient").attr('href', '');
 	$("#" + idPopupAVider).find("#boutonImprimerClient").css("visibility",
 			"hidden");
+
+	// On cache le bouton créer client
+	$("#popupAjoutModifReservation").find("#boutonCreerClient").css(
+			"visibility", "hidden");
 }
 
 /**
@@ -1556,4 +1558,8 @@ function viderChampsClientPopup() {
 	$(popupAjoutModifRes).find("#paysClientPopupAjoutReservation").val('');
 	$(popupAjoutModifRes).find("#portableClientPopupAjoutReservation").val('');
 	$(popupAjoutModifRes).find("#emailClientPopupAjoutReservation").val('');
+
+	// On cache le bouton créer client
+	$("#popupAjoutModifReservation").find("#boutonCreerClient").css(
+			"visibility", "hidden");
 }
