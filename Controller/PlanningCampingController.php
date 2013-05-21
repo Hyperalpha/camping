@@ -275,6 +275,7 @@ class PlanningCampingController {
 		$sep = self::SEPARATEUR_RETOUR;
 		$client = $reservation->getClient();
 
+		//Infos-Reservation
 		//Version 1.0
 		$chaineRetour .= "v1.0" . $sep;
 		if (!is_null($client)) {
@@ -348,6 +349,8 @@ class PlanningCampingController {
 		$chaineRetour .= $reservation->getElectricite() . $sep;
 		//Nombre de nuités visiteur
 		$chaineRetour .= intval($reservation->getNombreNuitesVisiteur()) . $sep;
+		// Nombre de véhicules supplémentaires
+		$chaineRetour .= intval($reservation->getNombreVehiculesSupplementaires()) . $sep;
 		//Observations
 		$chaineRetour .= $reservation->getObservations() . $sep;
 		//Id du bloc de réservation (non pris en charge par le PHP)
@@ -442,6 +445,7 @@ class PlanningCampingController {
 			$retour = str_replace('{{PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $this->referentielRepository->getPrixRoulotteBleuePeriodeHaute(), $retour);
 
 			$retour = str_replace('{{DATE_DEBUT_PERIODE_HAUTE_ROULOTTE}}', $this->formatterDateSansAnnee($this->referentielRepository->getDateDebutPeriodeHauteRoulotte()), $retour);
+			$retour = str_replace('{{DATE_FIN_PERIODE_HAUTE_ROULOTTE}}', $this->formatterDateSansAnnee($this->referentielRepository->getDateFinPeriodeHauteRoulotte()), $retour);
 			$retour = str_replace('{{DATE_DEBUT_TABLEAU_RESERVATIONS}}', $this->formatterDateSansAnnee($this->referentielRepository->getDebutAffichageTableauReservations()), $retour);
 			$retour = str_replace('{{DATE_FIN_TABLEAU_RESERVATIONS}}', $this->formatterDateSansAnnee($this->referentielRepository->getFinAffichageTableauReservations()), $retour);
 		}
@@ -479,6 +483,7 @@ class PlanningCampingController {
 			$this->referentielRepository->setPrixRoulotteBleuePeriodeHaute($stdReglages->prixRoulottesBleuePeriodeHaute, false);
 
 			$this->referentielRepository->setDateDebutPeriodeHauteRoulotte($this->parseDateSansAnnee($stdReglages->dateDebutPeriodeHauteRoulottes), false);
+			$this->referentielRepository->setDateFinPeriodeHauteRoulotte($this->parseDateSansAnnee($stdReglages->dateFinPeriodeHauteRoulottes), false);
 			$this->referentielRepository->setDebutAffichageTableauReservations($this->parseDateSansAnnee($stdReglages->dateDebutAffichageReservations), false);
 			$this->referentielRepository->setFinAffichageTableauReservations($this->parseDateSansAnnee($stdReglages->dateFinAffichageReservations), true);
 
@@ -496,6 +501,77 @@ class PlanningCampingController {
 		//On redirige vers la page de consultation des réservations
 		header('Location: index.php');
 	}
+	
+	/**
+	 * Renvoie le nombre de jours appartenant à la période basse et à la période haute
+	 * 
+	 * @author adupuis
+	 * @param \DateTime $dateArrivee Date d'arrivée de la réservation
+	 * @param \DateTime $dateDepart Date de départ de la réservation
+	 * @param \DateTime $dateDebutPeriodeHaute Date de début de la période haute des roulottes
+	 * @param \DateTime $dateFinPeriodeHaute Date de fin de la période haute des roulottes
+	 * @return \stdClass Renvoie un objet stdClass avec les attributs nbJoursBas et nbJoursHaut
+	 */
+	public static function getNbJoursHautBasRoulottes(\DateTime $dateArrivee = null, 
+			\DateTime $dateDepart = null, 
+			\DateTime $dateDebutPeriodeHaute = null, 
+			\DateTime $dateFinPeriodeHaute = null) {
+		$retour = new \stdClass;
+		$retour->nbJoursBas = 0;
+		$retour->nbJoursHaut = 0;
+		
+		if (!is_null($dateArrivee) and !is_null($dateDepart) 
+				and !is_null($dateDebutPeriodeHaute) and !is_null($dateFinPeriodeHaute)) {
+			$interval = $dateDepart->diff($dateArrivee);
+			$nbNuitees = intval($interval->format('%a'));
+			$tspDateArrivee = $dateArrivee->getTimestamp();
+			$tspDateDepart = $dateDepart->getTimestamp();
+			$tspDateDebutPeriodeHaute = $dateDebutPeriodeHaute->getTimestamp();
+			$tspDateFinPeriodeHaute = $dateFinPeriodeHaute->getTimestamp();
+			
+			if ((($tspDateArrivee < $tspDateDebutPeriodeHaute) 
+				and ($tspDateDepart < $tspDateDebutPeriodeHaute)) or 
+				(($tspDateArrivee > $tspDateFinPeriodeHaute) 
+					and ($tspDateDepart > $tspDateFinPeriodeHaute))) {
+				//Période basse
+				$retour->nbJoursBas = $nbNuitees;
+			}
+			elseif (($tspDateArrivee >= $tspDateDebutPeriodeHaute) 
+					and ($tspDateDepart <= $tspDateFinPeriodeHaute)) {
+				//Période haute
+				$retour->nbJoursHaut = $nbNuitees;
+			}
+			else {
+				//A cheval sur la période basse et haute
+				if (($tspDateArrivee < $tspDateDebutPeriodeHaute)
+						and ($tspDateDepart <= $tspDateFinPeriodeHaute)) {
+					//A cheval sur la date de début
+					$intervalBas = $dateDebutPeriodeHaute->diff($dateArrivee);
+					$intervalHaut = $dateDepart->diff($dateDebutPeriodeHaute);
+					$retour->nbJoursBas = (intval($intervalBas->format('%a')) + 1);
+					$retour->nbJoursHaut = intval($intervalHaut->format('%a'));
+				}
+				elseif (($tspDateArrivee >= $tspDateDebutPeriodeHaute)
+						and ($tspDateDepart > $tspDateFinPeriodeHaute)) {
+					//A cheval sur la date de fin
+					$intervalBas = $dateDepart->diff($dateFinPeriodeHaute);
+					$intervalHaut = $dateFinPeriodeHaute->diff($dateArrivee);
+					$retour->nbJoursBas = intval($intervalBas->format('%a'));
+					$retour->nbJoursHaut = (intval($intervalHaut->format('%a')) + 1);
+				}
+				else {
+					//A cheval sur les deux dates
+					$intervalBas1 = $dateDebutPeriodeHaute->diff($dateArrivee);
+					$intervalHaut = $dateFinPeriodeHaute->diff($dateDebutPeriodeHaute);
+					$intervalBas2 = $dateDepart->diff($dateFinPeriodeHaute);
+					$retour->nbJoursBas = (intval($intervalBas1->format('%a')) + intval($intervalBas2->format('%a')));
+					$retour->nbJoursHaut = (intval($intervalHaut->format('%a')) + 1);
+				}
+			}
+		}
+		
+		return $retour;
+	}
 
 	/**
 	 * Fonction découpant les données concaténées dans la chaine passée en
@@ -511,6 +587,7 @@ class PlanningCampingController {
 		$reservation = new Reservation();
 		$client = new Client();
 
+		//Infos-Reservation
 		if ($tabDonnees[0] == "v1.0") {
 			// Référence client
 			$client->setReference($tabDonnees[1]);
@@ -571,28 +648,33 @@ class PlanningCampingController {
 			}
 			// Nombre de nuités visiteur
 			$reservation->setNombreNuitesVisiteur($tabDonnees[24]);
+			// Nombre de véhicules supplémentaires
+			$reservation->setNombreVehiculesSupplementaires($tabDonnees[25]);
 			// Observations
-			$reservation->setObservations($tabDonnees[25]);
+			$reservation->setObservations($tabDonnees[26]);
 			// Arrhes
-			$reservation->setArrhes($tabDonnees[27]);
+			$reservation->setArrhes($tabDonnees[28]);
 			// Numéro d'emplacement
-			$reservation->setNumeroEmplacement($tabDonnees[28]);
+			$reservation->setNumeroEmplacement($tabDonnees[29]);
 			// Roulotte rouge
-			if ($tabDonnees[29] == "1") {
+			if ($tabDonnees[30] == "1") {
 				$reservation->setRoulotteRouge(true);
 			}
 			else {
 				$reservation->setRoulotteRouge(false);
 			}
 			// Roulotte bleue
-			if ($tabDonnees[30] == "1") {
+			if ($tabDonnees[31] == "1") {
 				$reservation->setRoulotteBleue(true);
 			}
 			else {
 				$reservation->setRoulotteBleue(false);
 			}
 			// Référence facture
-			$reservation->setFacture($this->factureRepository->rechercherFacture($tabDonnees[28]));
+			$facture = $this->factureRepository->rechercherFacture($tabDonnees[2]);
+			if (!is_null($facture)) {
+				$reservation->setFacture($facture[0]);
+			}
 
 			//On relie le client à la réservation
 			$reservation->setClient($client);

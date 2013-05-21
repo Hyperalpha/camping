@@ -1,5 +1,24 @@
 var separateur = "|";
 var sauvegardeEmplacement = null;
+var sourcePays = [ {
+	value : PAYS_ALLEMAGNE_MIN,
+	label : PAYS_ALLEMAGNE
+}, {
+	value : PAYS_FRANCE_MIN,
+	label : PAYS_FRANCE
+}, {
+	value : PAYS_UK_MIN,
+	label : PAYS_UK
+}, {
+	value : PAYS_PAYS_BAS_MIN,
+	label : PAYS_PAYS_BAS
+}, {
+	value : PAYS_BELGIQUE_MIN,
+	label : PAYS_BELGIQUE
+}, {
+	value : PAYS_IRLANDE_MIN,
+	label : PAYS_IRLANDE
+} ];
 
 /**
  * Relie les événements pour la popup d'ajout d'une réservation
@@ -11,15 +30,13 @@ function relierEvenementsAjoutReservation() {
 
 	$(".spinner").spinner();
 
-	$("#boutonAjouterReservation").on(
-			"click",
-			function() {
-				// On vide les champs de la popup = nouvelle réservation
-				viderChampsPopup("popupAjoutModifReservation");
-				$("#creerModifPopupAjoutModifReservation span").html("Créer");
-				// On ouvre la popup de création
-				$("#popupAjoutModifReservation").dialog("open");
-			});
+	$("#boutonAjouterReservation").on("click", function() {
+		// On vide les champs de la popup = nouvelle réservation
+		viderChampsPopup("popupAjoutModifReservation");
+		$("#creerModifPopupAjoutModifReservation span").html("Créer");
+		// On ouvre la popup de création
+		$("#popupAjoutModifReservation").dialog("open");
+	});
 
 	// Popup d'ajout d'une réservation
 	$("#popupAjoutModifReservation").dialog({
@@ -212,6 +229,16 @@ function relierEvenementsAjoutReservation() {
 		},
 		focus : onFocusNomPrenomPopupAjoutModifReservation,
 		select : onSelectNomPrenomPopupAjoutModifReservation
+	});
+
+	// Champ pays
+	$("#paysClientPopupAjoutReservation").autocomplete({
+		minLength : 0,
+		source : sourcePays,
+		select : function(event, ui) {
+			$(this).val(ui.item.value);
+			return false;
+		}
 	});
 
 	// Champs date
@@ -666,6 +693,7 @@ function creerBlocReservation(idNouveauBloc, tabDonnees) {
 function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	var donnees = Array();
 
+	// Infos-Reservation
 	donnees.version = "v1.0";
 	donnees.refClient = $(idFormulaire).find("#refClientPopupAjoutReservation")
 			.val();
@@ -722,6 +750,8 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	}
 	donnees.nbNuitsVisiteursClient = $(idFormulaire).find(
 			"#nbNuitsVisiteursClientPopupAjoutReservation").val();
+	donnees.nbVehiculesSupp = $(idFormulaire).find(
+			"#nbVehiculesSuppPopupAjoutReservation").val();
 	donnees.roulotteRouge = '';
 	if ($(idFormulaire).find("#roulotteRougePopupAjoutReservation").is(
 			':checked') == true) {
@@ -1177,6 +1207,7 @@ function onSelectNomPrenomPopupAjoutModifReservation(event, ui) {
 function remplirChampsPopupModifReservation(tabDonnees) {
 	var popupAjoutModifRes = $("#popupAjoutModifReservation");
 
+	// Infos-Reservation + Infos-Client
 	if (tabDonnees) {
 		// Id Fiche
 		$(popupAjoutModifRes).find("#idFichePopupAjoutReservation").val(
@@ -1311,6 +1342,9 @@ function remplirChampsPopupModifReservation(tabDonnees) {
 		$(popupAjoutModifRes).find(
 				"#nbNuitsVisiteursClientPopupAjoutReservation").val(
 				tabDonnees.nbNuitsVisiteursClient);
+		// Nombre de véhicules supplémentaires
+		$(popupAjoutModifRes).find("#nbVehiculesSuppPopupAjoutReservation")
+				.val(tabDonnees.nbVehiculesSupp);
 		// Observations
 		$(popupAjoutModifRes).find("#observationsClientPopupAjoutReservation")
 				.val(tabDonnees.observationsClient);
@@ -1345,6 +1379,7 @@ function parseInfosReservation(strInfos) {
 	var tabDonnees = strInfos.split("|");
 	var tabRetour = Array();
 
+	// Infos-Reservation
 	if (tabDonnees[0] == "v1.0") {
 		// Version
 		tabRetour.version = tabDonnees[0];
@@ -1398,20 +1433,22 @@ function parseInfosReservation(strInfos) {
 		tabRetour.electriciteClient = tabDonnees[23];
 		// Nombre de nuités visiteur
 		tabRetour.nbNuitsVisiteursClient = tabDonnees[24];
+		// Nombre de véhicules supplémentaires
+		tabRetour.nbVehiculesSupp = tabDonnees[25];
 		// Observations
-		tabRetour.observationsClient = tabDonnees[25];
+		tabRetour.observationsClient = tabDonnees[26];
 		// Id du bloc de réservation
-		tabRetour.idReservation = tabDonnees[26];
+		tabRetour.idReservation = tabDonnees[27];
 		// Arrhes sur la réservation
-		tabRetour.arrhes = tabDonnees[27];
+		tabRetour.arrhes = tabDonnees[28];
 		// Numéro d'emplacement de la réservation
-		tabRetour.numeroEmplacement = tabDonnees[28];
+		tabRetour.numeroEmplacement = tabDonnees[29];
 		// Roulotte rouge
-		tabRetour.roulotteRouge = tabDonnees[29];
+		tabRetour.roulotteRouge = tabDonnees[30];
 		// Roulotte bleue
-		tabRetour.roulotteBleue = tabDonnees[30];
+		tabRetour.roulotteBleue = tabDonnees[31];
 		// Référence facture
-		tabRetour.referenceFacture = tabDonnees[31];
+		tabRetour.referenceFacture = tabDonnees[32];
 	}
 
 	return tabRetour;
@@ -1430,6 +1467,7 @@ function parseInfosClient(strInfos) {
 	var tabDonnees = strInfos.split("|");
 	var tabRetour = Array();
 
+	// Infos-Client
 	if (tabDonnees[0] == "v1.0") {
 		// Version
 		tabRetour.version = tabDonnees[0];
@@ -1474,6 +1512,7 @@ function parseInfosClient(strInfos) {
  */
 function serialiserInfosReservation(objInfos) {
 
+	// Infos-Reservation
 	return objInfos.version + separateur + objInfos.refClient + separateur
 			+ objInfos.idFiche + separateur + objInfos.nomClient + separateur
 			+ objInfos.prenomClient + separateur + objInfos.rueClient
@@ -1493,6 +1532,7 @@ function serialiserInfosReservation(objInfos) {
 			+ separateur + objInfos.nbCampingCarClient + separateur
 			+ objInfos.electriciteClient + separateur
 			+ objInfos.nbNuitsVisiteursClient + separateur
+			+ objInfos.nbVehiculesSupp + separateur
 			+ objInfos.observationsClient + separateur + objInfos.idReservation
 			+ separateur + objInfos.arrhes + separateur
 			+ objInfos.numeroEmplacement + separateur + objInfos.roulotteRouge

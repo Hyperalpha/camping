@@ -106,6 +106,12 @@ class Reservation {
 	 * @var integer
 	 */
 	private $nombreNuitesVisiteur;
+	
+	/**
+	 * Nombre de véhicules supplémentaires
+	 * @var integer
+	 */
+	private $nombreVehiculesSupplementaires;
 
 	/**
 	 * Réservation de la roulotte rouge
@@ -421,6 +427,22 @@ class Reservation {
 	 */
 	public function setNombreNuitesVisiteur($nombreNuitesVisiteur) {
 		$this->nombreNuitesVisiteur = $nombreNuitesVisiteur;
+	}
+	
+	/**
+	 * Getter pour le nombre de véhicules supplémentaires
+	 * @return integer
+	 */
+	public function getNombreVehiculesSupplementaires() {
+		return $this->nombreVehiculesSupplementaires;
+	}
+	
+	/**
+	 * Setter pour le nombre de véhicules supplémentaires
+	 * @var integer
+	 */
+	public function setNombreVehiculesSupplementaires($nombreVehiculesSupplementaires) {
+		$this->nombreVehiculesSupplementaires = $nombreVehiculesSupplementaires;
 	}
 
 	/**

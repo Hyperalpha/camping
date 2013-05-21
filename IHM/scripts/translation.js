@@ -30,6 +30,7 @@ var RESERVATION_ENREGISTREE = "La réservation a été enregistrée.";
 var RESERVATION_SUPPRIMEE = "La réservation a été supprimée.";
 var SUPPRIMER = "Supprimer";
 
+//Mois
 var JANVIER = "Janvier";
 var FEVRIER = "Février";
 var MARS = "Mars";
@@ -43,6 +44,7 @@ var OCTOBRE = "Octobre";
 var NOVEMBRE = "Novembre";
 var DECEMBRE = "Décembre";
 
+//Jours
 var LUNDI_MIN = "Lu";
 var MARDI_MIN = "Ma";
 var MERCREDI_MIN = "Me";
@@ -53,3 +55,17 @@ var DIMANCHE_MIN = "Di";
 
 var DATE_FORMAT = "dd/mm/yy";
 var DATE_FORMAT_SANS_ANNEE = 'd MM';
+
+//Pays
+var PAYS_ALLEMAGNE_MIN = 'D';
+var PAYS_ALLEMAGNE = 'Allemagne (D)';
+var PAYS_BELGIQUE_MIN = 'B';
+var PAYS_BELGIQUE = 'Belgique (B)';
+var PAYS_FRANCE_MIN = 'FR';
+var PAYS_FRANCE = 'France (FR)';
+var PAYS_UK_MIN = 'UK';
+var PAYS_UK = 'Grande Bretagne (UK)';
+var PAYS_IRLANDE_MIN = 'IRL';
+var PAYS_IRLANDE = 'Irlande (IRL)';
+var PAYS_PAYS_BAS_MIN = 'NL';
+var PAYS_PAYS_BAS = 'Pays Bas (NL)';

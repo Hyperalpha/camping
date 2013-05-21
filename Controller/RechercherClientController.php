@@ -45,6 +45,7 @@ class RechercherClientController {
 		$chaineRetour = "";
 		$sep = "|";
 
+		//Infos-Client
 		//Version 1.0
 		$chaineRetour .= "v1.0" . $sep;
 		//Référence du client

@@ -54,7 +54,7 @@ class FactureRepository {
 			$facture = new Facture();
 			$facture->setId($data[0]);
 			$facture->setReferenceReservation($data[1]);
-			$facture->setDateGeneration($data[2]);
+			$facture->setDateGeneration(new DateTime($data[2]));
 			$facture->setDevise($data[3]);
 			$facture->setCampeurAdulte($data[4]);
 			$facture->setCampeurEnfant($data[5]);
@@ -98,7 +98,9 @@ class FactureRepository {
 			$sql = "INSERT INTO facture (id, reference_reservation, date_generation, devise, "
 				. "campeur_adulte, campeur_enfant, animal, petite_tente, van, "
 				. "grande_tente, caravane, camping_car, electricite, "
-				. "vehicule_supplementaire, nombre_visiteurs) "
+				. "vehicule_supplementaire, nombre_visiteurs, "
+				. "roulotte_rouge_periode_basse, roulotte_rouge_periode_haute) "
+				. "roulotte_bleue_periode_basse, roulotte_bleue_periode_haute) "
 			. "VALUES ("
 			. "'" . $this->mysqli->real_escape_string($facture->getId()) . "', "
 			. "'" . $this->mysqli->real_escape_string($referenceReservation) . "', "
@@ -115,6 +117,10 @@ class FactureRepository {
 			. "'" . $this->mysqli->real_escape_string($facture->getElectricite()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getVehiculeSupplementaire()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getNombreVisiteurs()) . "'"
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeBasse()) . "'"
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeHaute()) . "'"
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeBasse()) . "'"
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "'"
 			. ");";
 		}
 		else {
@@ -134,7 +140,11 @@ class FactureRepository {
 			. "f.camping_car = '" . $this->mysqli->real_escape_string($facture->getCampingCar()) . "', "
 			. "f.electricite = '" . $this->mysqli->real_escape_string($facture->getElectricite()) . "', "
 			. "f.vehicule_supplementaire = '" . $this->mysqli->real_escape_string($facture->getVehiculeSupplementaire()) . "', "
-			. "f.nombre_visiteurs = '" . $this->mysqli->real_escape_string($facture->getNombreVisiteurs()) . "' "
+			. "f.nombre_visiteurs = '" . $this->mysqli->real_escape_string($facture->getNombreVisiteurs()) . "', "
+			. "f.roulotte_rouge_periode_basse = '" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeBasse()) . "', "
+			. "f.roulotte_rouge_periode_haute = '" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeHaute()) . "', "
+			. "f.roulotte_bleue_periode_basse = '" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeBasse()) . "', "
+			. "f.roulotte_bleue_periode_haute = '" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "' "
 			. " WHERE f.id = '" . $ancienneFacture[0]->getId() . "'";
 		}
 		//On envoie la requête

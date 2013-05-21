@@ -14,8 +14,10 @@ include_once 'ReservationRepository.php';
  */
 class ExportExcelRepository {
 
-	const NOM_TEMPLATE_FICHE_INSCRIPTION = 'Fiche Inscription Camping-1.docx';
-	const NOM_TEMPLATE_FACTURE = 'Formulaire Facture Camping-1.docx';
+	const NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING = 'Fiche Inscription Camping-1.docx';
+	const NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES = 'Fiche Inscription Roulotte-1.docx';
+	const NOM_TEMPLATE_FACTURE_CAMPING = 'Formulaire Facture Camping-1.docx';
+	const NOM_TEMPLATE_FACTURE_ROULOTTES = 'Formulaire Facture Roulotte-1.docx';
 
 	const ASCII_CARTE_ID = 'F0A4';
 	const ASCII_AUTRE_ID = 'F0A5';
@@ -73,8 +75,16 @@ class ExportExcelRepository {
 		}
 
 		//On copie le template de base en renommant le fichier
-		copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FICHE_INSCRIPTION,
-		$repertoireTmp . $DS . $nomFichierExport);
+		if ($reservation->getRoulotteRouge() or $reservation->getRoulotteBleue()) {
+			//Fiche roulottes
+			copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES,
+				$repertoireTmp . $DS . $nomFichierExport);
+		}
+		else {
+			//Fiche camping
+			copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING,
+				$repertoireTmp . $DS . $nomFichierExport);
+		}
 
 		//On ouvre le fichier XLSX comme un ZIP
 		$zip = new ZipArchive;
@@ -140,6 +150,34 @@ class ExportExcelRepository {
 				if (is_null($facture)) {
 					$facture = new Facture();
 				}
+				$dateArrivee = $reservation->getDateArrivee();
+				$dateDepart = $reservation->getDateDepart();
+				$interval = $dateDepart->diff($dateArrivee);
+				$nbNuitees = intval($interval->format('%a'));
+				$dateDebutPeriodeHauteRoulotte = $this->referentielRepo->getDateDebutPeriodeHauteRoulotte();
+				$dateFinPeriodeHauteRoulotte = $this->referentielRepo->getDateFinPeriodeHauteRoulotte();
+				
+				if ($reservation->getRoulotteRouge()) {
+					$nbNuitsRoulotteRouge = PlanningCampingController::getNbJoursHautBasRoulottes(
+							$dateArrivee, $dateDepart, $dateDebutPeriodeHauteRoulotte, $dateFinPeriodeHauteRoulotte);
+					$nombreRoulotteRougePeriodeBasse = round((intval($nbNuitsRoulotteRouge->nbJoursBas) / 7) * 100) / 100;
+					$nombreRoulotteRougePeriodeHaute = round((intval($nbNuitsRoulotteRouge->nbJoursHaut) / 7) * 100) / 100;
+				}
+				else {
+					$nombreRoulotteRougePeriodeBasse = 0;
+					$nombreRoulotteRougePeriodeHaute = 0;
+				}
+				if ($reservation->getRoulotteBleue()) {
+					$nbNuitsRoulotteBleue = PlanningCampingController::getNbJoursHautBasRoulottes(
+							$dateArrivee, $dateDepart, $dateDebutPeriodeHauteRoulotte, $dateFinPeriodeHauteRoulotte);
+					$nombreRoulotteBleuePeriodeBasse = round((intval($nbNuitsRoulotteBleue->nbJoursBas) / 7) * 100) / 100;
+					$nombreRoulotteBleuePeriodeHaute = round((intval($nbNuitsRoulotteBleue->nbJoursHaut) / 7) * 100) / 100;
+				}
+				else {
+					$nombreRoulotteBleuePeriodeBasse = 0;
+					$nombreRoulotteBleuePeriodeHaute = 0;
+				}
+				
 				$facture->setId('F' .  date('YmdHis') . '_' . $reservation->getReference() . '-'
 						. $client->getReference());
 				$facture->setReferenceReservation($reservation->getReference());
@@ -163,10 +201,18 @@ class ExportExcelRepository {
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixCampingCar());
 				$facture->setElectricite(intval($reservation->getElectricite())
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixElectricite());
-				$facture->setVehiculeSupplementaire(intval(0)
+				$facture->setVehiculeSupplementaire(intval($reservation->getNombreVehiculesSupplementaires())
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixVehiculeSupp());
 				$facture->setNombreVisiteurs(intval($reservation->getNombreNuitesVisiteur())
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixVisiteur());
+				$facture->setRoulotteRougePeriodeBasse($nombreRoulotteRougePeriodeBasse
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixRoulotteRougePeriodeBasse());
+				$facture->setRoulotteRougePeriodeHaute($nombreRoulotteRougePeriodeHaute
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixRoulotteRougePeriodeHaute());
+				$facture->setRoulotteBleuePeriodeBasse($nombreRoulotteBleuePeriodeBasse
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixRoulotteBleuePeriodeBasse());
+				$facture->setRoulotteBleuePeriodeHaute($nombreRoulotteBleuePeriodeHaute
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixRoulotteBleuePeriodeHaute());
 				
 				//On relie la facture à la réservation
 				$reservation->setFacture($facture);
@@ -186,8 +232,16 @@ class ExportExcelRepository {
 		}
 	
 		//On copie le template de base en renommant le fichier
-		copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FACTURE,
-		$repertoireTmp . $DS . $nomFichierExport);
+		if ($reservation->getRoulotteRouge() or $reservation->getRoulotteBleue()) {
+			//Facture roulottes
+			copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FACTURE_ROULOTTES,
+				$repertoireTmp . $DS . $nomFichierExport);
+		}
+		else {
+			//Facture camping
+			copy($repertoireTemplate . $DS . self::NOM_TEMPLATE_FACTURE_CAMPING,
+				$repertoireTmp . $DS . $nomFichierExport);
+		}
 	
 		//On ouvre le fichier XLSX comme un ZIP
 		$zip = new ZipArchive;
@@ -241,6 +295,9 @@ class ExportExcelRepository {
 		$dateDepart = $reservation->getDateDepart();
 		$interval = $dateDepart->diff($dateArrivee);
 		$nbNuitees = intval($interval->format('%a'));
+		
+		$dateDebutPeriodeHauteRoulotte = $this->referentielRepo->getDateDebutPeriodeHauteRoulotte();
+		$dateFinPeriodeHauteRoulotte = $this->referentielRepo->getDateFinPeriodeHauteRoulotte();
 
 		//En tête
 		/********/
@@ -266,9 +323,6 @@ class ExportExcelRepository {
 
 		//Partie réservation
 		/*******************/
-		/**
-		 * @TODO: rajouter champ nb véhicules supp
-		 */
 		$carteIdPres = $reservation->getPieceIdPresentee();
 		$nombreAdultes = intval($reservation->getNombreAdultes());
 		$nombreEnfants = intval($reservation->getNombreEnfants());
@@ -279,8 +333,28 @@ class ExportExcelRepository {
 		$nombreCaravanes = intval($reservation->getNombreCaravanes());
 		$nombreCampingCars = intval($reservation->getNombreCampingCars());
 		$electricite = intval($reservation->getElectricite());
-		$nombreVehiculesSupp = intval(0);
+		$nombreVehiculesSupp = intval($reservation->getNombreVehiculesSupplementaires());
 		$nombreVisiteurs = intval($reservation->getNombreNuitesVisiteur());
+		if ($reservation->getRoulotteRouge()) {
+			$nbNuitsRoulotteRouge = PlanningCampingController::getNbJoursHautBasRoulottes(
+					$dateArrivee, $dateDepart, $dateDebutPeriodeHauteRoulotte, $dateFinPeriodeHauteRoulotte);
+			$nombreRoulotteRougePeriodeBasse = $nbNuitsRoulotteRouge->nbJoursBas;
+			$nombreRoulotteRougePeriodeHaute = $nbNuitsRoulotteRouge->nbJoursHaut;
+		}
+		else {
+			$nombreRoulotteRougePeriodeBasse = 0;
+			$nombreRoulotteRougePeriodeHaute = 0;
+		}
+		if ($reservation->getRoulotteBleue()) {
+			$nbNuitsRoulotteBleue = PlanningCampingController::getNbJoursHautBasRoulottes(
+					$dateArrivee, $dateDepart, $dateDebutPeriodeHauteRoulotte, $dateFinPeriodeHauteRoulotte);
+			$nombreRoulotteBleuePeriodeBasse = $nbNuitsRoulotteBleue->nbJoursBas;
+			$nombreRoulotteBleuePeriodeHaute = $nbNuitsRoulotteBleue->nbJoursHaut;
+		}
+		else {
+			$nombreRoulotteBleuePeriodeBasse = 0;
+			$nombreRoulotteBleuePeriodeHaute = 0;
+		}
 
 		$prixAdulte = $this->referentielRepo->getPrixCampeurAdulte();
 		$prixEnfant = $this->referentielRepo->getPrixCampeurEnfant();
@@ -291,6 +365,10 @@ class ExportExcelRepository {
 		$prixElectricite = $this->referentielRepo->getPrixElectricite();
 		$prixVehiculeSupp = $this->referentielRepo->getPrixVehiculeSupp();
 		$prixVisiteur = $this->referentielRepo->getPrixVisiteur();
+		$prixRoulotteRougePeriodeBasse = $this->referentielRepo->getPrixRoulotteRougePeriodeBasse();
+		$prixRoulotteRougePeriodeHaute = $this->referentielRepo->getPrixRoulotteRougePeriodeHaute();
+		$prixRoulotteBleuePeriodeBasse = $this->referentielRepo->getPrixRoulotteBleuePeriodeBasse();
+		$prixRoulotteBleuePeriodeHaute = $this->referentielRepo->getPrixRoulotteBleuePeriodeHaute();
 
 		if (strcmp('carteId', $carteIdPres) === 0) {
 			//Première occurence du carré
@@ -320,7 +398,12 @@ class ExportExcelRepository {
 		str_replace('{{PRIX_CAMPING_CAR}}', $prixCampingCar,
 		str_replace('{{PRIX_ELECTRICITE}}', $prixElectricite,
 		str_replace('{{PRIX_VEHICULE_SUPP}}', $prixVehiculeSupp,
-		str_replace('{{PRIX_VISITEUR}}', $prixVisiteur, $newContenu)))))))));
+		str_replace('{{PRIX_VISITEUR}}', $prixVisiteur,
+		str_replace('{{PRIX_ROULOTTE_ROUGE_BASSE}}', $prixRoulotteRougePeriodeBasse, 
+		str_replace('{{PRIX_ROULOTTE_ROUGE_HAUTE}}', $prixRoulotteRougePeriodeHaute,
+		str_replace('{{PRIX_ROULOTTE_BLEUE_BASSE}}', $prixRoulotteBleuePeriodeBasse,
+		str_replace('{{PRIX_ROULOTTE_BLEUE_HAUTE}}', $prixRoulotteBleuePeriodeHaute,
+				$newContenu)))))))))))));
 
 		//Nombre
 		$newContenu = str_replace('{{NB_ADULTES}}', $nombreAdultes,
@@ -347,10 +430,23 @@ class ExportExcelRepository {
 		$sousTotalElectricite = $electricite * $prixElectricite;
 		$sousTotalVehiculeSupp = $nombreVehiculesSupp * $prixVehiculeSupp;
 		$sousTotalVisiteur = $nombreVisiteurs * $prixVisiteur;
+		
+		$sousTotalRoulotteRougePeriodeBasse = round($nombreRoulotteRougePeriodeBasse 
+				* ($prixRoulotteRougePeriodeBasse / 7) * 100) / 100;
+		$sousTotalRoulotteRougePeriodeHaute = round($nombreRoulotteRougePeriodeHaute 
+				* ($prixRoulotteRougePeriodeHaute / 7) * 100) / 100;
+		$sousTotalRoulotteBleuePeriodeBasse = round($nombreRoulotteBleuePeriodeBasse 
+				* ($prixRoulotteBleuePeriodeBasse / 7) * 100) / 100;
+		$sousTotalRoulotteBleuePeriodeHaute = round($nombreRoulotteBleuePeriodeHaute 
+				* ($prixRoulotteBleuePeriodeHaute / 7) * 100) / 100;
+		
 		$sousTotalNuitees = $sousTotalAdulte + $sousTotalEnfant + $sousTotalAnimal +
-		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
-		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
-		$sousTotalVehiculeSupp + $sousTotalVisiteur;
+			$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
+			$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
+			$sousTotalVehiculeSupp + $sousTotalVisiteur;
+		$totalSejourRoulottes = $sousTotalRoulotteRougePeriodeBasse + 
+			$sousTotalRoulotteRougePeriodeHaute + $sousTotalRoulotteBleuePeriodeBasse + 
+			$sousTotalRoulotteBleuePeriodeHaute;
 		$totalSejour = $sousTotalNuitees * $nbNuitees;
 
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
@@ -364,8 +460,13 @@ class ExportExcelRepository {
 		str_replace('{{SOUS_TOTAL_ELECTRICITE}}', $sousTotalElectricite,
 		str_replace('{{SOUS_TOTAL_VEHICULE_SUPP}}', $sousTotalVehiculeSupp,
 		str_replace('{{SOUS_TOTAL_VISITEUR}}', $sousTotalVisiteur,
+		str_replace('{{SOUS_TOTAL_ROULOTTE_ROUGE_BASSE}}', $sousTotalRoulotteRougePeriodeBasse,
+		str_replace('{{SOUS_TOTAL_ROULOTTE_ROUGE_HAUTE}}', $sousTotalRoulotteRougePeriodeHaute,
+		str_replace('{{SOUS_TOTAL_ROULOTTE_BLEUE_BASSE}}', $sousTotalRoulotteBleuePeriodeBasse,
+		str_replace('{{SOUS_TOTAL_ROULOTTE_BLEUE_HAUTE}}', $sousTotalRoulotteBleuePeriodeHaute,
 		str_replace('{{SOUS_TOTAL_NUITEES}}', $sousTotalNuitees,
-		str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu)))))))))))));
+		str_replace('{{TOTAL_SEJOUR_ROULOTTES}}', $totalSejourRoulottes,
+		str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu))))))))))))))))));
 
 		//Acompte
 		$acompte = floatval($reservation->getArrhes());
@@ -402,6 +503,10 @@ class ExportExcelRepository {
 		$electricite = null;
 		$nombreVehiculesSupp = null;
 		$nombreVisiteurs = null;
+		$nombreRoulotteRougeBas = null;
+		$nombreRoulotteRougeHaut = null;
+		$nombreRoulotteBleueBas = null;
+		$nombreRoulotteBleueHaut = null;
 		$prixAdulte = null;
 		$prixEnfant = null;
 		$prixAnimal = null;
@@ -411,6 +516,10 @@ class ExportExcelRepository {
 		$prixElectricite = null;
 		$prixVehiculeSupp = null;
 		$prixVisiteur = null;
+		$prixRoulotteRougeBas = null;
+		$prixRoulotteRougeHaut = null;
+		$prixRoulotteBleueBas = null;
+		$prixRoulotteBleueHaut = null;
 		$dateArrivee = $reservation->getDateArrivee();
 		$dateDepart = $reservation->getDateDepart();
 		$interval = $dateDepart->diff($dateArrivee);
@@ -423,9 +532,6 @@ class ExportExcelRepository {
 	
 		//Partie réservation
 		/*******************/
-		/**
-		 * @TODO: rajouter champ nb véhicules supp
-		*/
 		//Décomposition des données de la facture
 		if (!is_null($facture)) {
 			$tabCampeurAdulte = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampeurAdulte());
@@ -439,6 +545,14 @@ class ExportExcelRepository {
 			$tabElectricite = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getElectricite());
 			$tabVehiculeSupplementaire = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getVehiculeSupplementaire());
 			$tabNombreVisiteurs = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getNombreVisiteurs());
+			$tabRoulotteRougePeriodeBasse = explode(self::SEPARATEUR_PRIX_FACTURE, 
+					$facture->getRoulotteRougePeriodeBasse());
+			$tabRoulotteRougePeriodeHaute = explode(self::SEPARATEUR_PRIX_FACTURE, 
+					$facture->getRoulotteRougePeriodeHaute());
+			$tabRoulotteBleuePeriodeBasse = explode(self::SEPARATEUR_PRIX_FACTURE, 
+					$facture->getRoulotteBleuePeriodeBasse());
+			$tabRoulotteBleuePeriodeHaute = explode(self::SEPARATEUR_PRIX_FACTURE, 
+					$facture->getRoulotteBleuePeriodeHaute());
 			
 			if (count($tabCampeurAdulte) == 2) {
 				$nombreAdultes = intval($tabCampeurAdulte[0]);
@@ -484,6 +598,22 @@ class ExportExcelRepository {
 				$nombreVisiteurs = intval($tabNombreVisiteurs[0]);
 				$prixVisiteur = floatval($tabNombreVisiteurs[1]);
 			}
+			if (count($tabRoulotteRougePeriodeBasse) == 2) {
+				$nombreRoulotteRougeBas = floatval($tabRoulotteRougePeriodeBasse[0]);
+				$prixRoulotteRougeBas = floatval($tabRoulotteRougePeriodeBasse[1]);
+			}
+			if (count($tabRoulotteRougePeriodeHaute) == 2) {
+				$nombreRoulotteRougeHaut = floatval($tabRoulotteRougePeriodeHaute[0]);
+				$prixRoulotteRougeHaut = floatval($tabRoulotteRougePeriodeHaute[1]);
+			}
+			if (count($tabRoulotteBleuePeriodeBasse) == 2) {
+				$nombreRoulotteBleueBas = floatval($tabRoulotteBleuePeriodeBasse[0]);
+				$prixRoulotteBleueBas = floatval($tabRoulotteBleuePeriodeBasse[1]);
+			}
+			if (count($tabRoulotteBleuePeriodeHaute) == 2) {
+				$nombreRoulotteBleueHaut = floatval($tabRoulotteBleuePeriodeHaute[0]);
+				$prixRoulotteBleueHaut = floatval($tabRoulotteBleuePeriodeHaute[1]);
+			}
 		}
 	
 		if (!is_null($dateArrivee)) {
@@ -505,7 +635,12 @@ class ExportExcelRepository {
 			str_replace('{{PRIX_CAMPING_CAR}}', $prixCampingCar,
 			str_replace('{{PRIX_ELECTRICITE}}', $prixElectricite,
 			str_replace('{{PRIX_VEHICULE_SUPP}}', $prixVehiculeSupp,
-			str_replace('{{PRIX_VISITEUR}}', $prixVisiteur, $newContenu)))))))));
+			str_replace('{{PRIX_VISITEUR}}', $prixVisiteur,
+			str_replace('{{PRIX_ROULOTTE_ROUGE_PERIODE_BASSE}}', $prixRoulotteRougeBas,
+			str_replace('{{PRIX_ROULOTTE_ROUGE_PERIODE_HAUTE}}', $prixRoulotteRougeHaut,
+			str_replace('{{PRIX_ROULOTTE_BLEUE_PERIODE_BASSE}}', $prixRoulotteBleueBas,
+			str_replace('{{PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $prixRoulotteBleueHaut,
+					$newContenu)))))))))))));
 	
 		//Nombre
 		$newContenu = str_replace('{{NB_ADULTES}}', $nombreAdultes,
@@ -518,7 +653,12 @@ class ExportExcelRepository {
 			str_replace('{{NB_CAMPING_CAR}}', $nombreCampingCars,
 			str_replace('{{ELECTRICITE}}', $electricite,
 			str_replace('{{NB_VEHICULES_SUPP}}', $nombreVehiculesSupp,
-			str_replace('{{NB_VISITEURS}}', $nombreVisiteurs, $newContenu)))))))))));
+			str_replace('{{NB_VISITEURS}}', $nombreVisiteurs,
+			str_replace('{{NB_ROULOTTE_ROUGE_PERIODE_BASSE}}', $nombreRoulotteRougeBas,
+			str_replace('{{NB_ROULOTTE_ROUGE_PERIODE_HAUTE}}', $nombreRoulotteRougeHaut,
+			str_replace('{{NB_ROULOTTE_BLEUE_PERIODE_BASSE}}', $nombreRoulotteBleueBas,
+			str_replace('{{NB_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $nombreRoulotteBleueHaut,
+					$newContenu)))))))))))))));
 	
 		//Sous total
 		$sousTotalAdulte = $nombreAdultes * $prixAdulte;
@@ -532,11 +672,17 @@ class ExportExcelRepository {
 		$sousTotalElectricite = $electricite * $prixElectricite;
 		$sousTotalVehiculeSupp = $nombreVehiculesSupp * $prixVehiculeSupp;
 		$sousTotalVisiteur = $nombreVisiteurs * $prixVisiteur;
+		$sousTotalRoulotteRougeBas = $nombreRoulotteRougeBas * $prixRoulotteRougeBas;
+		$sousTotalRoulotteRougeHaut = $nombreRoulotteRougeHaut * $prixRoulotteRougeHaut;
+		$sousTotalRoulotteBleueBas = $nombreRoulotteBleueBas * $prixRoulotteBleueBas;
+		$sousTotalRoulotteBleueHaut = $nombreRoulotteBleueHaut * $prixRoulotteBleueHaut;
 		$sousTotalNuitees = $sousTotalAdulte + $sousTotalEnfant + $sousTotalAnimal +
-		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
-		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
-		$sousTotalVehiculeSupp + $sousTotalVisiteur;
+			$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
+			$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
+			$sousTotalVehiculeSupp + $sousTotalVisiteur;
 		$totalSejour = $sousTotalNuitees * $nbNuitees;
+		$totalSejourRoulottes = $sousTotalRoulotteRougeBas + $sousTotalRoulotteRougeHaut + 
+			$sousTotalRoulotteBleueBas + $sousTotalRoulotteBleueHaut;
 	
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
 			str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,
@@ -549,8 +695,14 @@ class ExportExcelRepository {
 			str_replace('{{SOUS_TOTAL_ELECTRICITE}}', $sousTotalElectricite,
 			str_replace('{{SOUS_TOTAL_VEHICULE_SUPP}}', $sousTotalVehiculeSupp,
 			str_replace('{{SOUS_TOTAL_VISITEUR}}', $sousTotalVisiteur,
+			str_replace('{{SOUS_TOTAL_ROULOTTE_ROUGE_PERIODE_BASSE}}', $sousTotalRoulotteRougeBas,
+			str_replace('{{SOUS_TOTAL_ROULOTTE_ROUGE_PERIODE_HAUTE}}', $sousTotalRoulotteRougeHaut,
+			str_replace('{{SOUS_TOTAL_ROULOTTE_BLEUE_PERIODE_BASSE}}', $sousTotalRoulotteBleueBas,
+			str_replace('{{SOUS_TOTAL_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $sousTotalRoulotteBleueHaut,
 			str_replace('{{SOUS_TOTAL_NUITEES}}', $sousTotalNuitees,
-			str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu)))))))))))));
+			str_replace('{{TOTAL_SEJOUR}}', $totalSejour,
+			str_replace('{{TOTAL_SEJOUR_ROULOTTES}}', $totalSejourRoulottes,
+					$newContenu))))))))))))))))));
 	
 		return $newContenu;
 	}

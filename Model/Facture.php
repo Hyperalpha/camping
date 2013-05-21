@@ -95,6 +95,30 @@ class Facture {
 	 * @var string
 	 */
 	private $nombreVisiteurs;
+	
+	/**
+	 * Roulotte rouge période basse
+	 * @var string
+	 */
+	private $roulotteRougePeriodeBasse;
+	
+	/**
+	 * Roulotte rouge période haute
+	 * @var string
+	 */
+	private $roulotteRougePeriodeHaute;
+	
+	/**
+	 * Roulotte bleue période basse
+	 * @var string
+	 */
+	private $roulotteBleuePeriodeBasse;
+	
+	/**
+	 * Roulotte bleue période haute
+	 * @var string
+	 */
+	private $roulotteBleuePeriodeHaute;
 
 	/**
 	 * Date de création du client
@@ -346,6 +370,70 @@ class Facture {
 	 */
 	public function setNombreVisiteurs($nombreVisiteurs) {
 		$this->nombreVisiteurs = $nombreVisiteurs;
+	}
+	
+	/**
+	 * Getter pour roulotte rouge période basse
+	 * @return string
+	 */
+	public function getRoulotteRougePeriodeBasse() {
+		return $this->roulotteRougePeriodeBasse;
+	}
+	
+	/**
+	 * Setter pour roulotte rouge période basse
+	 * @var string
+	 */
+	public function setRoulotteRougePeriodeBasse($roulotteRougePeriodeBasse) {
+		$this->roulotteRougePeriodeBasse = $roulotteRougePeriodeBasse;
+	}
+	
+	/**
+	 * Getter pour roulotte rouge période haute
+	 * @return string
+	 */
+	public function getRoulotteRougePeriodeHaute() {
+		return $this->roulotteRougePeriodeHaute;
+	}
+	
+	/**
+	 * Setter pour roulotte rouge période haute
+	 * @var string
+	 */
+	public function setRoulotteRougePeriodeHaute($roulotteRougePeriodeHaute) {
+		$this->roulotteRougePeriodeHaute = $roulotteRougePeriodeHaute;
+	}
+	
+	/**
+	 * Getter pour roulotte bleue période basse
+	 * @return string
+	 */
+	public function getRoulotteBleuePeriodeBasse() {
+		return $this->roulotteBleuePeriodeBasse;
+	}
+	
+	/**
+	 * Setter pour roulotte bleue période basse
+	 * @var string
+	 */
+	public function setRoulotteBleuePeriodeBasse($roulotteBleuePeriodeBasse) {
+		$this->roulotteBleuePeriodeBasse = $roulotteBleuePeriodeBasse;
+	}
+	
+	/**
+	 * Getter pour roulotte bleue période haute
+	 * @return string
+	 */
+	public function getRoulotteBleuePeriodeHaute() {
+		return $this->roulotteBleuePeriodeHaute;
+	}
+	
+	/**
+	 * Setter pour roulotte bleue période haute
+	 * @var string
+	 */
+	public function setRoulotteBleuePeriodeHaute($roulotteBleuePeriodeHaute) {
+		$this->roulotteBleuePeriodeHaute = $roulotteBleuePeriodeHaute;
 	}
 	
 	/**

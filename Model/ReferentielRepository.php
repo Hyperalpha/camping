@@ -24,6 +24,7 @@ class ReferentielRepository {
 	const CODE_PRIX_ROULOTTE_BLEUE_PERIODE_BASSE = 'PRIX_ROULOTTE_BLEUE_PERIODE_BASSE';
 	const CODE_PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE = 'PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE';
 	const CODE_DATE_DEBUT_PERIODE_HAUTE_ROULOTTE = 'DATE_DEBUT_PERIODE_HAUTE_ROULOTTE';
+	const CODE_DATE_FIN_PERIODE_HAUTE_ROULOTTE = 'DATE_FIN_PERIODE_HAUTE_ROULOTTE';
 	const CODE_DATE_DEBUT_AFFICHAGE_TABLEAU_RESERVATION = 'DATE_DEBUT_AFFICHAGE_TABLEAU_RESERVATION';
 	const CODE_DATE_FIN_AFFICHAGE_TABLEAU_RESERVATION = 'DATE_FIN_AFFICHAGE_TABLEAU_RESERVATION';
 
@@ -475,6 +476,37 @@ class ReferentielRepository {
 		}
 
 		$this->setRef(self::CODE_DATE_DEBUT_PERIODE_HAUTE_ROULOTTE, $valeur, $flush);
+	}
+	
+	/**
+	 * Renvoie la date de fin de la période haute pour les roulottes
+	 * @author Arnaud DUPUIS
+	 * @return DateTime Date de fin de la période haute pour les roulottes
+	 */
+	public function getDateFinPeriodeHauteRoulotte() {
+		$retour = $this->getRef(self::CODE_DATE_FIN_PERIODE_HAUTE_ROULOTTE);
+	
+		//Mise en forme
+		if (!is_null($retour) && !is_null($retour->getValeur())) {
+			$retour = new DateTime($retour->getValeur());
+		}
+	
+		return $retour;
+	}
+	
+	/**
+	 * Initialise la date de fin de la période haute pour les roulottes
+	 * @author Arnaud DUPUIS
+	 * @param \DateTime $valeur Date de fin de la période haute pour les roulottes
+	 * @param Boolean $flush Enregistrer ou pas en base de données
+	 */
+	public function setDateFinPeriodeHauteRoulotte(\DateTime $valeur = null, $flush = false) {
+		//Mise en forme
+		if (!is_null($valeur)) {
+			$valeur = $valeur->format('Y-m-d');
+		}
+	
+		$this->setRef(self::CODE_DATE_FIN_PERIODE_HAUTE_ROULOTTE, $valeur, $flush);
 	}
 
 	/**

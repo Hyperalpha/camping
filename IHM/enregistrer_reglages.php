@@ -14,7 +14,8 @@ $codeValeursARecuperer = array('Prix/nuitée_campeur_adulte', 'Prix/nuitée_camp
 	'Prix_roulotte_rouge_période_basse', 'Prix_roulotte_rouge_période_haute', 
 	'Prix_roulotte_bleue_période_basse', 'Prix_roulotte_bleue_période_haute', 
 	'Date_de_début_du_tableau_des_réservation', 'Date_de_fin_du_tableau_des_réservation', 
-	'Date_de_début_de_la_période_haute_des_roulottes');
+	'Date_de_début_de_la_période_haute_des_roulottes',
+	'Date_de_fin_de_la_période_haute_des_roulottes');
 $valeursARecuperer = array(null, null, null, null, null, null, null, null, null, null,
 null, null, null, null, null, null);
 
@@ -42,6 +43,7 @@ $stdReglages->prixRoulottesBleuePeriodeHaute = $valeursARecuperer[12];
 $stdReglages->dateDebutAffichageReservations = $valeursARecuperer[13];
 $stdReglages->dateFinAffichageReservations = $valeursARecuperer[14];
 $stdReglages->dateDebutPeriodeHauteRoulottes = $valeursARecuperer[15];
+$stdReglages->dateFinPeriodeHauteRoulottes = $valeursARecuperer[16];
 
 $planningCamping = new PlanningCampingController();
 $planningCamping->enregistrerReglages($stdReglages);

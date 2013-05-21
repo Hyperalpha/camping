@@ -107,7 +107,7 @@ class ReservationRepository {
 	public function enregistrerReservation(Reservation $reservation) {
 		$estCreationRes = false;
 		$client = $reservation->getClient();
-
+		
 		//On enregistre d'abord le client
 		$this->clientRepository->enregistrerClient($client);
 		
@@ -152,8 +152,8 @@ class ReservationRepository {
 				. "piece_id_presentee, arrhes, nombre_adultes, nombre_enfants, nombre_animaux, "
 				. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
 				. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
-				. "roulotte_rouge, roulotte_bleue, observations, "
-				. "numero_emplacement, coordonnees_x_emplacement, "
+				. "nombre_vehicules_supplementaires, roulotte_rouge, roulotte_bleue, "
+				. "observations, numero_emplacement, coordonnees_x_emplacement, "
 				. "coordonnees_y_emplacement) "
 				. "VALUES ("
 				. "'" . $referenceReservation. "', "
@@ -172,6 +172,7 @@ class ReservationRepository {
 				. "'" . intval($reservation->getNombreCampingCars()) . "', "
 				. "'" . $reservation->getElectricite() . "', "
 				. "'" . intval($reservation->getNombreNuitesVisiteur()) . "', "
+				. "'" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
 				. "'" . intval($reservation->getRoulotteRouge()) . "', "
 				. "'" . intval($reservation->getRoulotteBleue()) . "', "
 				. "'" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
@@ -198,6 +199,7 @@ class ReservationRepository {
 				. "r.nombre_camping_cars = '" . intval($reservation->getNombreCampingCars()) . "', "
 				. "r.electricite = '" . $reservation->getElectricite() . "', "
 				. "r.nombre_nuitees_visiteur = '" . intval($reservation->getNombreNuitesVisiteur()) . "', "
+				. "r.nombre_vehicules_supplementaires = '" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
 				. "r.roulotte_rouge = '" . intval($reservation->getRoulotteRouge()) . "', "
 				. "r.roulotte_bleue = '" . intval($reservation->getRoulotteBleue()) . "', "
 				. "r.observations = '" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
@@ -311,10 +313,7 @@ class ReservationRepository {
 					$cAReservation += $prixGrandEmplacement * $reservation->getNombreCaravanes();
 					$cAReservation += $prixCampingCar * $reservation->getNombreCampingCars();
 					$cAReservation += $prixElectricite * $reservation->getElectricite();
-					/**
-					 * @todo: nb de véhicules supp
-					*/
-					//$cAReservation += $prixVehiculeSupp * $reservation->getNombreEnfants();
+					$cAReservation += $prixVehiculeSupp * $reservation->getNombreVehiculesSupplementaires();
 					$cAReservation += $prixVisiteur * $reservation->getNombreNuitesVisiteur();
 					
 					//On multiplie par le nombre de nuitées
@@ -432,7 +431,7 @@ class ReservationRepository {
 			. 'r.piece_id_presentee, r.arrhes, r.nombre_adultes, r.nombre_enfants, r.nombre_animaux, '
 			. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
 			. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
-			. 'r.roulotte_rouge, r.roulotte_bleue, '
+			. 'r.nombre_vehicules_supplementaires, r.roulotte_rouge, r.roulotte_bleue, '
 			. 'r.observations, r.numero_emplacement, '
 			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
 			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res '
@@ -469,22 +468,23 @@ class ReservationRepository {
 			}
 			$newRes->setElectricite($elec);
 			$newRes->setNombreNuitesVisiteur($data[16]);
+			$newRes->setNombreVehiculesSupplementaires($data[17]);
 			$roulotteRouge = false;
-			if ($data[17] == "1" or $data[17] == true) {
+			if ($data[18] == "1" or $data[18] == true) {
 				$roulotteRouge = true;
 			}
 			$newRes->setRoulotteRouge($roulotteRouge);
 			$roulotteBleue = false;
-			if ($data[18] == "1" or $data[18] == true) {
+			if ($data[19] == "1" or $data[19] == true) {
 				$roulotteBleue = true;
 			}
 			$newRes->setRoulotteBleue($roulotteBleue);
-			$newRes->setObservations($data[19]);
-			$newRes->setNumeroEmplacement($data[20]);
-			$newRes->setCoordonneesXEmplacement($data[21]);
-			$newRes->setCoordonneesYEmplacement($data[22]);
-			$newRes->setDateCreation(new DateTime($data[23]));
-			$newRes->setDateModification(new DateTime($data[24]));
+			$newRes->setObservations($data[20]);
+			$newRes->setNumeroEmplacement($data[21]);
+			$newRes->setCoordonneesXEmplacement($data[22]);
+			$newRes->setCoordonneesYEmplacement($data[23]);
+			$newRes->setDateCreation(new DateTime($data[24]));
+			$newRes->setDateModification(new DateTime($data[25]));
 
 			//Récupération du client
 			if ($data[2]) {
