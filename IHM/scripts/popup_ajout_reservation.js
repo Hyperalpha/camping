@@ -63,10 +63,24 @@ function relierEvenementsAjoutReservation() {
 			.dialog(
 					{
 						autoOpen : false,
-						height : 300,
+						height : 302,
 						resizable : false,
-						width : 375,
+						width : 390,
 						buttons : [
+								{
+									text : '',
+									'id' : "imageImprimerPopupDetailsReservation",
+									click : function() {
+										var tabDonnees = parseInfosReservation($(
+												this)
+												.find(
+														"#infosPopupDetailsReservation")
+												.val());
+
+										document.location = 'exporter_reservation.php?idFiche='
+												+ tabDonnees.idFiche;
+									}
+								},
 								{
 									text : SUPPRIMER,
 									'class' : "bouton-details-reservation",

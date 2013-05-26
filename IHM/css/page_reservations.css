@@ -392,6 +392,13 @@ table.tableau_calendrier th.header_jours_calendrier {
 	border-top: 3px solid #D4CCB0;
 	top: 161px;
 }
+#imageImprimerPopupDetailsReservation {
+	background: url(../images/print-moyen.png);
+	background-repeat: no-repeat;
+	border: none;
+	height: 40px;
+	width: 40px;
+}
 #caseDetailsClientPopupDetailsReservation {
 	border-bottom: 3px solid #D4CCB0;
 	border-left: 3px solid #D4CCB0;
@@ -401,7 +408,7 @@ table.tableau_calendrier th.header_jours_calendrier {
 	position: absolute;
 	left: 70px;
 	top: 0px;
-	width: 280px;
+	width: 295px;
 }
 #nomClientPopupDetailsReservation {
 	display: inline-block;
@@ -411,14 +418,14 @@ table.tableau_calendrier th.header_jours_calendrier {
 }
 #blocAnimalPopupDetailsReservation {
 	position: absolute;
-	left: 130px;
+	left: 150px;
 	top: 63px;
 }
 #blocFacturePopupDetailsReservation {
 	cursor: pointer;
 	position: absolute;
 	right: 20px;
-	top: 63px;
+	top: 67px;
 }
 #caseObservationsPopupDetailsReservation {
 	border-left: 3px solid #D4CCB0;
@@ -426,13 +433,13 @@ table.tableau_calendrier th.header_jours_calendrier {
 	position: absolute;
 	left: 70px;
 	top: 129px;
-	width: 300px;
+	width: 315px;
 }
 #caseObservationsPopupDetailsReservation textarea {
 	background-color: transparent;
 	margin-top: 10px;
 	height: 64px;
-    width: 300px;
+    width: 315px;
 }
 .ui-dialog-buttonpane button.bouton-details-reservation {margin-left: 20px;}
 
