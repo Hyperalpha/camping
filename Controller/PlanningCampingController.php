@@ -352,7 +352,7 @@ class PlanningCampingController {
 		// Nombre de véhicules supplémentaires
 		$chaineRetour .= intval($reservation->getNombreVehiculesSupplementaires()) . $sep;
 		//Observations
-		$chaineRetour .= $reservation->getObservations() . $sep;
+		$chaineRetour .= $this->convertirZoneTextePourIhm($reservation->getObservations()) . $sep;
 		//Id du bloc de réservation (non pris en charge par le PHP)
 		$chaineRetour .= $sep;
 		//Arrhes sur la réservation
@@ -771,6 +771,23 @@ class PlanningCampingController {
 			str_ireplace("December", "Décembre", $retour))))))))))));
 		}
 
+		return $retour;
+	}
+	
+	/**
+	 * Convertit une zone de texte pour être compatible avec l'IHM
+	 * (remplace par exemple les espaces par \n)
+	 * @param string $valeur Contenu du champ texte
+	 * @return string Renvoie la valeur formatée
+	 */
+	private function convertirZoneTextePourIhm($valeur) {
+		$retour = null;
+		
+		//On remplace les retours chariot par des \n
+		$retour = str_replace(CHR(13) . CHR(10), '\n', $valeur);
+		$retour = str_replace(CHR(13), '\n', $retour);
+		$retour = str_replace(CHR(10), '\n', $retour);
+		
 		return $retour;
 	}
 }
