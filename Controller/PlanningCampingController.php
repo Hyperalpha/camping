@@ -572,6 +572,37 @@ class PlanningCampingController {
 		
 		return $retour;
 	}
+	
+	/**
+	 * 
+	 * @author adupuis
+	 */
+	public function recupererPourcentagePaysClients() {
+		$retourPourcentage = null;
+		
+		//On récupère les pays pour les réservation de l'année en cours
+		$dateDebutInterval = new DateTime(date('Y') . '-01-01 00:00:00');
+		$dateFinInterval = new DateTime(date('Y') . '-12-31 23:59:59');
+		
+		$paysClient = $this->reservationRepository->recupererPaysClients($dateDebutInterval,
+			 $dateFinInterval);
+		
+		//Traitement des pays par clients
+		if (!is_null($paysClient)) {
+			//On calcule le nombre total de réservations
+			$nbTotalResa = 0;
+			foreach ($paysClient as $pays => $nbReservations) {
+				$nbTotalResa += intval($nbReservations);
+			}
+			
+			//On calcule les pourcentages
+			foreach ($paysClient as $pays => $nbReservations) {
+				$retourPourcentage[$pays] = (round(($nbReservations / $nbTotalResa) * 10000) / 100);
+			}
+		}
+		
+		return $retourPourcentage;
+	}
 
 	/**
 	 * Fonction découpant les données concaténées dans la chaine passée en

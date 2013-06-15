@@ -55,11 +55,14 @@ $htmlJours .= "</tr>";
 <link rel="stylesheet" href="/resources/demos/style.css" />
 <link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css" />
 <link rel="stylesheet" href="css/page_reservations.css" />
+<link rel="stylesheet" type="text/css" href="css/jquery.jqplot.css" />
 <script type="text/javascript" src="scripts/jquery/jquery-1.9.1.js"></script>
 <script type="text/javascript"
 	src="scripts/jquery/jquery-ui-1.10.2.custom.js"></script>
 <script type="text/javascript" src="scripts/translation.js"></script>
 <script type="text/javascript" src="scripts/commun.js"></script>
+<script type="text/javascript" src="scripts/jqplot/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/jqplot.pieRenderer.min.js"></script>
 <script type="text/javascript" src="scripts/planning.js"></script>
 <script type="text/javascript" src="scripts/popup_ajout_reservation.js"></script>
 <script type="text/javascript" src="scripts/popup_reglages.js"></script>
@@ -95,6 +98,24 @@ $htmlJours .= "</tr>";
 		
 		//Calcul des statistiques par jour
 		calculStatistiquesParJour('<?php echo $caTotalCamping;?>', '<?php echo $caTotalRoulottes;?>');
+
+		//On récupère les données pour construire le camembert de répartition des 
+		//clients par pays
+		<?php $tabPourcentagesPays = $controleur->recupererPourcentagePaysClients();
+
+		if (!is_null($tabPourcentagesPays)) {
+			$pourcentagePays = '[';
+			foreach ($tabPourcentagesPays as $pays => $pourcent) {
+				$pourcentagePays .= '[ "' . $pays . '", ' . $pourcent . ' ],';
+			}
+			$pourcentagePays = rtrim($pourcentagePays, ',');
+			$pourcentagePays .= ']';
+		}
+		else {
+			$pourcentagePays = 'null';
+		} ?>
+		
+		relierEvenementsCamembertPays(<?php echo $pourcentagePays ?>);
 
 	});
 	</script>
@@ -211,6 +232,9 @@ $htmlJours .= "</tr>";
 		CA roulottes : <label id="caRoulottes">- €</label><br/>
 		Total CA camping + roulottes : <label id="caCampingEtRoulottes">- €</label><br/>
 	</div>
+	
+	<!-- Camembert de répartition des clients par pays -->
+	<div id="camembertPays"></div>
 
 	<!-- Popup d'alert -->
 	<div id="popupAlert" title="Attention" class="popup">&nbsp;</div>

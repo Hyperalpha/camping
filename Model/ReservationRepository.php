@@ -383,6 +383,38 @@ class ReservationRepository {
 	
 		return $cATotal;
 	}
+	
+	/**
+	 * Retourne les différents pays des visiteurs ayant une réservation
+	 * entre l'intervalle passé en paramètre
+	 * @author Arnaud DUPUIS
+	 * @param DateTime $dateDebutInterval
+	 * @param DateTime $dateFinInterval
+	 * @return array Renvoie un tableau indexé du type :
+	 *   retour["pays"] = nb réservations pour ce pays 
+	 */
+	public function recupererPaysClients(DateTime $dateDebutInterval, DateTime $dateFinInterval) {
+		$retour = null;
+		
+		$this->initBdd();
+		//Modification de la réservation
+		$sql = "SELECT COUNT(c.id), c.pays FROM reservation r " 
+				. "LEFT JOIN client c ON r.id_client = c.id " 
+				. "WHERE r.date_depart BETWEEN '" . $dateDebutInterval->format('Y-m-d H:i:s') . "' " 
+						. "AND '" . $dateFinInterval->format('Y-m-d H:i:s') . "' " 
+				. "GROUP BY c.pays;";
+		
+		//On envoie la requête
+		$result = $this->executerSQL($sql);
+		
+		while($data = $result->fetch_row()) {
+			$retour[$data[1]] = $data[0];
+		}
+		
+		$this->fermerBdd();
+		
+		return $retour;
+	}
 
 	/**
 	 * Fonction initialisant la connexion à la base de données

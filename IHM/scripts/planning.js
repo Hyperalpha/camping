@@ -36,6 +36,33 @@ $(document).ready(function() {
 });
 
 /**
+ * Construit le graphique de type camembert (Pie) de la répartition des clients
+ * par pays
+ * 
+ * @author adupuis
+ */
+function relierEvenementsCamembertPays(data) {
+
+	jQuery.jqplot('camembertPays', [ data ], {
+		seriesDefaults : {
+			renderer : jQuery.jqplot.PieRenderer,
+			rendererOptions : {
+				showDataLabels : true
+			}
+		},
+		grid: {
+	        background: '#ffffff',
+	        borderWidth: 0,
+	        shadow: false
+	    },
+		legend : {
+			show : true,
+			location : 'e'
+	    }
+	});
+}
+
+/**
  * Met à jour la variable globale référencant les lignes du tableau de
  * réservations
  * 
@@ -530,8 +557,12 @@ function onDragStopBlocReservation(event, ui) {
  * Calcul le nombre de personnes et d'emplacement par jour
  * 
  * @author adupuis
- * @param integer caTotalCamping Chiffre d'affaire total du camping sur la saison (optionel)
- * @param integer caTotalRoulottes Chiffre d'affaire total des roulottes sur la saison (optionel)
+ * @param integer
+ *            caTotalCamping Chiffre d'affaire total du camping sur la saison
+ *            (optionel)
+ * @param integer
+ *            caTotalRoulottes Chiffre d'affaire total des roulottes sur la
+ *            saison (optionel)
  */
 function calculStatistiquesParJour(caTotalCamping, caTotalRoulottes) {
 	var tableauStat = Array();
@@ -651,14 +682,16 @@ function calculStatistiquesParJour(caTotalCamping, caTotalRoulottes) {
 	if (typeof caTotalCamping != 'undefined') {
 		$('label#caCamping').html(caTotalCamping + ' ' + DEVISE);
 	}
-	
+
 	if (typeof caTotalRoulottes != 'undefined') {
 		$('label#caRoulottes').html(caTotalRoulottes + ' ' + DEVISE);
 	}
-	
-	if ((typeof caTotalCamping != 'undefined') && (typeof caTotalRoulottes != 'undefined')) {
-		$('label#caCampingEtRoulottes').html((parseFloat(caTotalCamping) 
-				+ parseFloat(caTotalRoulottes)) + ' ' + DEVISE);
+
+	if ((typeof caTotalCamping != 'undefined')
+			&& (typeof caTotalRoulottes != 'undefined')) {
+		$('label#caCampingEtRoulottes').html(
+				(parseFloat(caTotalCamping) + parseFloat(caTotalRoulottes))
+						+ ' ' + DEVISE);
 	}
 }
 

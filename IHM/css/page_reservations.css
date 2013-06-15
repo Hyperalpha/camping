@@ -295,6 +295,9 @@ table.tableau_calendrier th.header_jours_calendrier {
 }
 #statistiquesSaison label {font-size: 20px; font-weight: bold;}
 
+/* Camembert de répartition des clients par pays */
+#camembertPays {display: inline-block; height: 200px; margin-bottom: -60px; width: 300px;}
+
 /* Popups */
 /**********/
 /* Popup ajouter/modifier réservation */
