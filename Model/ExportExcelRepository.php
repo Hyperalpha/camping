@@ -306,8 +306,9 @@ class ExportExcelRepository {
 			$numEmplacement = $reservation->getNumeroEmplacement();
 		}
 		$newContenu = str_replace('{{REF_CLIENT}}', $client->getReference(),
+		str_replace('{{REF_RESERVATION}}', $reservation->getReference(),
 		str_replace('{{DATE_JOUR}}', date('d/m/Y'),
-		str_replace('{{NUM_EMPLACEMENT}}', $numEmplacement, $contenu)));
+		str_replace('{{NUM_EMPLACEMENT}}', $numEmplacement, $contenu))));
 
 		//Partie client
 		/**************/
