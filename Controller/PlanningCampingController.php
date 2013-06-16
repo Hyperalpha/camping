@@ -3,6 +3,7 @@ include_once '../Model/ExportExcelRepository.php';
 include_once '../Model/ReferentielRepository.php';
 include_once '../Model/ReservationRepository.php';
 include_once '../Model/FactureRepository.php';
+include_once '../Model/CommunModel.php';
 include_once '../Model/Reservation.php';
 include_once '../Model/Client.php';
 
@@ -18,6 +19,7 @@ class PlanningCampingController {
 	private $exportExcelRepository;
 	private $referentielRepository;
 	private $factureRepository;
+	private $communModel;
 	
 	const DEFAULT_DATE_DEBUT = "15 June";
 	const DEFAULT_DATE_FIN = "15 September";
@@ -33,6 +35,7 @@ class PlanningCampingController {
 		$this->exportExcelRepository = new ExportExcelRepository();
 		$this->referentielRepository = new ReferentielRepository();
 		$this->factureRepository = new FactureRepository();
+		$this->communModel = new CommunModel();
 	}
 
 	/**
@@ -602,6 +605,27 @@ class PlanningCampingController {
 		}
 		
 		return $retourPourcentage;
+	}
+	
+	/**
+	 * Exporte le contenu de la base de données à des fins de sauvegarde
+	 * Redirige la page pour afficher le fichier
+	 * @author adupuis
+	 */
+	public function exporterBaseDeDonnees() {
+		
+		//On va chercher le chemin vers mySQL dans le fichier de paramètres
+		$parametersIni = parse_ini_file("../parameters.ini");
+		
+		if (array_key_exists('chemin_exec_mysqldump', $parametersIni)) {
+			$urlFichierDump = $this->communModel->dumpBDD($parametersIni['chemin_exec_mysqldump']);
+			
+			if ($urlFichierDump) {
+				header('Content-Type: application/force-download');
+				header('Content-Disposition: attachment; filename="' . basename($urlFichierDump) . '"');
+				readfile("../Model/$urlFichierDump" );
+			}
+		}
 	}
 
 	/**

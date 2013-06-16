@@ -64,6 +64,24 @@ class CommunModel {
 			closedir($dir);
 		}
 	}
+	
+	/**
+	 * Génère un dump de la base de données à l'endroit spécifié en paramètre
+	 * @author adupuis
+	 * @param string $cheminExecMysql Chemin complet de l'exécutable mysql
+	 * @return string Url relative (par rapport à ce fichier vers le 
+	 * fichier contenant le dump mySql 
+	 */
+	public function dumpBDD($cheminExecMysql) {
+		$DS = DIRECTORY_SEPARATOR;
+		$repertoireTmp = dirname(__FILE__) . $DS . 'tmp';
+		$nomDump = 'dump_bdd_camping_' . date('Ymd') . '.sql';
+		
+		//Exécution du dump
+		exec($cheminExecMysql . ' -h localhost -u root camping > ' . $repertoireTmp . $DS . $nomDump);
+		
+		return 'tmp/' . $nomDump;
+	}
 }
 
 ?>

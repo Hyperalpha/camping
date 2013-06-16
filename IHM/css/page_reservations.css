@@ -465,4 +465,5 @@ table.tableau_calendrier th.header_jours_calendrier {
 }
 #ongletsPopupReglages #blocRoulotteRouge {border: 3px solid #8F0002; border-radius: 12px; padding: 10px;}
 #ongletsPopupReglages #blocRoulotteBleue {border: 3px solid #3BAAE3; border-radius: 12px; padding: 10px;}
+#ongletsPopupReglages #lienDumpBddPopupReglages {margin-left: 10px; text-decoration: none;}
 
