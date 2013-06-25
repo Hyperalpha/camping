@@ -99,7 +99,7 @@ class FactureRepository {
 				. "campeur_adulte, campeur_enfant, animal, petite_tente, van, "
 				. "grande_tente, caravane, camping_car, electricite, "
 				. "vehicule_supplementaire, nombre_visiteurs, "
-				. "roulotte_rouge_periode_basse, roulotte_rouge_periode_haute) "
+				. "roulotte_rouge_periode_basse, roulotte_rouge_periode_haute, "
 				. "roulotte_bleue_periode_basse, roulotte_bleue_periode_haute) "
 			. "VALUES ("
 			. "'" . $this->mysqli->real_escape_string($facture->getId()) . "', "
@@ -116,10 +116,10 @@ class FactureRepository {
 			. "'" . $this->mysqli->real_escape_string($facture->getCampingCar()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getElectricite()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getVehiculeSupplementaire()) . "', "
-			. "'" . $this->mysqli->real_escape_string($facture->getNombreVisiteurs()) . "'"
-			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeBasse()) . "'"
-			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeHaute()) . "'"
-			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeBasse()) . "'"
+			. "'" . $this->mysqli->real_escape_string($facture->getNombreVisiteurs()) . "', "
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeBasse()) . "', "
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeHaute()) . "', "
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeBasse()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "'"
 			. ");";
 		}
