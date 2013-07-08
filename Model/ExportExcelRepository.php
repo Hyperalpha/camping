@@ -29,7 +29,10 @@ class ExportExcelRepository {
 	const ASCII_CASE_VIDE = 'F0A3';
 	
 	const DEVISE = "€";
+	const DEVISE_WORD = "â‚¬";
 	const SEPARATEUR_PRIX_FACTURE = " x ";
+	
+	const LIBELLE_REMISE_EXCEPTIONNELLE = "Remise exceptionnelle";
 	
 	private $referentielRepo;
 	private $factureRepository;
@@ -213,6 +216,7 @@ class ExportExcelRepository {
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixRoulotteBleuePeriodeBasse());
 				$facture->setRoulotteBleuePeriodeHaute($nombreRoulotteBleuePeriodeHaute
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixRoulotteBleuePeriodeHaute());
+				$facture->setRemiseExceptionnelle($reservation->getRemiseExceptionnelle());
 				
 				//On relie la facture à la réservation
 				$reservation->setFacture($facture);
@@ -525,11 +529,12 @@ class ExportExcelRepository {
 		$dateDepart = $reservation->getDateDepart();
 		$interval = $dateDepart->diff($dateArrivee);
 		$nbNuitees = intval($interval->format('%a'));
-	
+		
 		//En tête
 		/********/
-		$newContenu = str_replace('{{NOM}}', strtoupper($client->getNom()),
-			str_replace('{{PRENOM}}', ucfirst($client->getPrenom()), $contenu));
+		$newContenu = str_replace('{{DATE_FACTURE}}', $facture->getDateGeneration()->format('d/m/Y'),
+				str_replace('{{NOM}}', strtoupper($client->getNom()),
+			str_replace('{{PRENOM}}', ucfirst($client->getPrenom()), $contenu)));
 	
 		//Partie réservation
 		/*******************/
@@ -682,9 +687,29 @@ class ExportExcelRepository {
 			$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
 			$sousTotalVehiculeSupp + $sousTotalVisiteur;
 		$totalSejour = $sousTotalNuitees * $nbNuitees;
-		$totalSejourRoulottes = $sousTotalRoulotteRougeBas + $sousTotalRoulotteRougeHaut + 
+		$totalSejourRoulottes = $sousTotalRoulotteRougeBas + $sousTotalRoulotteRougeHaut +
 			$sousTotalRoulotteBleueBas + $sousTotalRoulotteBleueHaut;
-	
+		$remise = floatval($facture->getRemiseExceptionnelle());
+		if (is_null($remise) or $remise == 0) {
+			//Si la remise est nulle, on cache le libelle
+			$strRemise = ' ';
+			$libelleRemise = '';
+			//On réduit la div avec la remise
+			$tailleDiv = '1.9';
+			$divTaillePrixRemiseC = 'style="position:absolute;margin-left:-4.3pt;margin-top:.3pt;width:93.4pt;height:21.4pt';
+			$divTaillePrixRemiseApresC = 'style="position:absolute;margin-left:-4.3pt;margin-top:.3pt;width:' . $tailleDiv . 'pt;height:' . $tailleDiv . 'pt';
+			$newContenu = str_replace($divTaillePrixRemiseC, $divTaillePrixRemiseApresC, $newContenu);
+			$divTaillePrixRemiseF = 'style="position:absolute;margin-left:-4.3pt;margin-top:5.4pt;width:93.4pt;height:21.4pt';
+			$divTaillePrixRemiseApresF = 'style="position:absolute;margin-left:-4.3pt;margin-top:5.4pt;width:' . $tailleDiv . 'pt;height:' . $tailleDiv . 'pt';
+			$newContenu = str_replace($divTaillePrixRemiseF, $divTaillePrixRemiseApresF, $newContenu);
+		}
+		else {
+			$strRemise = '- ' . $remise;
+			$libelleRemise = self::LIBELLE_REMISE_EXCEPTIONNELLE;
+			$totalSejour -= $remise;
+			$totalSejourRoulottes -= $remise;
+		}
+		
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
 			str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,
 			str_replace('{{SOUS_TOTAL_ANIMAL}}', $sousTotalAnimal,
@@ -701,9 +726,11 @@ class ExportExcelRepository {
 			str_replace('{{SOUS_TOTAL_ROULOTTE_BLEUE_PERIODE_BASSE}}', $sousTotalRoulotteBleueBas,
 			str_replace('{{SOUS_TOTAL_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $sousTotalRoulotteBleueHaut,
 			str_replace('{{SOUS_TOTAL_NUITEES}}', $sousTotalNuitees,
+			str_replace('{{PRIX_REMISE_EXCEPTIONNELLE}}', $strRemise,
+			str_replace('{{LABEL_REMISE_EXCEPTIONNELLE}}', $libelleRemise,
 			str_replace('{{TOTAL_SEJOUR}}', $totalSejour,
 			str_replace('{{TOTAL_SEJOUR_ROULOTTES}}', $totalSejourRoulottes,
-					$newContenu))))))))))))))))));
+					$newContenu))))))))))))))))))));
 	
 		return $newContenu;
 	}

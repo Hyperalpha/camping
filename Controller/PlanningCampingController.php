@@ -374,6 +374,8 @@ class PlanningCampingController {
 		else {
 			$chaineRetour .= $sep;
 		}
+		//Remise exceptionnelle
+		$chaineRetour .= $reservation->getRemiseExceptionnelle() . $sep;
 
 		return $chaineRetour;
 	}
@@ -730,6 +732,8 @@ class PlanningCampingController {
 			if (!is_null($facture)) {
 				$reservation->setFacture($facture[0]);
 			}
+			// Remise exceptionnelle
+			$reservation->setRemiseExceptionnelle($tabDonnees[33]);
 
 			//On relie le client à la réservation
 			$reservation->setClient($client);

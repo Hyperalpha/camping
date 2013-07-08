@@ -153,8 +153,8 @@ class ReservationRepository {
 				. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
 				. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
 				. "nombre_vehicules_supplementaires, roulotte_rouge, roulotte_bleue, "
-				. "observations, numero_emplacement, coordonnees_x_emplacement, "
-				. "coordonnees_y_emplacement) "
+				. "remise_exceptionnelle, observations, numero_emplacement, "
+				. "coordonnees_x_emplacement, coordonnees_y_emplacement) "
 				. "VALUES ("
 				. "'" . $referenceReservation. "', "
 				. "'" . $reservation->getClient()->getId(). "', "
@@ -175,6 +175,7 @@ class ReservationRepository {
 				. "'" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
 				. "'" . intval($reservation->getRoulotteRouge()) . "', "
 				. "'" . intval($reservation->getRoulotteBleue()) . "', "
+				. "'" . floatval($reservation->getRemiseExceptionnelle()) . "', "
 				. "'" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
 				. "'" . intval($reservation->getNumeroEmplacement()) . "', "
 				. "'0', "
@@ -202,6 +203,7 @@ class ReservationRepository {
 				. "r.nombre_vehicules_supplementaires = '" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
 				. "r.roulotte_rouge = '" . intval($reservation->getRoulotteRouge()) . "', "
 				. "r.roulotte_bleue = '" . intval($reservation->getRoulotteBleue()) . "', "
+				. "r.remise_exceptionnelle = '" . floatval($reservation->getRemiseExceptionnelle()) . "', "
 				. "r.observations = '" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
 				. "r.numero_emplacement = '" . intval($reservation->getNumeroEmplacement()) . "', "
 				. "coordonnees_x_emplacement = '" . intval($reservation->getCoordonneesXEmplacement()) . "', "
@@ -464,7 +466,7 @@ class ReservationRepository {
 			. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
 			. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
 			. 'r.nombre_vehicules_supplementaires, r.roulotte_rouge, r.roulotte_bleue, '
-			. 'r.observations, r.numero_emplacement, '
+			. 'r.remise_exceptionnelle, r.observations, r.numero_emplacement, '
 			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
 			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res '
 			. 'FROM reservation r';
@@ -511,12 +513,13 @@ class ReservationRepository {
 				$roulotteBleue = true;
 			}
 			$newRes->setRoulotteBleue($roulotteBleue);
-			$newRes->setObservations($data[20]);
-			$newRes->setNumeroEmplacement($data[21]);
-			$newRes->setCoordonneesXEmplacement($data[22]);
-			$newRes->setCoordonneesYEmplacement($data[23]);
-			$newRes->setDateCreation(new DateTime($data[24]));
-			$newRes->setDateModification(new DateTime($data[25]));
+			$newRes->setRemiseExceptionnelle($data[20]);
+			$newRes->setObservations($data[21]);
+			$newRes->setNumeroEmplacement($data[22]);
+			$newRes->setCoordonneesXEmplacement($data[23]);
+			$newRes->setCoordonneesYEmplacement($data[24]);
+			$newRes->setDateCreation(new DateTime($data[25]));
+			$newRes->setDateModification(new DateTime($data[26]));
 
 			//Récupération du client
 			if ($data[2]) {

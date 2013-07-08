@@ -133,9 +133,15 @@ class Reservation {
 
 	/**
 	 * Arrhes sur la réservation
-	 * @var integer
+	 * @var float
 	 */
 	private $arrhes;
+	
+	/**
+	 * Remise exceptionnelle sur la réservation
+	 * @var float
+	 */
+	private $remiseExceptionnelle;
 
 	/**
 	 * Facture rattachée à la réservation
@@ -507,6 +513,22 @@ class Reservation {
 	 */
 	public function setArrhes($arrhes) {
 		$this->arrhes = $arrhes;
+	}
+	
+	/**
+	 * Getter pour la remise exceptionnelle sur la réservation
+	 * @return float
+	 */
+	public function getRemiseExceptionnelle() {
+		return $this->remiseExceptionnelle;
+	}
+	
+	/**
+	 * Setter pour la remise exceptionnelle sur la réservation
+	 * @var float
+	 */
+	public function setRemiseExceptionnelle($remiseExceptionnelle) {
+		$this->remiseExceptionnelle = $remiseExceptionnelle;
 	}
 
 	/**

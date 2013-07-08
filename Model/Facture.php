@@ -119,6 +119,12 @@ class Facture {
 	 * @var string
 	 */
 	private $roulotteBleuePeriodeHaute;
+	
+	/**
+	 * Remise exceptionnelle sur la réservation
+	 * @var float
+	 */
+	private $remiseExceptionnelle;
 
 	/**
 	 * Date de création du client
@@ -434,6 +440,22 @@ class Facture {
 	 */
 	public function setRoulotteBleuePeriodeHaute($roulotteBleuePeriodeHaute) {
 		$this->roulotteBleuePeriodeHaute = $roulotteBleuePeriodeHaute;
+	}
+	
+	/**
+	 * Getter pour la remise exceptionnelle sur la réservation
+	 * @return float
+	 */
+	public function getRemiseExceptionnelle() {
+		return $this->remiseExceptionnelle;
+	}
+	
+	/**
+	 * Setter pour la remise exceptionnelle sur la réservation
+	 * @var float
+	 */
+	public function setRemiseExceptionnelle($remiseExceptionnelle) {
+		$this->remiseExceptionnelle = $remiseExceptionnelle;
 	}
 	
 	/**

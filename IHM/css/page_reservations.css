@@ -313,7 +313,9 @@ table.tableau_calendrier th.header_jours_calendrier {
 #popupAjoutModifReservation input#paysClientPopupAjoutReservation {width: 150px;}
 #popupAjoutModifReservation input#portableClientPopupAjoutReservation {width: 110px;}
 #popupAjoutModifReservation input#emailClientPopupAjoutReservation {width: 200px;}
-#popupAjoutModifReservation input#arrhesClientPopupAjoutReservation {margin: 2px 0 0 2px; width: 30px;}
+#popupAjoutModifReservation input#arrhesClientPopupAjoutReservation,
+#popupAjoutModifReservation input#remiseClientPopupAjoutReservation {margin: 2px 0 0 2px; width: 30px;}
+#popupAjoutModifReservation label#labelRemiseClientPopupAjoutReservation  {margin-left: 15px;}
 #popupAjoutModifReservation input#dateArriveeClientPopupAjoutReservation {width: 70px;}
 #popupAjoutModifReservation input#dateDepartClientPopupAjoutReservation {width: 70px;}
 #popupAjoutModifReservation input#nbAdultesClientPopupAjoutReservation {margin: 2px 0 0 0; width: 30px;}

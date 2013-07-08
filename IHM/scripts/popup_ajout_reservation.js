@@ -781,6 +781,8 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	donnees.idReservation = null;
 	donnees.arrhes = parseFloat($(idFormulaire).find(
 			"#arrhesClientPopupAjoutReservation").val());
+	donnees.remiseExceptionnelle = parseFloat($(idFormulaire).find(
+			"#remiseClientPopupAjoutReservation").val());
 	donnees.numeroEmplacement = parseInt($(idFormulaire).find(
 			"#numEmplacementPopupAjoutReservation").val());
 	donnees.referenceFacture = $(idFormulaire).find(
@@ -816,6 +818,9 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	}
 	if (isNaN(donnees.arrhes)) {
 		donnees.arrhes = 0;
+	}
+	if (isNaN(donnees.remiseExceptionnelle)) {
+		donnees.remiseExceptionnelle = 0;
 	}
 
 	// Sauvegarde en AJAX (création ou modification)
@@ -1268,6 +1273,9 @@ function remplirChampsPopupModifReservation(tabDonnees) {
 		// Arrhes
 		$(popupAjoutModifRes).find("#arrhesClientPopupAjoutReservation").val(
 				tabDonnees.arrhes);
+		// Remise exceptionnelle
+		$(popupAjoutModifRes).find("#remiseClientPopupAjoutReservation").val(
+				tabDonnees.remiseExceptionnelle);
 		// Date d'arrivée
 		$(popupAjoutModifRes).find("#dateArriveeClientPopupAjoutReservation")
 				.val(
@@ -1463,6 +1471,8 @@ function parseInfosReservation(strInfos) {
 		tabRetour.roulotteBleue = tabDonnees[31];
 		// Référence facture
 		tabRetour.referenceFacture = tabDonnees[32];
+		// Remise exceptionnelle sur la réservation
+		tabRetour.remiseExceptionnelle = tabDonnees[33];
 	}
 
 	return tabRetour;
@@ -1551,7 +1561,8 @@ function serialiserInfosReservation(objInfos) {
 			+ separateur + objInfos.arrhes + separateur
 			+ objInfos.numeroEmplacement + separateur + objInfos.roulotteRouge
 			+ separateur + objInfos.roulotteBleue + separateur
-			+ objInfos.referenceFacture + separateur;
+			+ objInfos.referenceFacture + separateur
+			+ objInfos.remiseExceptionnelle + separateur;
 }
 
 /**
