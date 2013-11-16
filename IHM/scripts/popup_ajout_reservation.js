@@ -422,7 +422,7 @@ function creerModifierReservation(event) {
 
 	if (erreur == false) {
 		if ($(popupAjoutModifRes).find("#refClientPopupAjoutReservation").val() == "") {
-			messageAvertissement = CONFIRMATION_CREATION_CLIENT;
+			//messageAvertissement = CONFIRMATION_CREATION_CLIENT;
 		} else if (($(popupAjoutModifRes).find(
 				"#nomSauvClientPopupAjoutReservation").val() != $(
 				popupAjoutModifRes).find("#nomClientPopupAjoutReservation")
