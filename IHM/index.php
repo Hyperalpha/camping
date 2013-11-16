@@ -13,7 +13,12 @@ $htmlAnnees = "<tr class=\"ligneCalendrier\">\n";
 $htmlMois = "<tr class=\"ligneCalendrier\">\n";
 $htmlJours = "<tr class=\"ligneCalendrier\">\n";
 $nbJours = 0;
+$nbJoursAvantToday = 0;
+$dateJourPassee = false;
 $numJour = 0;
+
+//Date du jour
+$dateJour = date('d/m/Y');
 
 //Traitement des années
 if ($tabCalendrier) {
@@ -24,12 +29,25 @@ if ($tabCalendrier) {
 				//Traitement des jours
 				if ($mois) {
 					foreach ($tabM as $jour => $v) {
-						//On crée un input caché avec la date du jour
-						$htmlJours .= "<th id=\"colonneJour_" . $numJour . "\" "
-						. "class=\"header_jours_calendrier\">" . $jour
-						. "<input class=\"date_jour_calendrier\" value=\"" . $v
-						. "\" type=\"hidden\"/></th>\n";
+						if (strcmp($dateJour, $v) === 0) {
+							//Mise en surbrillance de la date du jour
+							$htmlJours .= "<th id=\"colonneJour_" . $numJour . "\" "
+									. "class=\"header_jours_calendrier_today\">" . $jour
+									. "<input class=\"date_jour_calendrier\" value=\"" . $v
+									. "\" type=\"hidden\"/></th>\n";
+							$dateJourPassee = true;
+						}
+						else {
+							//On crée un input caché avec la date du jour
+							$htmlJours .= "<th id=\"colonneJour_" . $numJour . "\" "
+									. "class=\"header_jours_calendrier\">" . $jour
+									. "<input class=\"date_jour_calendrier\" value=\"" . $v
+									. "\" type=\"hidden\"/></th>\n";
+						}
 						$numJour += 1;
+						if ($dateJourPassee == false) {
+							$nbJoursAvantToday += 1;
+						}
 					}
 				}
 				$nbJours += count($tabM);
@@ -62,7 +80,8 @@ $htmlJours .= "</tr>";
 <script type="text/javascript" src="scripts/translation.js"></script>
 <script type="text/javascript" src="scripts/commun.js"></script>
 <script type="text/javascript" src="scripts/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="scripts/jqplot/jqplot.pieRenderer.min.js"></script>
+<script type="text/javascript"
+	src="scripts/jqplot/jqplot.pieRenderer.min.js"></script>
 <script type="text/javascript" src="scripts/planning.js"></script>
 <script type="text/javascript" src="scripts/popup_ajout_reservation.js"></script>
 <script type="text/javascript" src="scripts/popup_reglages.js"></script>
@@ -131,18 +150,18 @@ $htmlJours .= "</tr>";
 	<!-- Bouton pour accéder au plan du camping -->
 	<a id="boutonEmplacementReservation"
 		class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-		href="plan_camping.php">
-			<span class="ui-button-text ui-span-button">
-				<img alt="Emplacements" src="images/carte.png" height="30px" width="30px">
-				Emplacements</span>
+		href="plan_camping.php"> <span class="ui-button-text ui-span-button">
+			<img alt="Emplacements" src="images/carte.png" height="30px"
+			width="30px"> Emplacements
+	</span>
 	</a>
-	
+
 	<!-- Bouton vers la popup de réglages -->
 	<a id="boutonReglages"
 		class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-			<span class="ui-button-text ui-span-button">
-				<img alt="Réglages" src="images/reglages.png" height="30px" width="30px">
-				Réglages</span>
+		<span class="ui-button-text ui-span-button"> <img alt="Réglages"
+			src="images/reglages.png" height="30px" width="30px"> Réglages
+	</span>
 	</a>
 
 	<br />
@@ -150,89 +169,132 @@ $htmlJours .= "</tr>";
 	<table id="tableauCalend" class="tableau_calendrier" 
 		style="width: <?php echo ($nbJours * 30) ;?>px">
 		<thead>
-		<?php
-		//Header du tableau année, mois et jours
-		echo $htmlAnnees;
-		echo $htmlMois;
-		echo $htmlJours;
+			<?php
+			//Header du tableau année, mois et jours
+			echo $htmlAnnees;
+			echo $htmlMois;
+			echo $htmlJours;
 
-		//Création de la première ligne avec les colonnes du tableau
-		?>
+			//Création de la première ligne avec les colonnes du tableau
+			?>
 		</thead>
 		<tbody>
 			<!-- Deux lignes pour les roulottes -->
 			<tr id="ligneRoulotteRouge" class="ligne_roulotte_rouge">
-			<?php
-			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+				<?php
+				for ($i = 0 ; $i < ($nbJoursAvantToday) ; $i++) {
 				?>
-				<td id="celluleRoulotteRouge_<?php echo $i; ?>"
-					 class=""
-					title="Roulotte rouge">
-					<label>&nbsp;</label></td>
+				<td id="celluleRoulotteRouge_<?php echo $i; ?>" class=""
+					title="Roulotte rouge"><label>&nbsp;</label></td>
 				<?php
 			}
+			//On insère la cellule du jour
 			?>
+				<td id="celluleRoulotteRouge_<?php echo $i; ?>"
+					class="cellule_du_jour" title="Roulotte rouge"><label>&nbsp;</label>
+				</td>
+				<?php
+				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
+				?>
+				<td id="celluleRoulotteRouge_<?php echo $i; ?>" class=""
+					title="Roulotte rouge"><label>&nbsp;</label></td>
+				<?php
+						}
+						?>
 			</tr>
 			<tr id="ligneRoulotteBleue" class="ligne_roulotte_bleue">
-			<?php
-			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+				<?php
+				for ($i = 0 ; $i < ($nbJoursAvantToday) ; $i++) {
 				?>
-				<td id="celluleRoulotteBleue_<?php echo $i; ?>"
-					 class=""
-					title="Roulotte bleue">
-					<label>&nbsp;</label></td>
+				<td id="celluleRoulotteBleue_<?php echo $i; ?>" class=""
+					title="Roulotte bleue"><label>&nbsp;</label></td>
 				<?php
 			}
+			//On insère la cellule du jour
 			?>
+				<td id="celluleRoulotteBleue_<?php echo $i; ?>"
+					class="cellule_du_jour" title="Roulotte bleue"><label>&nbsp;</label>
+				</td>
+				<?php
+				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
+				?>
+				<td id="celluleRoulotteBleue_<?php echo $i; ?>" class=""
+					title="Roulotte bleue"><label>&nbsp;</label></td>
+				<?php
+						}
+						?>
 			</tr>
-			
+
 			<!-- La première ligne (cachée) sert au dimensionnement des cellules -->
 			<tr id="ligneCalend_1" class="ligne_calendrier">
-			<?php
-			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+				<?php
+				for ($i = 0 ; $i < ($nbJoursAvantToday) ; $i++) {
 				?>
 				<td class="cellule_calendrier">&nbsp;</td>
 				<?php
 			}
+			//On insère la cellule du jour
 			?>
+				<td class="cellule_calendrier cellule_du_jour">&nbsp;</td>
+				<?php
+				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
+				?>
+				<td class="cellule_calendrier">&nbsp;</td>
+				<?php
+						}
+						?>
 			</tr>
-			
+
 			<!-- Les deux lignes à la fin servent aux statistiques -->
-			<tr id="ligneStatPersonnesCalendrier" class="ligne_stat_personnes_calendrier">
-			<?php
-			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+			<tr id="ligneStatPersonnesCalendrier"
+				class="ligne_stat_personnes_calendrier">
+				<?php
+				for ($i = 0 ; $i < ($nbJoursAvantToday) ; $i++) {
 				?>
 				<td id="celluleStatPersonnes_<?php echo $i; ?>"
-					 class="cellule_stat_personnes_calendrier"
-					title="Nombre de personnes / jour">
-					<label>&nbsp;</label></td>
+					class="cellule_stat_personnes_calendrier"
+					title="Nombre de personnes / jour"><label>&nbsp;</label></td>
 				<?php
 			}
+			//On insère la cellule du jour
 			?>
+				<td id="celluleStatPersonnes_<?php echo $i; ?>"
+					class="cellule_stat_personnes_calendrier cellule_du_jour"
+					title="Nombre de personnes / jour"><label>&nbsp;</label></td>
+				<?php
+				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
+				?>
+				<td id="celluleStatPersonnes_<?php echo $i; ?>"
+					class="cellule_stat_personnes_calendrier"
+					title="Nombre de personnes / jour"><label>&nbsp;</label></td>
+				<?php
+						}
+						?>
 			</tr>
-			<tr id="ligneStatEmplacementsCalendrier" class="ligne_stat_emplacements_calendrier">
-			<?php
-			for ($i = 0 ; $i < ($nbJours) ; $i++) {
+			<tr id="ligneStatEmplacementsCalendrier"
+				class="ligne_stat_emplacements_calendrier">
+				<?php
+				for ($i = 0 ; $i < ($nbJours) ; $i++) {
 				?>
 				<td id="celluleStatEmplacements_<?php echo $i; ?>"
-					 class="cellule_stat_emplacements_calendrier"
-					title="Nombre d'emplacements / jour">
-					<label>&nbsp;</label></td>
+					class="cellule_stat_emplacements_calendrier"
+					title="Nombre d'emplacements / jour"><label>&nbsp;</label></td>
 				<?php
 			}
 			?>
 			</tr>
 		</tbody>
 	</table>
-	
+
 	<!-- Bloc des statistiques sur la saison -->
 	<div id="statistiquesSaison">
-		Moyenne de personnes jusqu'à aujourd'hui : <label id="moyennePersonnesJusquaAujourdhui">-</label><br/>
-		CA camping : <label id="caCamping">-</label><br/>
-		CA roulottes : <label id="caRoulottes">- €</label><br/>
-		Total CA camping + roulottes : <label id="caCampingEtRoulottes">- €</label><br/>
+		Moyenne de personnes jusqu'à aujourd'hui : <label
+			id="moyennePersonnesJusquaAujourdhui">-</label><br /> CA camping : <label
+			id="caCamping">-</label><br /> CA roulottes : <label id="caRoulottes">-
+			€</label><br /> Total CA camping + roulottes : <label
+			id="caCampingEtRoulottes">- €</label><br />
 	</div>
-	
+
 	<!-- Camembert de répartition des clients par pays -->
 	<div id="camembertPays"></div>
 
@@ -244,7 +306,7 @@ $htmlJours .= "</tr>";
 
 	<!-- Popup de détail d'une réservation -->
 	<?php include("popup_details_reservation.html"); ?>
-	
+
 	<!-- Popup de réglages (chargée en différé) -->
 	<div id="popupReglages" title="Réglages" class="popup texte-moyen">&nbsp;</div>
 </body>

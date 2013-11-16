@@ -242,6 +242,16 @@ table.tableau_calendrier th.header_jours_calendrier {
 	height: 40px;
 	width: 25px;
 }
+table.tableau_calendrier th.header_jours_calendrier_today {
+    background-color: #FFFF00;
+	border-bottom:3px solid #606060;
+	border-top-left-radius:10px;
+	border-top-right-radius:10px;
+	color: #606060;
+	font-size: 11px;
+	height: 40px;
+	width: 25px;
+}
 .tableau_calendrier td.cellule_calendrier {
 	background-color:#DEF3CA;
     border: 2px solid #E7EFE0;
@@ -259,6 +269,9 @@ table.tableau_calendrier th.header_jours_calendrier {
 .tableau_calendrier .ligne_roulotte_bleue {
 	background-color: rgba(59, 170, 227, 0.4);
 	height: 35px;
+}
+.tableau_calendrier td.cellule_du_jour {
+	background-color:#FFFF00;
 }
 .cellule_stat_personnes_calendrier {
 	background-color: none;
