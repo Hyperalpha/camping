@@ -23,6 +23,8 @@ class ReferentielRepository {
 	const CODE_PRIX_ROULOTTE_ROUGE_PERIODE_HAUTE = 'PRIX_ROULOTTE_ROUGE_PERIODE_HAUTE';
 	const CODE_PRIX_ROULOTTE_BLEUE_PERIODE_BASSE = 'PRIX_ROULOTTE_BLEUE_PERIODE_BASSE';
 	const CODE_PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE = 'PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE';
+	const CODE_PRIX_TENTE_SAFARI_PERIODE_BASSE = 'PRIX_TENTE_SAFARI_PERIODE_BASSE';
+	const CODE_PRIX_TENTE_SAFARI_PERIODE_HAUTE = 'PRIX_TENTE_SAFARI_PERIODE_HAUTE';
 	const CODE_DATE_DEBUT_PERIODE_HAUTE_ROULOTTE = 'DATE_DEBUT_PERIODE_HAUTE_ROULOTTE';
 	const CODE_DATE_FIN_PERIODE_HAUTE_ROULOTTE = 'DATE_FIN_PERIODE_HAUTE_ROULOTTE';
 	const CODE_DATE_DEBUT_AFFICHAGE_TABLEAU_RESERVATION = 'DATE_DEBUT_AFFICHAGE_TABLEAU_RESERVATION';
@@ -446,6 +448,68 @@ class ReferentielRepository {
 
 		$this->setRef(self::CODE_PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE, $valeur, $flush);
 	}
+	
+	/**
+	 * Renvoie le prix de la tente safari en période basse
+	 * @author Arnaud DUPUIS
+	 * @return float Prix de la tente safari en période basse
+	 */
+	public function getPrixTenteSafariPeriodeBasse() {
+		$retour = $this->getRef(self::CODE_PRIX_TENTE_SAFARI_PERIODE_BASSE);
+	
+		//Mise en forme
+		if (!is_null($retour) && !is_null($retour->getValeur())) {
+			$retour = floatval($retour->getValeur());
+		}
+	
+		return $retour;
+	}
+	
+	/**
+	 * Initialise le prix de la tente safari en période basse
+	 * @author Arnaud DUPUIS
+	 * @param float $valeur Prix de la tente safari en période basse
+	 * @param Boolean $flush Enregistrer ou pas en base de données
+	 */
+	public function setPrixTenteSafariPeriodeBasse($valeur, $flush = false) {
+		//Mise en forme
+		if (!is_null($valeur)) {
+			$valeur = floatval($valeur);
+		}
+	
+		$this->setRef(self::CODE_PRIX_TENTE_SAFARI_PERIODE_BASSE, $valeur, $flush);
+	}
+	
+	/**
+	 * Renvoie le prix de la tente safari en période haute
+	 * @author Arnaud DUPUIS
+	 * @return float Prix de la tente safari en période haute
+	 */
+	public function getPrixTenteSafariPeriodeHaute() {
+		$retour = $this->getRef(self::CODE_PRIX_TENTE_SAFARI_PERIODE_HAUTE);
+	
+		//Mise en forme
+		if (!is_null($retour) && !is_null($retour->getValeur())) {
+			$retour = floatval($retour->getValeur());
+		}
+	
+		return $retour;
+	}
+	
+	/**
+	 * Initialise le prix de la tente safari en période haute
+	 * @author Arnaud DUPUIS
+	 * @param float $valeur Prix de la tente safari en période haute
+	 * @param Boolean $flush Enregistrer ou pas en base de données
+	 */
+	public function setPrixTenteSafariPeriodeHaute($valeur, $flush = false) {
+		//Mise en forme
+		if (!is_null($valeur)) {
+			$valeur = floatval($valeur);
+		}
+	
+		$this->setRef(self::CODE_PRIX_TENTE_SAFARI_PERIODE_HAUTE, $valeur, $flush);
+	}
 
 	/**
 	 * Renvoie la date de début de la période haute pour les roulottes
@@ -646,6 +710,8 @@ class ReferentielRepository {
 		$this->referentiel[self::CODE_PRIX_ROULOTTE_ROUGE_PERIODE_HAUTE] = null;
 		$this->referentiel[self::CODE_PRIX_ROULOTTE_BLEUE_PERIODE_BASSE] = null;
 		$this->referentiel[self::CODE_PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE] = null;
+		$this->referentiel[self::CODE_PRIX_TENTE_SAFARI_PERIODE_BASSE] = null;
+		$this->referentiel[self::CODE_PRIX_TENTE_SAFARI_PERIODE_HAUTE] = null;
 		$this->referentiel[self::CODE_DATE_DEBUT_PERIODE_HAUTE_ROULOTTE] = null;
 		$this->referentiel[self::CODE_DATE_DEBUT_AFFICHAGE_TABLEAU_RESERVATION] = null;
 		$this->referentiel[self::CODE_DATE_FIN_AFFICHAGE_TABLEAU_RESERVATION] = null;

@@ -105,16 +105,25 @@ input.texte-gras1, label.texte-gras1, span.texte-gras1 {
 	background-position: -50px 0;
 }
 .logo-roulotte-rouge-mini, .logo-roulotte-rouge-moyen {background-color: #8F0002;}
-.logo-roulotte-rouge-mini {height: 23px; padding-top: 12px;}
 .logo-roulotte-bleue-mini, .logo-roulotte-bleue-moyen {background-color: #3BAAE3;}
-.logo-roulotte-bleue-mini {height: 23px; padding-top: 12px;}
+.logo-tente-safari-mini, .logo-tente-safari-moyen {background-color: #E2D5A1;}
+.logo-roulotte-rouge-mini, .logo-roulotte-bleue-mini, .logo-tente-safari-mini {
+	height: 23px; padding-top: 12px;}
 .logo-roulotte-rouge-mini span, .logo-roulotte-bleue-mini span {
 	background-image: url(../images/logo-logement-mini.png);
 	background-position: -50px -25px;
 }
+.logo-tente-safari-mini span {
+	background-image: url(../images/logo-logement-mini.png);
+	background-position: 0px -50px;
+}
 .logo-roulotte-rouge-moyen span, .logo-roulotte-bleue-moyen span {
 	background-image: url(../images/logo-logement-moyen.png);
 	background-position: -100px -50px;
+}
+.logo-tente-safari-moyen span {
+	background-image: url(../images/logo-logement-moyen.png);
+	background-position: 0px -100px;
 }
 .logo-electricite-mini {
 	background-image: url(../images/prise_courant-petit.png);
@@ -270,6 +279,10 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 	background-color: rgba(59, 170, 227, 0.4);
 	height: 35px;
 }
+.tableau_calendrier .ligne_tente_safari {
+	background-color: rgba(255, 255, 128, 0.4);
+	height: 35px;
+}
 .tableau_calendrier td.cellule_du_jour {
 	background-color:#FFFF00;
 }
@@ -340,16 +353,19 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 #popupAjoutModifReservation #logoVanPopupAjoutReservation,
 #popupAjoutModifReservation #logoCampingCarPopupAjoutReservation,
 #popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation,
-#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation {border-radius: 8px; display: inline-block; height: 20px; width: 35px;}
-#popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation {margin-left: 35px;}
-#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation {margin-left: 30px;}
+#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation,
+#popupAjoutModifReservation #logoTenteSafariPopupAjoutReservation {border-radius: 8px; display: inline-block; height: 20px; width: 35px;}
+#popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation {margin-left: 17px;}
+#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation {margin-left: 18px;}
+#popupAjoutModifReservation #logoTenteSafariPopupAjoutReservation {margin-left: 18px;}
 #popupAjoutModifReservation #logoPetiteTentePopupAjoutReservation span,
 #popupAjoutModifReservation #logoGrandeTentePopupAjoutReservation span,
 #popupAjoutModifReservation #logoCaravanePopupAjoutReservation span,
 #popupAjoutModifReservation #logoVanPopupAjoutReservation span,
 #popupAjoutModifReservation #logoCampingCarPopupAjoutReservation span {margin-left: 4px;}
 #popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation span,
-#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation span {margin-left: 4px; margin-top:0 ;position: relative; top: -8px;}
+#popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation span,
+#popupAjoutModifReservation #logoTenteSafariPopupAjoutReservation span {margin-left: 4px; margin-top:0 ;position: relative; top: -8px;}
 #popupAjoutModifReservation input.spinner {font-size: 13px; font-weight: bold; text-align: center; width: 35px;}
 #popupAjoutModifReservation span.ui-spinner {margin: 10px 30px 0px 0px;}
 #popupAjoutModifReservation div.div-input-logo {display: inline-block;}
@@ -480,5 +496,6 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 }
 #ongletsPopupReglages #blocRoulotteRouge {border: 3px solid #8F0002; border-radius: 12px; padding: 10px;}
 #ongletsPopupReglages #blocRoulotteBleue {border: 3px solid #3BAAE3; border-radius: 12px; padding: 10px;}
+#ongletsPopupReglages #blocTenteSafari {border: 3px solid #E2D5A1; border-radius: 12px; padding: 10px;}
 #ongletsPopupReglages #lienDumpBddPopupReglages {margin-left: 10px; text-decoration: none;}
 

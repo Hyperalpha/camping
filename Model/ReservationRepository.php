@@ -153,7 +153,7 @@ class ReservationRepository {
 				. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
 				. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
 				. "nombre_vehicules_supplementaires, roulotte_rouge, roulotte_bleue, "
-				. "remise_exceptionnelle, observations, numero_emplacement, "
+				. "tente_safari, remise_exceptionnelle, observations, numero_emplacement, "
 				. "coordonnees_x_emplacement, coordonnees_y_emplacement) "
 				. "VALUES ("
 				. "'" . $referenceReservation. "', "
@@ -175,6 +175,7 @@ class ReservationRepository {
 				. "'" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
 				. "'" . intval($reservation->getRoulotteRouge()) . "', "
 				. "'" . intval($reservation->getRoulotteBleue()) . "', "
+				. "'" . intval($reservation->getTenteSafari()) . "', "
 				. "'" . floatval($reservation->getRemiseExceptionnelle()) . "', "
 				. "'" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
 				. "'" . intval($reservation->getNumeroEmplacement()) . "', "
@@ -203,6 +204,7 @@ class ReservationRepository {
 				. "r.nombre_vehicules_supplementaires = '" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
 				. "r.roulotte_rouge = '" . intval($reservation->getRoulotteRouge()) . "', "
 				. "r.roulotte_bleue = '" . intval($reservation->getRoulotteBleue()) . "', "
+				. "r.tente_safari = '" . intval($reservation->getTenteSafari()) . "', "
 				. "r.remise_exceptionnelle = '" . floatval($reservation->getRemiseExceptionnelle()) . "', "
 				. "r.observations = '" . $this->mysqli->real_escape_string($reservation->getObservations()) . "', "
 				. "r.numero_emplacement = '" . intval($reservation->getNumeroEmplacement()) . "', "
@@ -304,7 +306,8 @@ class ReservationRepository {
 		if (!is_null($tabReservations)) {
 			foreach ($tabReservations as $reservation) {
 				//On fait la somme de toute les prestations de la réservation (sans compter les roulottes)
-				if (($reservation->getRoulotteRouge() != true) and ($reservation->getRoulotteBleue() != true)) {
+				if (($reservation->getRoulotteRouge() != true) and ($reservation->getRoulotteBleue() != true)
+						and ($reservation->getTenteSafari() != true)) {
 					$cAReservation = 0;
 					$cAReservation += $prixCampeurAdulte * $reservation->getNombreAdultes();
 					$cAReservation += $prixCampeurEnfant * $reservation->getNombreEnfants();
@@ -344,6 +347,8 @@ class ReservationRepository {
 		$prixRoulotteRougePeriodeHaute = $this->referentielRepository->getPrixRoulotteRougePeriodeHaute();
 		$prixRoulotteBleuePeriodeBasse = $this->referentielRepository->getPrixRoulotteBleuePeriodeBasse();
 		$prixRoulotteBleuePeriodeHaute = $this->referentielRepository->getPrixRoulotteBleuePeriodeHaute();
+		$prixTenteSafariPeriodeBasse = $this->referentielRepository->getPrixTenteSafariPeriodeBasse();
+		$prixTenteSafariPeriodeHaute = $this->referentielRepository->getPrixTenteSafariPeriodeHaute();
 		$dateDebutPeriodeHaute = $this->referentielRepository->getDateDebutPeriodeHauteRoulotte();
 		$cATotal = 0;
 		$cAReservation = 0;
@@ -371,6 +376,14 @@ class ReservationRepository {
 					}
 					else {
 						$caRoulotte += $prixRoulotteBleuePeriodeHaute;
+					}
+				}
+				if ($reservation->getTenteSafari() == true) {
+					if ($dateDepart->getTimestamp() < $dateDebutPeriodeHaute->getTimestamp()) {
+						$caRoulotte += $prixTenteSafariPeriodeBasse;
+					}
+					else {
+						$caRoulotte += $prixTenteSafariPeriodeHaute;
 					}
 				}
 				
@@ -466,7 +479,7 @@ class ReservationRepository {
 			. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
 			. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
 			. 'r.nombre_vehicules_supplementaires, r.roulotte_rouge, r.roulotte_bleue, '
-			. 'r.remise_exceptionnelle, r.observations, r.numero_emplacement, '
+			. 'r.tente_safari, r.remise_exceptionnelle, r.observations, r.numero_emplacement, '
 			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
 			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res '
 			. 'FROM reservation r';
@@ -513,13 +526,18 @@ class ReservationRepository {
 				$roulotteBleue = true;
 			}
 			$newRes->setRoulotteBleue($roulotteBleue);
-			$newRes->setRemiseExceptionnelle($data[20]);
-			$newRes->setObservations($data[21]);
-			$newRes->setNumeroEmplacement($data[22]);
-			$newRes->setCoordonneesXEmplacement($data[23]);
-			$newRes->setCoordonneesYEmplacement($data[24]);
-			$newRes->setDateCreation(new DateTime($data[25]));
-			$newRes->setDateModification(new DateTime($data[26]));
+			$tenteSafari = false;
+			if ($data[20] == "1" or $data[20] == true) {
+				$tenteSafari = true;
+			}
+			$newRes->setTenteSafari($tenteSafari);
+			$newRes->setRemiseExceptionnelle($data[21]);
+			$newRes->setObservations($data[22]);
+			$newRes->setNumeroEmplacement($data[23]);
+			$newRes->setCoordonneesXEmplacement($data[24]);
+			$newRes->setCoordonneesYEmplacement($data[25]);
+			$newRes->setDateCreation(new DateTime($data[26]));
+			$newRes->setDateModification(new DateTime($data[27]));
 
 			//Récupération du client
 			if ($data[2]) {

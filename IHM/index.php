@@ -189,11 +189,13 @@ $htmlJours .= "</tr>";
 				<?php
 			}
 			//On insère la cellule du jour
+			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td id="celluleRoulotteRouge_<?php echo $i; ?>"
 					class="cellule_du_jour" title="Roulotte rouge"><label>&nbsp;</label>
 				</td>
 				<?php
+				}
 				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
 				?>
 				<td id="celluleRoulotteRouge_<?php echo $i; ?>" class=""
@@ -211,15 +213,43 @@ $htmlJours .= "</tr>";
 				<?php
 			}
 			//On insère la cellule du jour
+			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td id="celluleRoulotteBleue_<?php echo $i; ?>"
 					class="cellule_du_jour" title="Roulotte bleue"><label>&nbsp;</label>
 				</td>
 				<?php
+				}
 				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
 				?>
 				<td id="celluleRoulotteBleue_<?php echo $i; ?>" class=""
 					title="Roulotte bleue"><label>&nbsp;</label></td>
+				<?php
+						}
+						?>
+			</tr>
+
+			<!-- Une ligne pour la tente safari -->
+			<tr id="ligneTenteSafari" class="ligne_tente_safari">
+				<?php
+				for ($i = 0 ; $i < ($nbJoursAvantToday) ; $i++) {
+				?>
+				<td id="celluleTenteSafari_<?php echo $i; ?>" class=""
+					title="Tente Safari"><label>&nbsp;</label></td>
+				<?php
+			}
+			//On insère la cellule du jour
+			if ($nbJoursAvantToday < $nbJours) {
+			?>
+				<td id="celluleTenteSafari_<?php echo $i; ?>"
+					class="cellule_du_jour" title="Tente Safari"><label>&nbsp;</label>
+				</td>
+				<?php
+				}
+				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
+				?>
+				<td id="celluleTenteSafari_<?php echo $i; ?>" class=""
+					title="Tente Safari"><label>&nbsp;</label></td>
 				<?php
 						}
 						?>
@@ -234,9 +264,11 @@ $htmlJours .= "</tr>";
 				<?php
 			}
 			//On insère la cellule du jour
+			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td class="cellule_calendrier cellule_du_jour">&nbsp;</td>
 				<?php
+				}
 				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
 				?>
 				<td class="cellule_calendrier">&nbsp;</td>
@@ -257,11 +289,13 @@ $htmlJours .= "</tr>";
 				<?php
 			}
 			//On insère la cellule du jour
+			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td id="celluleStatPersonnes_<?php echo $i; ?>"
 					class="cellule_stat_personnes_calendrier cellule_du_jour"
 					title="Nombre de personnes / jour"><label>&nbsp;</label></td>
 				<?php
+				}
 				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {
 				?>
 				<td id="celluleStatPersonnes_<?php echo $i; ?>"

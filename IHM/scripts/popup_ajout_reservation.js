@@ -316,7 +316,7 @@ function relierEvenementsAjoutReservation() {
 
 	// Champs roulotte
 	$(
-			'#roulotteRougePopupAjoutReservation, #roulotteBleuePopupAjoutReservation')
+			'#roulotteRougePopupAjoutReservation, #roulotteBleuePopupAjoutReservation, #tenteSafariPopupAjoutReservation')
 			.on(
 					'click',
 					function() {
@@ -325,7 +325,9 @@ function relierEvenementsAjoutReservation() {
 						if (($('#roulotteRougePopupAjoutReservation').is(
 								':checked') == true)
 								|| ($('#roulotteBleuePopupAjoutReservation')
-										.is(':checked') == true)) {
+										.is(':checked') == true)
+								|| ($('#tenteSafariPopupAjoutReservation').is(
+										':checked') == true)) {
 							// On grise les champs non pris en charge par la
 							// roulotte
 							$(popupAjoutModifReservation)
@@ -422,7 +424,7 @@ function creerModifierReservation(event) {
 
 	if (erreur == false) {
 		if ($(popupAjoutModifRes).find("#refClientPopupAjoutReservation").val() == "") {
-			//messageAvertissement = CONFIRMATION_CREATION_CLIENT;
+			// messageAvertissement = CONFIRMATION_CREATION_CLIENT;
 		} else if (($(popupAjoutModifRes).find(
 				"#nomSauvClientPopupAjoutReservation").val() != $(
 				popupAjoutModifRes).find("#nomClientPopupAjoutReservation")
@@ -492,9 +494,10 @@ function verifContraintesFormAjoutRes(formulaire, nbNuites) {
 	var nbEnfants = parseInt($(formulaire).find(
 			"#nbEnfantsClientPopupAjoutReservation").val());
 	var estRoulotte = ($(formulaire)
-			.find("#roulotteRougePopupAjoutReservation").is(':checked') | $(
-			formulaire).find("#roulotteBleuePopupAjoutReservation").is(
-			':checked'));
+			.find("#roulotteRougePopupAjoutReservation").is(':checked')
+			| $(formulaire).find("#roulotteBleuePopupAjoutReservation").is(
+					':checked') | $(formulaire).find(
+			"#tenteSafariPopupAjoutReservation").is(':checked'));
 	var nbPTente = parseInt($(formulaire).find(
 			"#nbPetiteTenteClientPopupAjoutReservation").val());
 	var nbGTente = parseInt($(formulaire).find(
@@ -657,6 +660,8 @@ function creerBlocReservation(idNouveauBloc, tabDonnees) {
 		$(nouveauBloc).addClass("logo-roulotte-rouge-mini");
 	} else if (tabDonnees.roulotteBleue > 0) {
 		$(nouveauBloc).addClass("logo-roulotte-bleue-mini");
+	} else if (tabDonnees.tenteSafari > 0) {
+		$(nouveauBloc).addClass("logo-tente-safari-mini");
 	} else if (tabDonnees.nbCampingCarClient > 0) {
 		// Icone camping-car
 		$(nouveauBloc).addClass("logo-camping-car-mini");
@@ -775,6 +780,11 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	if ($(idFormulaire).find("#roulotteBleuePopupAjoutReservation").is(
 			':checked') == true) {
 		donnees.roulotteBleue = 1;
+	}
+	donnees.tenteSafari = '';
+	if ($(idFormulaire).find("#tenteSafariPopupAjoutReservation")
+			.is(':checked') == true) {
+		donnees.tenteSafari = 1;
 	}
 	donnees.observationsClient = $(idFormulaire).find(
 			"#observationsClientPopupAjoutReservation").val();
@@ -1021,6 +1031,7 @@ function afficherPopupDetails() {
 	// Partie logo logement
 	$(divLogoLogement).removeClass("logo-roulotte-rouge-moyen");
 	$(divLogoLogement).removeClass("logo-roulotte-bleue-moyen");
+	$(divLogoLogement).removeClass("logo-tente-safari-moyen");
 	$(divLogoLogement).removeClass("logo-camping-car-moyen");
 	$(divLogoLogement).removeClass("logo-van-moyen");
 	$(divLogoLogement).removeClass("logo-caravane-moyen");
@@ -1032,6 +1043,9 @@ function afficherPopupDetails() {
 	} else if (tabDonnees.roulotteBleue > 0) {
 		// Icone roulotte bleue
 		$(divLogoLogement).addClass("logo-roulotte-bleue-moyen");
+	} else if (tabDonnees.tenteSafari > 0) {
+		// Icone tente safari
+		$(divLogoLogement).addClass("logo-tente-safari-moyen");
 	} else if (tabDonnees.nbCampingCarClient > 0) {
 		// Icone camping-car
 		$(divLogoLogement).addClass("logo-camping-car-moyen");
@@ -1057,7 +1071,8 @@ function afficherPopupDetails() {
 				.css("visibility", "hidden");
 	}
 
-	if ((tabDonnees.roulotteRouge > 0) || (tabDonnees.roulotteBleue > 0)) {
+	if ((tabDonnees.roulotteRouge > 0) || (tabDonnees.roulotteBleue > 0)
+			|| (tabDonnees.tenteSafari > 0)) {
 		$(popupDetailsReserv)
 				.find("#caseNumEmplacementPopupDetailsReservation").css(
 						'visibility', 'hidden');
@@ -1342,6 +1357,22 @@ function remplirChampsPopupModifReservation(tabDonnees) {
 						"#roulotteBleuePopupAjoutReservation").trigger("click");
 			}
 		}
+		// Tente safari
+		if (tabDonnees.tenteSafari == 1) {
+			// Bug Firefox => trigger click
+			if ($(popupAjoutModifRes).find("#tenteSafariPopupAjoutReservation")
+					.is(':checked') == false) {
+				$(popupAjoutModifRes).find("#tenteSafariPopupAjoutReservation")
+						.trigger('click');
+			}
+		} else {
+			// Trigger click pour appeler les événements rattachés au clic
+			if ($(popupAjoutModifRes).find("#tenteSafariPopupAjoutReservation")
+					.is(':checked') == true) {
+				$(popupAjoutModifRes).find("#tenteSafariPopupAjoutReservation")
+						.trigger("click");
+			}
+		}
 		// Electricité
 		if (tabDonnees.electriciteClient == 1) {
 			// Bug Firefox => trigger click
@@ -1473,6 +1504,8 @@ function parseInfosReservation(strInfos) {
 		tabRetour.referenceFacture = tabDonnees[32];
 		// Remise exceptionnelle sur la réservation
 		tabRetour.remiseExceptionnelle = tabDonnees[33];
+		// Tente safari
+		tabRetour.tenteSafari = tabDonnees[34];
 	}
 
 	return tabRetour;
@@ -1562,7 +1595,8 @@ function serialiserInfosReservation(objInfos) {
 			+ objInfos.numeroEmplacement + separateur + objInfos.roulotteRouge
 			+ separateur + objInfos.roulotteBleue + separateur
 			+ objInfos.referenceFacture + separateur
-			+ objInfos.remiseExceptionnelle + separateur;
+			+ objInfos.remiseExceptionnelle + separateur
+			+ objInfos.tenteSafari + separateur;
 }
 
 /**

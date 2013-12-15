@@ -54,4 +54,7 @@
 	text-align: center;
 	width: 1.4em;
 }
-#emplacementRoulotteRouge, #emplacementRoulotteBleue {text-align: center;}
+#emplacementRoulotteRouge, #emplacementRoulotteBleue, #emplacementTenteSafari {text-align: center;}
+#emplacementRoulotteRouge {top: 298px; left: 118px;}
+#emplacementRoulotteBleue {top: 385px; left: 125px;}
+#emplacementTenteSafari {top: 220px; left: 125px;}

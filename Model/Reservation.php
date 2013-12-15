@@ -124,6 +124,12 @@ class Reservation {
 	 * @var boolean
 	 */
 	private $roulotteBleue;
+	
+	/**
+	 * Réservation de la tente safari
+	 * @var boolean
+	 */
+	private $tenteSafari;
 
 	/**
 	 * Observations sur la réservation
@@ -481,6 +487,22 @@ class Reservation {
 	 */
 	public function setRoulotteBleue($roulotteBleue) {
 		$this->roulotteBleue = $roulotteBleue;
+	}
+	
+	/**
+	 * Getter pour la tente safari
+	 * @return boolean
+	 */
+	public function getTenteSafari() {
+		return $this->tenteSafari;
+	}
+	
+	/**
+	 * Setter pour la tente safari
+	 * @var boolean
+	 */
+	public function setTenteSafari($tenteSafari) {
+		$this->tenteSafari = $tenteSafari;
 	}
 
 	/**

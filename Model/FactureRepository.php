@@ -100,7 +100,8 @@ class FactureRepository {
 				. "grande_tente, caravane, camping_car, electricite, "
 				. "vehicule_supplementaire, nombre_visiteurs, "
 				. "roulotte_rouge_periode_basse, roulotte_rouge_periode_haute, "
-				. "roulotte_bleue_periode_basse, roulotte_bleue_periode_haute) "
+				. "roulotte_bleue_periode_basse, roulotte_bleue_periode_haute, "
+				. "tente_safari_periode_basse, tente_safari_periode_haute) "
 			. "VALUES ("
 			. "'" . $this->mysqli->real_escape_string($facture->getId()) . "', "
 			. "'" . $this->mysqli->real_escape_string($referenceReservation) . "', "
@@ -120,7 +121,9 @@ class FactureRepository {
 			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeBasse()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeHaute()) . "', "
 			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeBasse()) . "', "
-			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "'"
+			. "'" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "', "
+			. "'" . $this->mysqli->real_escape_string($facture->getTenteSafariPeriodeBasse()) . "', "
+			. "'" . $this->mysqli->real_escape_string($facture->getTenteSafariPeriodeHaute()) . "'"
 			. ");";
 		}
 		else {
@@ -144,7 +147,9 @@ class FactureRepository {
 			. "f.roulotte_rouge_periode_basse = '" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeBasse()) . "', "
 			. "f.roulotte_rouge_periode_haute = '" . $this->mysqli->real_escape_string($facture->getRoulotteRougePeriodeHaute()) . "', "
 			. "f.roulotte_bleue_periode_basse = '" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeBasse()) . "', "
-			. "f.roulotte_bleue_periode_haute = '" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "' "
+			. "f.roulotte_bleue_periode_haute = '" . $this->mysqli->real_escape_string($facture->getRoulotteBleuePeriodeHaute()) . "', "
+			. "f.tente_safari_periode_basse = '" . $this->mysqli->real_escape_string($facture->getTenteSafariPeriodeBasse()) . "', "
+			. "f.tente_safari_periode_haute = '" . $this->mysqli->real_escape_string($facture->getTenteSafariPeriodeHaute()) . "' "
 			. " WHERE f.id = '" . $ancienneFacture[0]->getId() . "'";
 		}
 		//On envoie la requête

@@ -20,13 +20,13 @@ class PlanningCampingController {
 	private $referentielRepository;
 	private $factureRepository;
 	private $communModel;
-	
+
 	const DEFAULT_DATE_DEBUT = "15 June";
 	const DEFAULT_DATE_FIN = "15 September";
 
 	//Une erreur se déclanche si plus de x jours sont présents dans une année
 	const WATCHDOG_JOURS_ANNEE = 370;
-	
+
 	const SEPARATEUR_RETOUR = '|';
 
 	public function __construct() {
@@ -139,7 +139,7 @@ class PlanningCampingController {
 	public function calculerCATotalReservations($tabReservations) {
 		return $this->reservationRepository->calculerCATotalReservations($tabReservations);
 	}
-	
+
 	/**
 	 * Calcul le CA total des roulottes pour les réservations passées en paramètre
 	 * @author Arnaud DUPUIS
@@ -149,7 +149,7 @@ class PlanningCampingController {
 	public function calculerCATotalRoulottes($tabReservations) {
 		return $this->reservationRepository->calculerCATotalRoulottes($tabReservations);
 	}
-	
+
 	/**
 	 * Enregistre une réservation à partir de données sérialisées en entrée
 	 * @author Arnaud DUPUIS
@@ -171,11 +171,11 @@ class PlanningCampingController {
 			$reservations = $this->recupererToutesReservations();
 			$caCamping = $this->calculerCATotalReservations($reservations);
 			$caRoulottes = $this->calculerCATotalRoulottes($reservations);
-			
+				
 			//Construction du retour
 			$retour = $newReservation->getReference() . self::SEPARATEUR_RETOUR
-					. $newReservation->getClient()->getReference() . self::SEPARATEUR_RETOUR
-					. $caCamping . self::SEPARATEUR_RETOUR . $caRoulottes;
+				. $newReservation->getClient()->getReference() . self::SEPARATEUR_RETOUR
+				. $caCamping . self::SEPARATEUR_RETOUR . $caRoulottes;
 		}
 		catch (\Exception $ex) {
 			$retour = false;
@@ -376,6 +376,8 @@ class PlanningCampingController {
 		}
 		//Remise exceptionnelle
 		$chaineRetour .= $reservation->getRemiseExceptionnelle() . $sep;
+		//Tente safari
+		$chaineRetour .= $reservation->getTenteSafari() . $sep;
 
 		return $chaineRetour;
 	}
@@ -399,7 +401,7 @@ class PlanningCampingController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Exporte la facture de la réservation précisée vers un fichier Word ou Excel.
 	 * Redirige la page pour afficher le document
@@ -408,14 +410,14 @@ class PlanningCampingController {
 	 * @param boolean $regenererFacture Doit-on regénèrer la facture ou afficher l'ancienne?
 	 */
 	public function exporterFacture($idReservation, $regenererFacture) {
-	
+
 		//On récupère la réservation
 		$reservation = $this->reservationRepository->rechercherReservationParReference($idReservation);
-	
+
 		if (count($reservation) == 1) {
 			//On exporte la facture
 			$urlDocument = $this->exportExcelRepository->exporterFactureReservation($reservation[0], $regenererFacture);
-	
+
 			if ($urlDocument) {
 				header('Location: ../Model/' . $urlDocument);
 			}
@@ -448,6 +450,8 @@ class PlanningCampingController {
 			$retour = str_replace('{{PRIX_ROULOTTE_ROUGE_PERIODE_HAUTE}}', $this->referentielRepository->getPrixRoulotteRougePeriodeHaute(), $retour);
 			$retour = str_replace('{{PRIX_ROULOTTE_BLEUE_PERIODE_BASSE}}', $this->referentielRepository->getPrixRoulotteBleuePeriodeBasse(), $retour);
 			$retour = str_replace('{{PRIX_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $this->referentielRepository->getPrixRoulotteBleuePeriodeHaute(), $retour);
+			$retour = str_replace('{{PRIX_TENTE_SAFARI_PERIODE_BASSE}}', $this->referentielRepository->getPrixTenteSafariPeriodeBasse(), $retour);
+			$retour = str_replace('{{PRIX_TENTE_SAFARI_PERIODE_HAUTE}}', $this->referentielRepository->getPrixTenteSafariPeriodeHaute(), $retour);
 
 			$retour = str_replace('{{DATE_DEBUT_PERIODE_HAUTE_ROULOTTE}}', $this->formatterDateSansAnnee($this->referentielRepository->getDateDebutPeriodeHauteRoulotte()), $retour);
 			$retour = str_replace('{{DATE_FIN_PERIODE_HAUTE_ROULOTTE}}', $this->formatterDateSansAnnee($this->referentielRepository->getDateFinPeriodeHauteRoulotte()), $retour);
@@ -486,6 +490,8 @@ class PlanningCampingController {
 			$this->referentielRepository->setPrixRoulotteRougePeriodeHaute($stdReglages->prixRoulottesRougePeriodeHaute, false);
 			$this->referentielRepository->setPrixRoulotteBleuePeriodeBasse($stdReglages->prixRoulottesBleuePeriodeBasse, false);
 			$this->referentielRepository->setPrixRoulotteBleuePeriodeHaute($stdReglages->prixRoulottesBleuePeriodeHaute, false);
+			$this->referentielRepository->setPrixTenteSafariPeriodeBasse($stdReglages->prixTentesSafariPeriodeBasse, false);
+			$this->referentielRepository->setPrixTenteSafariPeriodeHaute($stdReglages->prixTentesSafariPeriodeHaute, false);
 
 			$this->referentielRepository->setDateDebutPeriodeHauteRoulotte($this->parseDateSansAnnee($stdReglages->dateDebutPeriodeHauteRoulottes), false);
 			$this->referentielRepository->setDateFinPeriodeHauteRoulotte($this->parseDateSansAnnee($stdReglages->dateFinPeriodeHauteRoulottes), false);
@@ -506,10 +512,10 @@ class PlanningCampingController {
 		//On redirige vers la page de consultation des réservations
 		header('Location: index.php');
 	}
-	
+
 	/**
 	 * Renvoie le nombre de jours appartenant à la période basse et à la période haute
-	 * 
+	 *
 	 * @author adupuis
 	 * @param \DateTime $dateArrivee Date d'arrivée de la réservation
 	 * @param \DateTime $dateDepart Date de départ de la réservation
@@ -517,15 +523,15 @@ class PlanningCampingController {
 	 * @param \DateTime $dateFinPeriodeHaute Date de fin de la période haute des roulottes
 	 * @return \stdClass Renvoie un objet stdClass avec les attributs nbJoursBas et nbJoursHaut
 	 */
-	public static function getNbJoursHautBasRoulottes(\DateTime $dateArrivee = null, 
-			\DateTime $dateDepart = null, 
-			\DateTime $dateDebutPeriodeHaute = null, 
+	public static function getNbJoursHautBasRoulottes(\DateTime $dateArrivee = null,
+			\DateTime $dateDepart = null,
+			\DateTime $dateDebutPeriodeHaute = null,
 			\DateTime $dateFinPeriodeHaute = null) {
 		$retour = new \stdClass;
 		$retour->nbJoursBas = 0;
 		$retour->nbJoursHaut = 0;
-		
-		if (!is_null($dateArrivee) and !is_null($dateDepart) 
+
+		if (!is_null($dateArrivee) and !is_null($dateDepart)
 				and !is_null($dateDebutPeriodeHaute) and !is_null($dateFinPeriodeHaute)) {
 			$interval = $dateDepart->diff($dateArrivee);
 			$nbNuitees = intval($interval->format('%a'));
@@ -541,7 +547,7 @@ class PlanningCampingController {
 				//Période basse
 				$retour->nbJoursBas = $nbNuitees;
 			}
-			elseif (($tspDateArrivee >= $tspDateDebutPeriodeHaute) 
+			elseif (($tspDateArrivee >= $tspDateDebutPeriodeHaute)
 					and ($tspDateDepart <= $tspDateFinPeriodeHaute)) {
 				//Période haute
 				$retour->nbJoursHaut = $nbNuitees;
@@ -574,24 +580,24 @@ class PlanningCampingController {
 				}
 			}
 		}
-		
+
 		return $retour;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @author adupuis
 	 */
 	public function recupererPourcentagePaysClients() {
 		$retourPourcentage = null;
-		
+
 		//On récupère les pays pour les réservation de l'année en cours
 		$dateDebutInterval = new DateTime(date('Y') . '-01-01 00:00:00');
 		$dateFinInterval = new DateTime(date('Y') . '-12-31 23:59:59');
-		
+
 		$paysClient = $this->reservationRepository->recupererPaysClients($dateDebutInterval,
 			 $dateFinInterval);
-		
+
 		//Traitement des pays par clients
 		if (!is_null($paysClient)) {
 			//On calcule le nombre total de réservations
@@ -599,29 +605,29 @@ class PlanningCampingController {
 			foreach ($paysClient as $pays => $nbReservations) {
 				$nbTotalResa += intval($nbReservations);
 			}
-			
+				
 			//On calcule les pourcentages
 			foreach ($paysClient as $pays => $nbReservations) {
 				$retourPourcentage[$pays] = (round(($nbReservations / $nbTotalResa) * 10000) / 100);
 			}
 		}
-		
+
 		return $retourPourcentage;
 	}
-	
+
 	/**
 	 * Exporte le contenu de la base de données à des fins de sauvegarde
 	 * Redirige la page pour afficher le fichier
 	 * @author adupuis
 	 */
 	public function exporterBaseDeDonnees() {
-		
+
 		//On va chercher le chemin vers mySQL dans le fichier de paramètres
 		$parametersIni = parse_ini_file("../parameters.ini");
-		
+
 		if (array_key_exists('chemin_exec_mysqldump', $parametersIni)) {
 			$urlFichierDump = $this->communModel->dumpBDD($parametersIni['chemin_exec_mysqldump']);
-			
+				
 			if ($urlFichierDump) {
 				header('Content-Type: application/force-download');
 				header('Content-Disposition: attachment; filename="' . basename($urlFichierDump) . '"');
@@ -734,6 +740,13 @@ class PlanningCampingController {
 			}
 			// Remise exceptionnelle
 			$reservation->setRemiseExceptionnelle($tabDonnees[33]);
+			// Tente safari
+			if ($tabDonnees[34] == "1") {
+				$reservation->setTenteSafari(true);
+			}
+			else {
+				$reservation->setTenteSafari(false);
+			}
 
 			//On relie le client à la réservation
 			$reservation->setClient($client);
@@ -741,16 +754,16 @@ class PlanningCampingController {
 
 		return $reservation;
 	}
-	
+
 	/**
 	 * Réinitialise des champs dans le cas d'une réservation avec roulotte
 	 * @param Reservation $reservation
 	 * @return Reservation Réservation mise à jour
 	 */
 	private function reinitialiserChampsRoulotte(Reservation $reservation) {
-		
+
 		//Si la réservation comporte une roulotte, on réinitialise les champs du camping
-		if ($reservation->getRoulotteRouge() or $reservation->getRoulotteBleue()) {
+		if ($reservation->getRoulotteRouge() or $reservation->getRoulotteBleue() or $reservation->getTenteSafari()) {
 			$reservation->setNombreAdultes(null);
 			// Nombre d'enfants
 			$reservation->setNombreEnfants(null);
@@ -773,7 +786,7 @@ class PlanningCampingController {
 			// Numéro d'emplacement
 			$reservation->setNumeroEmplacement(null);
 		}
-		
+
 		return $reservation;
 	}
 
@@ -787,17 +800,17 @@ class PlanningCampingController {
 
 		if (!is_null($date)) {
 			$date = str_ireplace("Janvier", "January",
-			str_ireplace("Février", "February",
-			str_ireplace("Mars", "March",
-			str_ireplace("Avril", "April",
-			str_ireplace("Mai", "May",
-			str_ireplace("Juin", "June",
-			str_ireplace("Juillet", "July",
-			str_ireplace("Août", "August",
-			str_ireplace("Septembre", "September",
-			str_ireplace("Octobre", "October",
-			str_ireplace("Novembre", "November",
-			str_ireplace("Décembre", "December", $date))))))))))));
+				str_ireplace("Février", "February",
+				str_ireplace("Mars", "March",
+				str_ireplace("Avril", "April",
+				str_ireplace("Mai", "May",
+				str_ireplace("Juin", "June",
+				str_ireplace("Juillet", "July",
+				str_ireplace("Août", "August",
+				str_ireplace("Septembre", "September",
+				str_ireplace("Octobre", "October",
+				str_ireplace("Novembre", "November",
+				str_ireplace("Décembre", "December", $date))))))))))));
 
 			$retour = new \DateTime($date);
 		}
@@ -817,22 +830,22 @@ class PlanningCampingController {
 			$retour = $date->format('j F');
 
 			$retour = str_ireplace("January", "Janvier",
-			str_ireplace("February", "Février",
-			str_ireplace("March", "Mars",
-			str_ireplace("April", "Avril",
-			str_ireplace("May", "Mai",
-			str_ireplace("June", "Juin",
-			str_ireplace("July", "Juillet",
-			str_ireplace("August", "Août",
-			str_ireplace("September", "Septembre",
-			str_ireplace("October", "Octobre",
-			str_ireplace("November", "Novembre",
-			str_ireplace("December", "Décembre", $retour))))))))))));
+				str_ireplace("February", "Février",
+				str_ireplace("March", "Mars",
+				str_ireplace("April", "Avril",
+				str_ireplace("May", "Mai",
+				str_ireplace("June", "Juin",
+				str_ireplace("July", "Juillet",
+				str_ireplace("August", "Août",
+				str_ireplace("September", "Septembre",
+				str_ireplace("October", "Octobre",
+				str_ireplace("November", "Novembre",
+				str_ireplace("December", "Décembre", $retour))))))))))));
 		}
 
 		return $retour;
 	}
-	
+
 	/**
 	 * Convertit une zone de texte pour être compatible avec l'IHM
 	 * (remplace par exemple les espaces par \n)
@@ -841,12 +854,12 @@ class PlanningCampingController {
 	 */
 	private function convertirZoneTextePourIhm($valeur) {
 		$retour = null;
-		
+
 		//On remplace les retours chariot par des \n
 		$retour = str_replace(CHR(13) . CHR(10), '\n', $valeur);
 		$retour = str_replace(CHR(13), '\n', $retour);
 		$retour = str_replace(CHR(10), '\n', $retour);
-		
+
 		return $retour;
 	}
 }

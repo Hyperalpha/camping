@@ -54,7 +54,7 @@ function successPremierClicPopupReglages(data) {
 					$('#popupReglages form#formulairePopupReglages').submit();
 				}
 			} ],
-			height : 530,
+			height : 590,
 			modal : true,
 			width : 600
 		});
@@ -130,6 +130,12 @@ function mettreAJourValeursPopupReglages() {
 	tableauAncienneValeurs['prixRoulotteBleuePeriodeHautePopupReglages'] = $(
 			'#popupReglages').find(
 			'#prixRoulotteBleuePeriodeHautePopupReglages').val();
+	tableauAncienneValeurs['prixTenteSafariPeriodeBassePopupReglages'] = $(
+			'#popupReglages').find('#prixTenteSafariPeriodeBassePopupReglages')
+			.val();
+	tableauAncienneValeurs['prixTenteSafariPeriodeHautePopupReglages'] = $(
+			'#popupReglages').find('#prixTenteSafariPeriodeHautePopupReglages')
+			.val();
 	tableauAncienneValeurs['dateDebutAffichageTableauReservationsPopupReglages'] = $(
 			'#popupReglages').find(
 			'#dateDebutAffichageTableauReservationsPopupReglages').val();

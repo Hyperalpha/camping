@@ -12,7 +12,8 @@ $codeValeursARecuperer = array('Prix/nuitée_campeur_adulte', 'Prix/nuitée_camp
 	'Prix/nuitée_emplacement_camping_car', 'Prix/nuitée_électricité', 
 	'Prix/nuitée_véhicule_supplémentaire', 'Prix/nuitée_visiteur', 
 	'Prix_roulotte_rouge_période_basse', 'Prix_roulotte_rouge_période_haute', 
-	'Prix_roulotte_bleue_période_basse', 'Prix_roulotte_bleue_période_haute', 
+	'Prix_roulotte_bleue_période_basse', 'Prix_roulotte_bleue_période_haute',
+	'Prix_tente_safari_période_basse', 'Prix_tente_safari_période_haute',
 	'Date_de_début_du_tableau_des_réservation', 'Date_de_fin_du_tableau_des_réservation', 
 	'Date_de_début_de_la_période_haute_des_roulottes',
 	'Date_de_fin_de_la_période_haute_des_roulottes');
@@ -40,10 +41,12 @@ $stdReglages->prixRoulottesRougePeriodeBasse = $valeursARecuperer[9];
 $stdReglages->prixRoulottesRougePeriodeHaute = $valeursARecuperer[10];
 $stdReglages->prixRoulottesBleuePeriodeBasse = $valeursARecuperer[11];
 $stdReglages->prixRoulottesBleuePeriodeHaute = $valeursARecuperer[12];
-$stdReglages->dateDebutAffichageReservations = $valeursARecuperer[13];
-$stdReglages->dateFinAffichageReservations = $valeursARecuperer[14];
-$stdReglages->dateDebutPeriodeHauteRoulottes = $valeursARecuperer[15];
-$stdReglages->dateFinPeriodeHauteRoulottes = $valeursARecuperer[16];
+$stdReglages->prixTentesSafariPeriodeBasse = $valeursARecuperer[13];
+$stdReglages->prixTentesSafariPeriodeHaute = $valeursARecuperer[14];
+$stdReglages->dateDebutAffichageReservations = $valeursARecuperer[15];
+$stdReglages->dateFinAffichageReservations = $valeursARecuperer[16];
+$stdReglages->dateDebutPeriodeHauteRoulottes = $valeursARecuperer[17];
+$stdReglages->dateFinPeriodeHauteRoulottes = $valeursARecuperer[18];
 
 $planningCamping = new PlanningCampingController();
 $planningCamping->enregistrerReglages($stdReglages);

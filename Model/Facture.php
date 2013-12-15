@@ -121,6 +121,18 @@ class Facture {
 	private $roulotteBleuePeriodeHaute;
 	
 	/**
+	 * Tente safari période basse
+	 * @var string
+	 */
+	private $tenteSafariPeriodeBasse;
+	
+	/**
+	 * Tente safari période haute
+	 * @var string
+	 */
+	private $tenteSafariPeriodeHaute;
+	
+	/**
 	 * Remise exceptionnelle sur la réservation
 	 * @var float
 	 */
@@ -440,6 +452,38 @@ class Facture {
 	 */
 	public function setRoulotteBleuePeriodeHaute($roulotteBleuePeriodeHaute) {
 		$this->roulotteBleuePeriodeHaute = $roulotteBleuePeriodeHaute;
+	}
+	
+	/**
+	 * Getter pour tente safari période basse
+	 * @return string
+	 */
+	public function getTenteSafariPeriodeBasse() {
+		return $this->tenteSafariPeriodeBasse;
+	}
+	
+	/**
+	 * Setter pour tente safari période basse
+	 * @var string
+	 */
+	public function setTenteSafariPeriodeBasse($tenteSafariPeriodeBasse) {
+		$this->tenteSafariPeriodeBasse = $tenteSafariPeriodeBasse;
+	}
+	
+	/**
+	 * Getter pour tente safari période haute
+	 * @return string
+	 */
+	public function getTenteSafariPeriodeHaute() {
+		return $this->tenteSafariPeriodeHaute;
+	}
+	
+	/**
+	 * Setter pour tente safari période haute
+	 * @var string
+	 */
+	public function setTenteSafariPeriodeHaute($tenteSafariPeriodeHaute) {
+		$this->tenteSafariPeriodeHaute = $tenteSafariPeriodeHaute;
 	}
 	
 	/**

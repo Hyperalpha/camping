@@ -50,15 +50,15 @@ function relierEvenementsCamembertPays(data) {
 				showDataLabels : true
 			}
 		},
-		grid: {
-	        background: '#ffffff',
-	        borderWidth: 0,
-	        shadow: false
-	    },
+		grid : {
+			background : '#ffffff',
+			borderWidth : 0,
+			shadow : false
+		},
 		legend : {
 			show : true,
 			location : 'e'
-	    }
+		}
 	});
 }
 
@@ -74,7 +74,7 @@ function majLignesTableau() {
 	tabLignesCalendrier = infosLignesTableau($(".ligne_calendrier"));
 
 	// On liste toutes les lignes des roulottes
-	tabLignesRoulottesCalendrier = infosLignesTableau($(".ligne_roulotte_rouge, .ligne_roulotte_bleue"));
+	tabLignesRoulottesCalendrier = infosLignesTableau($(".ligne_roulotte_rouge, .ligne_roulotte_bleue, .ligne_tente_safari"));
 }
 
 /**
@@ -385,10 +385,20 @@ function placerBlocReservationDate(blocReservation, dateDebut,
 						});
 					}
 				}
+			} else if (tabDonnees.tenteSafari > 0) {
+				for ( var i = 0; i < tabLignesRoulottesCalendrier.length; i++) {
+					if ('ligneTenteSafari' == tabLignesRoulottesCalendrier[i]['id']) {
+						$(blocReservation).offset({
+							top : tabLignesRoulottesCalendrier[i]['top']
+						});
+					}
+				}
 			}
-			// Si le bloc est une roulotte, on vérouille le déplacement vertical
+			// Si le bloc est une roulotte, on verrouille le déplacement
+			// vertical
 			if ((tabDonnees.roulotteRouge > 0)
-					|| (tabDonnees.roulotteBleue > 0)) {
+					|| (tabDonnees.roulotteBleue > 0)
+					|| (tabDonnees.tenteSafari > 0)) {
 				$(blocReservation).off("drag", onDragBlocReservation);
 				$(blocReservation).draggable("option", "axis", "x");
 			}

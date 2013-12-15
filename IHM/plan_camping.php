@@ -66,6 +66,10 @@ include_once '../Controller/PlanningCampingController.php';
 				//Roulotte bleue
 				$roulotte = true;
 			}
+			if ($reservation->getTenteSafari() > 0) {
+				//Tente safari
+				$roulotte = true;
+			}
 			if ($reservation->getNombreCampingCars() > 0) {
 				//Camping-car
 				$labelLogement = "Camping-car : ";
@@ -112,15 +116,19 @@ include_once '../Controller/PlanningCampingController.php';
 				if ($reservation->getRoulotteRouge() > 0) {
 					//On ajoute l'emplacement de la roulotte rouge
 					echo '<div id="emplacementRoulotteRouge" class="bloc-emplacement" '
-						. 'title="Roulotte rouge : ' . $nomPrenomClient . '" '
-						. 'style="top: 298px; left: 118px;">'
+						. 'title="Roulotte rouge : ' . $nomPrenomClient . '">'
 						. '<span class="text-bloc-emplacement">' . $nomPrenomClient .'</span></div>';
 				}
 				if ($reservation->getRoulotteBleue() > 0) {
 					//On ajoute l'emplacement de la roulotte bleue
 					echo '<div id="emplacementRoulotteBleue" class="bloc-emplacement" '
-						. 'title="Roulotte rouge : ' . $nomPrenomClient . '" '
-						. 'style="top: 385px; left: 125px;">'
+						. 'title="Roulotte rouge : ' . $nomPrenomClient . '">'
+						. '<span class="text-bloc-emplacement">' . $nomPrenomClient .'</span></div>';
+				}
+				if ($reservation->getTenteSafari() > 0) {
+					//On ajoute l'emplacement de la tente safari
+					echo '<div id="emplacementTenteSafari" class="bloc-emplacement" '
+						. 'title="Tente safari : ' . $nomPrenomClient . '">'
 						. '<span class="text-bloc-emplacement">' . $nomPrenomClient .'</span></div>';
 				}
 			}
