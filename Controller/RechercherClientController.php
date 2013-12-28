@@ -56,8 +56,6 @@ class RechercherClientController {
 		$chaineRetour .= $client->getPrenom() . $sep;
 		//Rue
 		$chaineRetour .= $client->getAdresse1() . $sep;
-		//Complément adresse
-		$chaineRetour .= $client->getAdresse2() . $sep;
 		//Code postal
 		$chaineRetour .= $client->getCodePostal() . $sep;
 		//Ville

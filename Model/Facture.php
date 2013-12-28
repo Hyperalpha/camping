@@ -49,34 +49,22 @@ class Facture {
 	private $animal;
 	
 	/**
-	 * Petite tente (nombre x prix)
+	 * Tarif 1 (nombre x prix)
 	 * @var string
 	 */
-	private $petiteTente;
+	private $tarif1;
 	
 	/**
-	 * Van (nombre x prix)
+	 * Tarif 2 (nombre x prix)
 	 * @var string
 	 */
-	private $van;
+	private $tarif2;
 	
 	/**
-	 * Grande tente (nombre x prix)
+	 * Tarif 3 (nombre x prix)
 	 * @var string
 	 */
-	private $grandeTente;
-	
-	/**
-	 * Caravane (nombre x prix)
-	 * @var string
-	 */
-	private $caravane;
-	
-	/**
-	 * Camping car (nombre x prix)
-	 * @var string
-	 */
-	private $campingCar;
+	private $tarif3;
 	
 	/**
 	 * Electricité (nombre x prix)
@@ -263,83 +251,51 @@ class Facture {
 	}
 	
 	/**
-	 * Getter pour petite tente
+	 * Getter pour tarif 1
 	 * @return string
 	 */
-	public function getPetiteTente() {
-		return $this->petiteTente;
+	public function getTarif1() {
+		return $this->tarif1;
 	}
 	
 	/**
-	 * Setter pour petite tente
+	 * Setter pour tarif 1
 	 * @var string
 	 */
-	public function setPetiteTente($petiteTente) {
-		$this->petiteTente = $petiteTente;
+	public function setTarif1($tarif1) {
+		$this->tarif1 = $tarif1;
 	}
 	
 	/**
-	 * Getter pour van
+	 * Getter pour tarif 2
 	 * @return string
 	 */
-	public function getVan() {
-		return $this->van;
+	public function getTarif2() {
+		return $this->tarif2;
 	}
 	
 	/**
-	 * Setter pour van
+	 * Setter pour tarif 2
 	 * @var string
 	 */
-	public function setVan($van) {
-		$this->van = $van;
+	public function setTarif2($tarif2) {
+		$this->tarif2 = $tarif2;
 	}
 	
 	/**
-	 * Getter pour grande tente
+	 * Getter pour tarif 3
 	 * @return string
 	 */
-	public function getGrandeTente() {
-		return $this->grandeTente;
+	public function getTarif3() {
+		return $this->tarif3;
 	}
 	
 	/**
-	 * Setter pour grande tente
+	 * Setter pour tarif 3
 	 * @var string
 	 */
-	public function setGrandeTente($grandeTente) {
-		$this->grandeTente = $grandeTente;
-	}
-	
-	/**
-	 * Getter pour caravane
-	 * @return string
-	 */
-	public function getCaravane() {
-		return $this->caravane;
-	}
-	
-	/**
-	 * Setter pour caravane
-	 * @var string
-	 */
-	public function setCaravane($caravane) {
-		$this->caravane = $caravane;
-	}
-	
-	/**
-	 * Getter pour camping-car
-	 * @return string
-	 */
-	public function getCampingCar() {
-		return $this->campingCar;
-	}
-	
-	/**
-	 * Setter pour camping-car
-	 * @var string
-	 */
-	public function setCampingCar($campingCar) {
-		$this->campingCar = $campingCar;
+	public function setTarif3($tarif3) {
+		$this->tarif3 = $tarif3;
 	}
 	
 	/**

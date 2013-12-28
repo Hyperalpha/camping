@@ -37,11 +37,9 @@
 	overflow: hidden;
 	width: 100px;
 }
-.bloc-camping-car {background-color: #8C00FF;}
-.bloc-van {background-color: #DD0000;}
-.bloc-caravane {background-color: #3BAAE3;}
-.bloc-grande-tente {background-color: #F6A828;}
-.bloc-petite-tente {background-color: #459e00;}
+.bloc-tarif1 {background-color: #459e00;}
+.bloc-tarif2 {background-color: #F6A828;}
+.bloc-tarif3 {background-color: #DD0000;}
 .pancarte-emplacement {
 	height: 64px;
 	margin: -50px 0 0 -25px;
@@ -57,4 +55,4 @@
 #emplacementRoulotteRouge, #emplacementRoulotteBleue, #emplacementTenteSafari {text-align: center;}
 #emplacementRoulotteRouge {top: 298px; left: 118px;}
 #emplacementRoulotteBleue {top: 385px; left: 125px;}
-#emplacementTenteSafari {top: 220px; left: 125px;}
+#emplacementTenteSafari {top: 225px; left: 125px;}

@@ -59,50 +59,32 @@ input.texte-gras1, label.texte-gras1, span.texte-gras1 {
 	background-repeat: no-repeat;
     display: block;
 }
-.logo-camping-car-mini, .logo-camping-car-moyen {background-color: #8C00FF;}
-.logo-camping-car-mini span {
+.logo-tarif1-mini, .logo-tarif1-moyen {background-color: #459e00;}
+.logo-tarif1-mini span {
 	background-image: url(../images/logo-logement-mini.png);
-	background-position: -50px 0;
+	background-position: 0 -75px;
 }
-.logo-camping-car-moyen span {
+.logo-tarif1-moyen span {
 	background-image: url(../images/logo-logement-moyen.png);
-	background-position: -100px 0;
+	background-position: 0 -150px;
 }
-.logo-van-mini, .logo-van-moyen {background-color: #DD0000;}
-.logo-van-mini span {
+.logo-tarif2-mini, .logo-tarif2-moyen {background-color: #F6A828;}
+.logo-tarif2-mini span {
 	background-image: url(../images/logo-logement-mini.png);
-	background-position: 0 0;
+	background-position: -25px -75px;
 }
-.logo-van-moyen span {
+.logo-tarif2-moyen span {
 	background-image: url(../images/logo-logement-moyen.png);
-	background-position: 0 0;
+	background-position: -50px -150px;
 }
-.logo-caravane-mini, .logo-caravane-moyen {background-color: #3BAAE3;}
-.logo-caravane-mini span {
+.logo-tarif3-mini, .logo-tarif3-moyen {background-color: #DD0000;}
+.logo-tarif3-mini span {
 	background-image: url(../images/logo-logement-mini.png);
-	background-position: 0 -25px;
+	background-position: -50px -75px;
 }
-.logo-caravane-moyen span {
+.logo-tarif3-moyen span {
 	background-image: url(../images/logo-logement-moyen.png);
-	background-position: 0 -50px;
-}
-.logo-grande-tente-mini, .logo-grande-tente-moyen {background-color: #F6A828;}
-.logo-grande-tente-mini span {
-	background-image: url(../images/logo-logement-mini.png);
-	background-position: -25px -25px;
-}
-.logo-grande-tente-moyen span {
-	background-image: url(../images/logo-logement-moyen.png);
-	background-position: -50px -50px;
-}
-.logo-petite-tente-mini, .logo-petite-tente-moyen {background-color: #459e00;}
-.logo-petite-tente-mini span {
-	background-image: url(../images/logo-logement-mini.png);
-	background-position: -25px 0;
-}
-.logo-petite-tente-moyen span {
-	background-image: url(../images/logo-logement-moyen.png);
-	background-position: -50px 0;
+	background-position: -100px -150px;
 }
 .logo-roulotte-rouge-mini, .logo-roulotte-rouge-moyen {background-color: #8F0002;}
 .logo-roulotte-bleue-mini, .logo-roulotte-bleue-moyen {background-color: #3BAAE3;}
@@ -156,26 +138,15 @@ input.texte-gras1, label.texte-gras1, span.texte-gras1 {
 	overflow: hidden;
 	padding: 2px 0 0 2px;
 }
-#boutonAjouterReservation span.ui-icon {
-	margin: 0 0.6em 0 0.6em;
-}
-#boutonAjouterReservation span, #boutonCreerClient span {
-	display: inline-block;
-}
+#blocBoutonsSuperieur {position: fixed; z-index: 99;}
+#boutonAjouterReservation span.ui-icon {margin: 0 0.6em 0 0.6em;}
+#boutonAjouterReservation span, #boutonCreerClient span {display: inline-block;}
 
-#boutonEmplacementReservation {
-	margin-left: 50px;
-}
-#boutonEmplacementReservation span img {
-	margin: -5px 5px -9px -5px;
-}
+#boutonEmplacementReservation {margin-left: 50px;}
+#boutonEmplacementReservation span img {margin: -5px 5px -9px -5px;}
 
-#boutonReglages {
-	margin-left: 50px;
-}
-#boutonReglages span img {
-	margin: -5px 5px -9px -5px;
-}
+#boutonReglages {margin-left: 50px;}
+#boutonReglages span img {margin: -5px 5px -9px -5px;}
 
 /* Tableau des réservations */
 table.tableau_calendrier {
@@ -322,7 +293,7 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 #statistiquesSaison label {font-size: 20px; font-weight: bold;}
 
 /* Camembert de répartition des clients par pays */
-#camembertPays {display: inline-block; height: 200px; margin-bottom: -60px; width: 300px;}
+#camembertPays {display: inline-block; height: 200px; margin-bottom: -60px; overflow-y: auto; padding-left: 20px; width: 300px;}
 
 /* Popups */
 /**********/
@@ -333,7 +304,6 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 #popupAjoutModifReservation input#nomClientPopupAjoutReservation {font-size: 1.2em; font-weight: bold; width: 150px;}
 #popupAjoutModifReservation input#prenomClientPopupAjoutReservation {font-size: 1.2em; font-weight: bold; width: 150px;}
 #popupAjoutModifReservation input#rueClientPopupAjoutReservation {width: 280px;}
-#popupAjoutModifReservation input#complementAdresseClientPopupAjoutReservation {margin-left: 10px; width: 350px;}
 #popupAjoutModifReservation input#codePostalClientPopupAjoutReservation {width: 50px;}
 #popupAjoutModifReservation input#villeClientPopupAjoutReservation {width: 200px;}
 #popupAjoutModifReservation input#paysClientPopupAjoutReservation {width: 150px;}
@@ -347,33 +317,27 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 #popupAjoutModifReservation input#nbAdultesClientPopupAjoutReservation {margin: 2px 0 0 0; width: 30px;}
 #popupAjoutModifReservation input#nbEnfantsClientPopupAjoutReservation {margin: 2px 0 0 50px; width: 30px;}
 #popupAjoutModifReservation input#nbAnimauxClientPopupAjoutReservation {margin: 2px 0 0 60px; width: 30px;}
-#popupAjoutModifReservation #logoPetiteTentePopupAjoutReservation,
-#popupAjoutModifReservation #logoGrandeTentePopupAjoutReservation,
-#popupAjoutModifReservation #logoCaravanePopupAjoutReservation,
-#popupAjoutModifReservation #logoVanPopupAjoutReservation,
-#popupAjoutModifReservation #logoCampingCarPopupAjoutReservation,
+#popupAjoutModifReservation #logoTarif1PopupAjoutReservation,
+#popupAjoutModifReservation #logoTarif2PopupAjoutReservation,
+#popupAjoutModifReservation #logoTarif3PopupAjoutReservation,
 #popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation,
 #popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation,
 #popupAjoutModifReservation #logoTenteSafariPopupAjoutReservation {border-radius: 8px; display: inline-block; height: 20px; width: 35px;}
 #popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation {margin-left: 17px;}
 #popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation {margin-left: 18px;}
 #popupAjoutModifReservation #logoTenteSafariPopupAjoutReservation {margin-left: 18px;}
-#popupAjoutModifReservation #logoPetiteTentePopupAjoutReservation span,
-#popupAjoutModifReservation #logoGrandeTentePopupAjoutReservation span,
-#popupAjoutModifReservation #logoCaravanePopupAjoutReservation span,
-#popupAjoutModifReservation #logoVanPopupAjoutReservation span,
-#popupAjoutModifReservation #logoCampingCarPopupAjoutReservation span {margin-left: 4px;}
+#popupAjoutModifReservation #logoTarif1PopupAjoutReservation span,
+#popupAjoutModifReservation #logoTarif2PopupAjoutReservation span,
+#popupAjoutModifReservation #logoTarif3PopupAjoutReservation span,
 #popupAjoutModifReservation #logoRoulotteRougePopupAjoutReservation span,
 #popupAjoutModifReservation #logoRoulotteBleuePopupAjoutReservation span,
 #popupAjoutModifReservation #logoTenteSafariPopupAjoutReservation span {margin-left: 4px; margin-top:0 ;position: relative; top: -8px;}
 #popupAjoutModifReservation input.spinner {font-size: 13px; font-weight: bold; text-align: center; width: 35px;}
-#popupAjoutModifReservation span.ui-spinner {margin: 10px 30px 0px 0px;}
+#popupAjoutModifReservation span.ui-spinner {margin: -6px 30px 0px 0px;}
 #popupAjoutModifReservation div.div-input-logo {display: inline-block;}
-#popupAjoutModifReservation div#divInputNbPetiteTenteClientPopupAjoutReservation a {background: #459E00; border-color: #459E00;}
-#popupAjoutModifReservation div#divInputNbGrandeTenteClientPopupAjoutReservation a {background: #F6A828; border-color: #F6A828;}
-#popupAjoutModifReservation div#divInputNbCaravaneClientPopupAjoutReservation a {background: #3BAAE3; border-color: #3BAAE3;}
-#popupAjoutModifReservation div#divInputNbVanClientPopupAjoutReservation a {background: #DD0000; border-color: #DD0000;}
-#popupAjoutModifReservation div#divInputNbCampingCarClientPopupAjoutReservationn a {background: #8C00FF; border-color: #8C00FF;}
+#popupAjoutModifReservation div#divInputNbTarif1ClientPopupAjoutReservation a {background: #459E00; border-color: #459E00;}
+#popupAjoutModifReservation div#divInputNbTarif2ClientPopupAjoutReservation a {background: #F6A828; border-color: #F6A828;}
+#popupAjoutModifReservation div#divInputNbTarif3ClientPopupAjoutReservation a {background: #DD0000; border-color: #DD0000;}
 #popupAjoutModifReservation input#electriciteClientPopupAjoutReservation {margin: 2px 11px 0 10px;}
 #popupAjoutModifReservation input#nbNuitsVisiteursClientPopupAjoutReservation {margin: 2px 0 0 15px; width: 30px;}
 #popupAjoutModifReservation input#nbVehiculesSuppPopupAjoutReservation {margin: 2px 0 0 15px; width: 30px;}
@@ -481,7 +445,8 @@ table.tableau_calendrier th.header_jours_calendrier_today {
 #ongletsPopupReglages li {font-size: 15px;}
 #ongletsPopupReglages img {margin: 0 5px -4px -5px;}
 #ongletsPopupReglages #ongletPrix input {text-align: right; width: 50px;}
-#ongletsPopupReglages #ongletCalendrier input {text-align: center; width: 75px;}
+#ongletsPopupReglages #ongletCalendrier input.champ-date-sans-annee {text-align: center; width: 75px;}
+#ongletsPopupReglages #ongletCalendrier input.champ-date-avec-annee {text-align: center; width: 100px;}
 #ongletsPopupReglages .droite-popup-reglages {
 	display: inline-block;
 	position: absolute;

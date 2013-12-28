@@ -293,6 +293,11 @@ function optimiserTabReservation(tabColonnes, tabBlocs) {
 			}
 		});
 	}
+	
+	//On garde toujours au moins une ligne
+	if (tabLignes.length == 0) {
+		tabLignes[0] = '';
+	}
 
 	// Création/suppression des lignes après optimisation
 	tabLignesHtml = $('tr[id^="ligneCalend_"]');
@@ -535,7 +540,7 @@ function onDragStopBlocReservation(event, ui) {
 					if ((rPlacer == true) && (roulotte == false)) {
 						optimiserTabReservation(
 								tabColonnesCalendrier,
-								$('.draggable.logo-camping-car-mini, .draggable.logo-van-mini, .draggable.logo-caravane-mini, .draggable.logo-grande-tente-mini, .draggable.logo-petite-tente-mini'));
+								$('.draggable.logo-tarif1-mini, .draggable.logo-tarif2-mini, .draggable.logo-tarif3-mini'));
 					}
 
 					// On sauvegarde les modifications

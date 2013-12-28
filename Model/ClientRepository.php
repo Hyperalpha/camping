@@ -28,7 +28,7 @@ class ClientRepository {
 		$this->initBdd();
 
 		//Requête SQL pour rechercher les clients
-		$sql = 'SELECT c.id, c.reference, c.nom, c.prenom, c.adresse1, c.adresse2, '
+		$sql = 'SELECT c.id, c.reference, c.nom, c.prenom, c.adresse1, '
 		. 'c.code_postal, c.ville, c.pays, c.telephone, c.telephone_portable, c.email, '
 		. 'c.date_creation as date_creation_client, '
 		. 'c.date_modification as date_modification_client '
@@ -63,15 +63,14 @@ class ClientRepository {
 			$client->setNom($data[2]);
 			$client->setPrenom($data[3]);
 			$client->setAdresse1($data[4]);
-			$client->setAdresse2($data[5]);
-			$client->setCodePostal($data[6]);
-			$client->setVille($data[7]);
-			$client->setPays($data[8]);
-			$client->setTelephone($data[9]);
-			$client->setTelephonePortable($data[10]);
-			$client->setEmail($data[11]);
-			$client->setDateCreation(new DateTime($data[12]));
-			$client->setDateModification(new DateTime($data[13]));
+			$client->setCodePostal($data[5]);
+			$client->setVille($data[6]);
+			$client->setPays($data[7]);
+			$client->setTelephone($data[8]);
+			$client->setTelephonePortable($data[9]);
+			$client->setEmail($data[10]);
+			$client->setDateCreation(new DateTime($data[11]));
+			$client->setDateModification(new DateTime($data[12]));
 
 			$retour[] = $client;
 		}
@@ -112,14 +111,13 @@ class ClientRepository {
 			//On génère une référence client
 			$referenceClient = "CLIENT" . $dateNow->format('YmdHis');
 			$sql = "INSERT INTO client (reference, nom, prenom, adresse1, "
-			. "adresse2, code_postal, ville, pays, telephone, telephone_portable, "
+			. "code_postal, ville, pays, telephone, telephone_portable, "
 			. "email) "
 			. "VALUES ("
 			. "'" . $this->mysqli->real_escape_string($referenceClient) . "', "
 			. "'" . $this->mysqli->real_escape_string($client->getNom()) . "', "
 			. "'" . $this->mysqli->real_escape_string($client->getPrenom()) . "', "
 			. "'" . $this->mysqli->real_escape_string($client->getAdresse1()) . "', "
-			. "'" . $this->mysqli->real_escape_string($client->getAdresse2()) . "', "
 			. "'" . $this->mysqli->real_escape_string($client->getCodePostal()) . "', "
 			. "'" . $this->mysqli->real_escape_string($client->getVille()) . "', "
 			. "'" . $this->mysqli->real_escape_string($client->getPays()) . "', "
@@ -135,7 +133,6 @@ class ClientRepository {
 			. "c.nom = '" . $this->mysqli->real_escape_string($client->getNom())  . "', "
 			. "c.prenom = '" . $this->mysqli->real_escape_string($client->getPrenom()) . "', "
 			. "c.adresse1 = '" . $this->mysqli->real_escape_string($client->getAdresse1()) . "', "
-			. "c.adresse2 = '" . $this->mysqli->real_escape_string($client->getAdresse2()) . "', "
 			. "c.code_postal = '" . $this->mysqli->real_escape_string($client->getCodePostal()) . "', "
 			. "c.ville = '" . $this->mysqli->real_escape_string($client->getVille()) . "', "
 			. "c.pays = '" . $this->mysqli->real_escape_string($client->getPays()) . "', "

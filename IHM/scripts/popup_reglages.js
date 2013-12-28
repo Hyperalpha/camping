@@ -68,9 +68,19 @@ function successPremierClicPopupReglages(data) {
 		});
 
 		// Initialisation des champs date
-		$('#popupReglages .champ-date-sans-annees').datepicker(
+		$('#popupReglages .champ-date-sans-annee').datepicker(
 				{
 					dateFormat : DATE_FORMAT_SANS_ANNEE,
+					firstDay : 1,
+					monthNames : [ JANVIER, FEVRIER, MARS, AVRIL, MAI, JUIN,
+							JUILLET, AOUT, SEPTEMBRE, OCTOBRE, NOVEMBRE,
+							DECEMBRE ],
+					dayNamesMin : [ DIMANCHE_MIN, LUNDI_MIN, MARDI_MIN,
+							MERCREDI_MIN, JEUDI_MIN, VENDREDI_MIN, SAMEDI_MIN ]
+				});
+		$('#popupReglages .champ-date-avec-annee').datepicker(
+				{
+					dateFormat : DATE_FORMAT_AVEC_ANNEE,
 					firstDay : 1,
 					monthNames : [ JANVIER, FEVRIER, MARS, AVRIL, MAI, JUIN,
 							JUILLET, AOUT, SEPTEMBRE, OCTOBRE, NOVEMBRE,
@@ -102,15 +112,12 @@ function mettreAJourValeursPopupReglages() {
 			.find('#prixNuitEnfantPopupReglages').val();
 	tableauAncienneValeurs['prixNuitAnimalPopupReglages'] = $('#popupReglages')
 			.find('#prixNuitAnimalPopupReglages').val();
-	tableauAncienneValeurs['prixNuitPetitEmplacementPopupReglages'] = $(
-			'#popupReglages').find('#prixNuitPetitEmplacementPopupReglages')
-			.val();
-	tableauAncienneValeurs['prixNuitGrandEmplacementPopupReglages'] = $(
-			'#popupReglages').find('#prixNuitGrandEmplacementPopupReglages')
-			.val();
-	tableauAncienneValeurs['prixNuitEmplacementCampingCarPopupReglages'] = $(
-			'#popupReglages').find(
-			'#prixNuitEmplacementCampingCarPopupReglages').val();
+	tableauAncienneValeurs['prixNuitTarif1PopupReglages'] = $('#popupReglages')
+			.find('#prixNuitTarif1PopupReglages').val();
+	tableauAncienneValeurs['prixNuitTarif2PopupReglages'] = $('#popupReglages')
+			.find('#prixNuitTarif2PopupReglages').val();
+	tableauAncienneValeurs['prixNuitTarif3PopupReglages'] = $('#popupReglages')
+			.find('#prixNuitTarif3PopupReglages').val();
 	tableauAncienneValeurs['prixNuitElectricitePopupReglages'] = $(
 			'#popupReglages').find('#prixNuitElectricitePopupReglages').val();
 	tableauAncienneValeurs['prixNuitVehiculeSupplementairePopupReglages'] = $(
@@ -180,16 +187,12 @@ function verifContraintesFormAjoutRes2(formulaire, nbNuites) {
 			"#nbAdultesClientPopupAjoutReservation").val());
 	var nbEnfants = parseInt($(formulaire).find(
 			"#nbEnfantsClientPopupAjoutReservation").val());
-	var nbPTente = parseInt($(formulaire).find(
-			"#nbPetiteTenteClientPopupAjoutReservation").val());
-	var nbGTente = parseInt($(formulaire).find(
-			"#nbGrandeTenteClientPopupAjoutReservation").val());
-	var nbCaravane = parseInt($(formulaire).find(
-			"#nbCaravaneClientPopupAjoutReservation").val());
-	var nbVan = parseInt($(formulaire)
-			.find("#nbVanClientPopupAjoutReservation").val());
-	var nbCampingCar = parseInt($(formulaire).find(
-			"#nbCampingCarClientPopupAjoutReservation").val());
+	var nbTarif1 = parseInt($(formulaire).find(
+			"#nbTarif1ClientPopupAjoutReservation").val());
+	var nbTarif2 = parseInt($(formulaire).find(
+			"#nbTarif2ClientPopupAjoutReservation").val());
+	var nbTarif3 = parseInt($(formulaire).find(
+			"#nbTarif3ClientPopupAjoutReservation").val());
 
 	if (isNaN(nbAdultes) == true) {
 		nbAdultes = 0;
@@ -197,20 +200,14 @@ function verifContraintesFormAjoutRes2(formulaire, nbNuites) {
 	if (isNaN(nbEnfants) == true) {
 		nbEnfants = 0;
 	}
-	if (isNaN(nbPTente) == true) {
-		nbPTente = 0;
+	if (isNaN(nbTarif1) == true) {
+		nbTarif1 = 0;
 	}
-	if (isNaN(nbGTente) == true) {
-		nbGTente = 0;
+	if (isNaN(nbTarif2) == true) {
+		nbTarif2 = 0;
 	}
-	if (isNaN(nbCaravane) == true) {
-		nbCaravane = 0;
-	}
-	if (isNaN(nbVan) == true) {
-		nbVan = 0;
-	}
-	if (isNaN(nbCampingCar) == true) {
-		nbCampingCar = 0;
+	if (isNaN(nbTarif3) == true) {
+		nbTarif3 = 0;
 	}
 
 	// Vérification des caractères interdits
@@ -263,7 +260,7 @@ function verifContraintesFormAjoutRes2(formulaire, nbNuites) {
 	}
 
 	// Vérification de l'habitation
-	if ((nbPTente + nbGTente + nbCaravane + nbVan + nbCampingCar) < 1) {
+	if ((nbTarif1 + nbTarif2 + nbTarif3) < 1) {
 		messageErreur = messageErreur + NOMBRE_HABITATION_INCORRECT
 				+ '<br/><br/>';
 	}

@@ -332,19 +332,15 @@ function relierEvenementsAjoutReservation() {
 							// roulotte
 							$(popupAjoutModifReservation)
 									.find(
-											'#nbPetiteTenteClientPopupAjoutReservation, '
-													+ '#nbGrandeTenteClientPopupAjoutReservation, '
-													+ '#nbCaravaneClientPopupAjoutReservation, '
-													+ '#nbVanClientPopupAjoutReservation, '
-													+ '#nbCampingCarClientPopupAjoutReservation')
+											'#nbTarif1ClientPopupAjoutReservation, '
+													+ '#nbTarif2ClientPopupAjoutReservation, '
+													+ '#nbTarif3ClientPopupAjoutReservation')
 									.spinner("disable");
 							$(popupAjoutModifReservation)
 									.find(
-											'#logoPetiteTentePopupAjoutReservation, '
-													+ '#logoGrandeTentePopupAjoutReservation, '
-													+ '#logoCaravanePopupAjoutReservation, '
-													+ '#logoVanPopupAjoutReservation, '
-													+ '#logoCampingCarPopupAjoutReservation, '
+											'#logoTarif1PopupAjoutReservation, '
+													+ '#logoTarif2PopupAjoutReservation, '
+													+ '#logoTarif3PopupAjoutReservation, '
 													+ '#logoElectriciteClientPopupAjoutReservation')
 									.addClass("desactive");
 							$(popupAjoutModifReservation)
@@ -360,19 +356,15 @@ function relierEvenementsAjoutReservation() {
 							// roulotte
 							$(popupAjoutModifReservation)
 									.find(
-											'#nbPetiteTenteClientPopupAjoutReservation, '
-													+ '#nbGrandeTenteClientPopupAjoutReservation, '
-													+ '#nbCaravaneClientPopupAjoutReservation, '
-													+ '#nbVanClientPopupAjoutReservation, '
-													+ '#nbCampingCarClientPopupAjoutReservation')
+											'#nbTarif1ClientPopupAjoutReservation, '
+													+ '#nbTarif2ClientPopupAjoutReservation, '
+													+ '#nbTarif3ClientPopupAjoutReservation')
 									.spinner("enable");
 							$(popupAjoutModifReservation)
 									.find(
-											'#logoPetiteTentePopupAjoutReservation, '
-													+ '#logoGrandeTentePopupAjoutReservation, '
-													+ '#logoCaravanePopupAjoutReservation, '
-													+ '#logoVanPopupAjoutReservation, '
-													+ '#logoCampingCarPopupAjoutReservation, '
+											'#logoTarif1PopupAjoutReservation, '
+													+ '#logoTarif2PopupAjoutReservation, '
+													+ '#logoTarif3PopupAjoutReservation, '
 													+ '#logoElectriciteClientPopupAjoutReservation')
 									.removeClass("desactive");
 							$(popupAjoutModifReservation)
@@ -498,16 +490,12 @@ function verifContraintesFormAjoutRes(formulaire, nbNuites) {
 			| $(formulaire).find("#roulotteBleuePopupAjoutReservation").is(
 					':checked') | $(formulaire).find(
 			"#tenteSafariPopupAjoutReservation").is(':checked'));
-	var nbPTente = parseInt($(formulaire).find(
-			"#nbPetiteTenteClientPopupAjoutReservation").val());
-	var nbGTente = parseInt($(formulaire).find(
-			"#nbGrandeTenteClientPopupAjoutReservation").val());
-	var nbCaravane = parseInt($(formulaire).find(
-			"#nbCaravaneClientPopupAjoutReservation").val());
-	var nbVan = parseInt($(formulaire)
-			.find("#nbVanClientPopupAjoutReservation").val());
-	var nbCampingCar = parseInt($(formulaire).find(
-			"#nbCampingCarClientPopupAjoutReservation").val());
+	var nbTarif1 = parseInt($(formulaire).find(
+			"#nbTarif1ClientPopupAjoutReservation").val());
+	var nbTarif2 = parseInt($(formulaire).find(
+			"#nbTarif2ClientPopupAjoutReservation").val());
+	var nbTarif3 = parseInt($(formulaire).find(
+			"#nbTarif3ClientPopupAjoutReservation").val());
 
 	if (isNaN(nbAdultes) == true) {
 		nbAdultes = 0;
@@ -515,20 +503,14 @@ function verifContraintesFormAjoutRes(formulaire, nbNuites) {
 	if (isNaN(nbEnfants) == true) {
 		nbEnfants = 0;
 	}
-	if (isNaN(nbPTente) == true) {
-		nbPTente = 0;
+	if (isNaN(nbTarif1) == true) {
+		nbTarif1 = 0;
 	}
-	if (isNaN(nbGTente) == true) {
-		nbGTente = 0;
+	if (isNaN(nbTarif2) == true) {
+		nbTarif2 = 0;
 	}
-	if (isNaN(nbCaravane) == true) {
-		nbCaravane = 0;
-	}
-	if (isNaN(nbVan) == true) {
-		nbVan = 0;
-	}
-	if (isNaN(nbCampingCar) == true) {
-		nbCampingCar = 0;
+	if (isNaN(nbTarif3) == true) {
+		nbTarif3 = 0;
 	}
 
 	// Vérification des caractères interdits
@@ -581,7 +563,7 @@ function verifContraintesFormAjoutRes(formulaire, nbNuites) {
 	}
 
 	// Vérification de l'habitation
-	if (((nbPTente + nbGTente + nbCaravane + nbVan + nbCampingCar) < 1)
+	if (((nbTarif1 + nbTarif2 + nbTarif3) < 1)
 			&& (estRoulotte == false)) {
 		messageErreur = messageErreur + NOMBRE_HABITATION_INCORRECT
 				+ '<br/><br/>';
@@ -604,8 +586,10 @@ function verifContraintesFormAjoutRes(formulaire, nbNuites) {
  *            string Id du nouveau bloc. Si vide ou "" on calcul un id unique
  * @param tabDonnees
  *            array Tableau des valeurs de la réservations
+ * @param optimiserTableau
+ *            Si true, on recalcule le placement des réservations
  */
-function creerBlocReservation(idNouveauBloc, tabDonnees) {
+function creerBlocReservation(idNouveauBloc, tabDonnees, optimiserTableau) {
 	var largeurUniteReservation = parseInt($("#tableauCalend").find(
 			".cellule_calendrier").eq(3).offset().left)
 			- parseInt($("#tableauCalend").find(".cellule_calendrier").eq(2)
@@ -655,28 +639,22 @@ function creerBlocReservation(idNouveauBloc, tabDonnees) {
 						tabDonnees.nomClient + " " + tabDonnees.prenomClient));
 	}
 
-	// Choix de l'icone de la réservation (tente, caravane, ...)
+	// Choix de l'icone de la réservation (tarif 1, 2, 3)
 	if (tabDonnees.roulotteRouge > 0) {
 		$(nouveauBloc).addClass("logo-roulotte-rouge-mini");
 	} else if (tabDonnees.roulotteBleue > 0) {
 		$(nouveauBloc).addClass("logo-roulotte-bleue-mini");
 	} else if (tabDonnees.tenteSafari > 0) {
 		$(nouveauBloc).addClass("logo-tente-safari-mini");
-	} else if (tabDonnees.nbCampingCarClient > 0) {
-		// Icone camping-car
-		$(nouveauBloc).addClass("logo-camping-car-mini");
-	} else if (tabDonnees.nbVanClient > 0) {
-		// Icone van
-		$(nouveauBloc).addClass("logo-van-mini");
-	} else if (tabDonnees.nbCaravaneClient > 0) {
-		// Icone caravane
-		$(nouveauBloc).addClass("logo-caravane-mini");
-	} else if (tabDonnees.nbGrandeTenteClient > 0) {
-		// Icone grande tente
-		$(nouveauBloc).addClass("logo-grande-tente-mini");
-	} else if (tabDonnees.nbPetiteTenteClient > 0) {
-		// Icone petite tente
-		$(nouveauBloc).addClass("logo-petite-tente-mini");
+	} else if (tabDonnees.nbTarif3Client > 0) {
+		// Icone tarif 3
+		$(nouveauBloc).addClass("logo-tarif3-mini");
+	} else if (tabDonnees.nbTarif2Client > 0) {
+		// Icone tarif2
+		$(nouveauBloc).addClass("logo-tarif2-mini");
+	} else if (tabDonnees.nbTarif1Client > 0) {
+		// Icone tarif1
+		$(nouveauBloc).addClass("logo-tarif1-mini");
 	}
 
 	// On sauvegarde les champs dans l'input caché
@@ -692,10 +670,10 @@ function creerBlocReservation(idNouveauBloc, tabDonnees) {
 			tabDonnees.dateArriveeClient, false);
 
 	// On optimise le tableau (goto planning.js)
-	if (rPlacer == true) {
+	if (optimiserTableau == true) {
 		optimiserTabReservation(
 				tabColonnesCalendrier,
-				$('.draggable.logo-camping-car-mini, .draggable.logo-van-mini, .draggable.logo-caravane-mini, .draggable.logo-grande-tente-mini, .draggable.logo-petite-tente-mini'));
+				$('.draggable.logo-tarif1-mini, .draggable.logo-tarif2-mini, .draggable.logo-tarif3-mini'));
 	}
 }
 
@@ -724,8 +702,6 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 			"#prenomClientPopupAjoutReservation").val();
 	donnees.rueClient = $(idFormulaire).find("#rueClientPopupAjoutReservation")
 			.val();
-	donnees.complementAdresseClient = $(idFormulaire).find(
-			"#complementAdresseClientPopupAjoutReservation").val();
 	donnees.codePostalClient = $(idFormulaire).find(
 			"#codePostalClientPopupAjoutReservation").val();
 	donnees.villeClient = $(idFormulaire).find(
@@ -752,16 +728,12 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 			"#nbEnfantsClientPopupAjoutReservation").val());
 	donnees.nbAnimauxClient = parseInt($(idFormulaire).find(
 			"#nbAnimauxClientPopupAjoutReservation").val());
-	donnees.nbPetiteTenteClient = parseInt($(idFormulaire).find(
-			"#nbPetiteTenteClientPopupAjoutReservation").val());
-	donnees.nbGrandeTenteClient = parseInt($(idFormulaire).find(
-			"#nbGrandeTenteClientPopupAjoutReservation").val());
-	donnees.nbCaravaneClient = parseInt($(idFormulaire).find(
-			"#nbCaravaneClientPopupAjoutReservation").val());
-	donnees.nbVanClient = parseInt($(idFormulaire).find(
-			"#nbVanClientPopupAjoutReservation").val());
-	donnees.nbCampingCarClient = parseInt($(idFormulaire).find(
-			"#nbCampingCarClientPopupAjoutReservation").val());
+	donnees.nbTarif1Client = parseInt($(idFormulaire).find(
+			"#nbTarif1ClientPopupAjoutReservation").val());
+	donnees.nbTarif2Client = parseInt($(idFormulaire).find(
+			"#nbTarif2ClientPopupAjoutReservation").val());
+	donnees.nbTarif3Client = parseInt($(idFormulaire).find(
+			"#nbTarif3ClientPopupAjoutReservation").val());
 	donnees.electriciteClient = 0;
 	if ($(idFormulaire).find("#electriciteClientPopupAjoutReservation").is(
 			':checked') == true) {
@@ -808,20 +780,14 @@ function sauvegardeReservation(idFormulaire, idBlocReservation) {
 	if (isNaN(donnees.nbAnimauxClient)) {
 		donnees.nbAnimauxClient = 0;
 	}
-	if (isNaN(donnees.nbPetiteTenteClient)) {
-		donnees.nbPetiteTenteClient = 0;
+	if (isNaN(donnees.nbTarif1Client)) {
+		donnees.nbTarif1Client = 0;
 	}
-	if (isNaN(donnees.nbGrandeTenteClient)) {
-		donnees.nbGrandeTenteClient = 0;
+	if (isNaN(donnees.nbTarif2Client)) {
+		donnees.nbTarif2Client = 0;
 	}
-	if (isNaN(donnees.nbCaravaneClient)) {
-		donnees.nbCaravaneClient = 0;
-	}
-	if (isNaN(donnees.nbVanClient)) {
-		donnees.nbVanClient = 0;
-	}
-	if (isNaN(donnees.nbCampingCarClient)) {
-		donnees.nbCampingCarClient = 0;
+	if (isNaN(donnees.nbTarif3Client)) {
+		donnees.nbTarif3Client = 0;
 	}
 	if (isNaN(donnees.numeroEmplacement)) {
 		donnees.numeroEmplacement = "";
@@ -869,7 +835,7 @@ function sauvegardeReservationEnAjax(donnees, idBlocReservation) {
 
 					// Création d'un nouveau bloc de réservation
 					idBlocReservation = creerBlocReservation(idBlocReservation,
-							donnees);
+							donnees, true);
 
 					// Recalcul des statistiques
 					calculStatistiquesParJour(tabDonnees[2], tabDonnees[3]);
@@ -1032,11 +998,9 @@ function afficherPopupDetails() {
 	$(divLogoLogement).removeClass("logo-roulotte-rouge-moyen");
 	$(divLogoLogement).removeClass("logo-roulotte-bleue-moyen");
 	$(divLogoLogement).removeClass("logo-tente-safari-moyen");
-	$(divLogoLogement).removeClass("logo-camping-car-moyen");
-	$(divLogoLogement).removeClass("logo-van-moyen");
-	$(divLogoLogement).removeClass("logo-caravane-moyen");
-	$(divLogoLogement).removeClass("logo-grande-tente-moyen");
-	$(divLogoLogement).removeClass("logo-petite-tente-moyen");
+	$(divLogoLogement).removeClass("logo-tarif1-moyen");
+	$(divLogoLogement).removeClass("logo-tarif2-moyen");
+	$(divLogoLogement).removeClass("logo-tarif3-moyen");
 	if (tabDonnees.roulotteRouge > 0) {
 		// Icone roulotte rouge
 		$(divLogoLogement).addClass("logo-roulotte-rouge-moyen");
@@ -1046,21 +1010,15 @@ function afficherPopupDetails() {
 	} else if (tabDonnees.tenteSafari > 0) {
 		// Icone tente safari
 		$(divLogoLogement).addClass("logo-tente-safari-moyen");
-	} else if (tabDonnees.nbCampingCarClient > 0) {
-		// Icone camping-car
-		$(divLogoLogement).addClass("logo-camping-car-moyen");
-	} else if (tabDonnees.nbVanClient > 0) {
-		// Icone van
-		$(divLogoLogement).addClass("logo-van-moyen");
-	} else if (tabDonnees.nbCaravaneClient > 0) {
-		// Icone caravane
-		$(divLogoLogement).addClass("logo-caravane-moyen");
-	} else if (tabDonnees.nbGrandeTenteClient > 0) {
-		// Icone grande tente
-		$(divLogoLogement).addClass("logo-grande-tente-moyen");
-	} else if (tabDonnees.nbPetiteTenteClient > 0) {
-		// Icone petite tente
-		$(divLogoLogement).addClass("logo-petite-tente-moyen");
+	} else if (tabDonnees.nbTarif3Client > 0) {
+		// Icone tarif3
+		$(divLogoLogement).addClass("logo-tarif3-moyen");
+	} else if (tabDonnees.nbTarif2Client > 0) {
+		// Icone tarif2
+		$(divLogoLogement).addClass("logo-tarif2-moyen");
+	} else if (tabDonnees.nbTarif1Client > 0) {
+		// Icone tarif1
+		$(divLogoLogement).addClass("logo-tarif1-moyen");
 	}
 	// Partie Animal
 	if (tabDonnees.nbAnimauxClient > 0) {
@@ -1112,23 +1070,23 @@ function afficherPopupDetails() {
 				event.preventDefault();
 
 				if (tabDonnees.referenceFacture !== '') {
-					alertPop(REGENERER_FACTURE, TYPE_OUI_NON, function() {
-						document.location = $(popupDetailsRes).find(
-								"#urlExportFacturePopupDetailsReservation")
-								.val()
-								+ '?idFiche='
-								+ tabDonnees.idFiche
-								+ '&regenererFacture=true';
-						$(this).dialog("close");
-					}, function() {
-						document.location = $(popupDetailsRes).find(
-								"#urlExportFacturePopupDetailsReservation")
-								.val()
-								+ '?idFiche='
-								+ tabDonnees.idFiche
-								+ '&regenererFacture=false';
-						$(this).dialog("close");
-					});
+					// EVOL : On regénère la facture à chaque fois
+					// alertPop(REGENERER_FACTURE, TYPE_OUI_NON, function() {
+					document.location = $(popupDetailsRes).find(
+							"#urlExportFacturePopupDetailsReservation").val()
+							+ '?idFiche='
+							+ tabDonnees.idFiche
+							+ '&regenererFacture=true';
+					// $(this).dialog("close");
+					// }, function() {
+					// document.location = $(popupDetailsRes).find(
+					// "#urlExportFacturePopupDetailsReservation")
+					// .val()
+					// + '?idFiche='
+					// + tabDonnees.idFiche
+					// + '&regenererFacture=false';
+					// $(this).dialog("close");
+					// });
 				} else {
 					// On marque la facture comme générée (avec une valeur
 					// bidon)
@@ -1204,8 +1162,6 @@ function onSelectNomPrenomPopupAjoutModifReservation(event, ui) {
 			objClient.nomClient);
 	$(popupAjoutModifRes).find("#rueClientPopupAjoutReservation").val(
 			objClient.rueClient);
-	$(popupAjoutModifRes).find("#complementAdresseClientPopupAjoutReservation")
-			.val(objClient.complementAdresseClient);
 	$(popupAjoutModifRes).find("#codePostalClientPopupAjoutReservation").val(
 			objClient.codePostalClient);
 	$(popupAjoutModifRes).find("#villeClientPopupAjoutReservation").val(
@@ -1262,10 +1218,6 @@ function remplirChampsPopupModifReservation(tabDonnees) {
 		// Rue
 		$(popupAjoutModifRes).find("#rueClientPopupAjoutReservation").val(
 				tabDonnees.rueClient);
-		// Complément adresse
-		$(popupAjoutModifRes).find(
-				"#complementAdresseClientPopupAjoutReservation").val(
-				tabDonnees.complementAdresseClient);
 		// Code postal
 		$(popupAjoutModifRes).find("#codePostalClientPopupAjoutReservation")
 				.val(tabDonnees.codePostalClient);
@@ -1310,21 +1262,15 @@ function remplirChampsPopupModifReservation(tabDonnees) {
 		// Nombre d'animaux
 		$(popupAjoutModifRes).find("#nbAnimauxClientPopupAjoutReservation")
 				.val(tabDonnees.nbAnimauxClient);
-		// Nombre de petites tentes
-		$(popupAjoutModifRes).find("#nbPetiteTenteClientPopupAjoutReservation")
-				.val(tabDonnees.nbPetiteTenteClient);
-		// Nombre de grandes tentes
-		$(popupAjoutModifRes).find("#nbGrandeTenteClientPopupAjoutReservation")
-				.val(tabDonnees.nbGrandeTenteClient);
-		// Nombre de caravanes
-		$(popupAjoutModifRes).find("#nbCaravaneClientPopupAjoutReservation")
-				.val(tabDonnees.nbCaravaneClient);
-		// Nombre de vans
-		$(popupAjoutModifRes).find("#nbVanClientPopupAjoutReservation").val(
-				tabDonnees.nbVanClient);
-		// Nombre de camping cars
-		$(popupAjoutModifRes).find("#nbCampingCarClientPopupAjoutReservation")
-				.val(tabDonnees.nbCampingCarClient);
+		// Nombre de tarif 1
+		$(popupAjoutModifRes).find("#nbTarif1ClientPopupAjoutReservation")
+				.val(tabDonnees.nbTarif1Client);
+		// Nombre de tarif 2
+		$(popupAjoutModifRes).find("#nbTarif2ClientPopupAjoutReservation")
+				.val(tabDonnees.nbTarif2Client);
+		// Nombre de tarif3
+		$(popupAjoutModifRes).find("#nbTarif3ClientPopupAjoutReservation")
+				.val(tabDonnees.nbTarif3Client);
 		// Roulotte rouge
 		if (tabDonnees.roulotteRouge == 1) {
 			// Bug Firefox => trigger click
@@ -1446,66 +1392,60 @@ function parseInfosReservation(strInfos) {
 		tabRetour.prenomClient = tabDonnees[4];
 		// Rue
 		tabRetour.rueClient = tabDonnees[5];
-		// Complément adresse
-		tabRetour.complementAdresseClient = tabDonnees[6];
 		// Code postal
-		tabRetour.codePostalClient = tabDonnees[7];
+		tabRetour.codePostalClient = tabDonnees[6];
 		// Ville
-		tabRetour.villeClient = tabDonnees[8];
+		tabRetour.villeClient = tabDonnees[7];
 		// Pays
-		tabRetour.paysClient = tabDonnees[9];
+		tabRetour.paysClient = tabDonnees[8];
 		// Portable
-		tabRetour.portableClient = tabDonnees[10];
+		tabRetour.portableClient = tabDonnees[9];
 		// Email
-		tabRetour.emailClient = tabDonnees[11];
+		tabRetour.emailClient = tabDonnees[10];
 		// Piece d'identité
-		tabRetour.pIdPresentClient = tabDonnees[12];
+		tabRetour.pIdPresentClient = tabDonnees[11];
 		// Date d'arrivée
 		tabRetour.dateArriveeClient = $.datepicker.parseDate(DATE_FORMAT,
-				tabDonnees[13]);
+				tabDonnees[12]);
 		// Date de départ
 		tabRetour.dateDepartClient = $.datepicker.parseDate(DATE_FORMAT,
-				tabDonnees[14]);
+				tabDonnees[13]);
 		// Nombre d'adultes
-		tabRetour.nbAdultesClient = tabDonnees[15];
+		tabRetour.nbAdultesClient = tabDonnees[14];
 		// Nombre d'enfants
-		tabRetour.nbEnfantsClient = tabDonnees[16];
+		tabRetour.nbEnfantsClient = tabDonnees[15];
 		// Nombre d'animaux
-		tabRetour.nbAnimauxClient = tabDonnees[17];
-		// Nombre de petites tentes
-		tabRetour.nbPetiteTenteClient = tabDonnees[18];
-		// Nombre de grandes tentes
-		tabRetour.nbGrandeTenteClient = tabDonnees[19];
-		// Nombre de caravanes
-		tabRetour.nbCaravaneClient = tabDonnees[20];
-		// Nombre de vans
-		tabRetour.nbVanClient = tabDonnees[21];
-		// Nombre de camping cars
-		tabRetour.nbCampingCarClient = tabDonnees[22];
+		tabRetour.nbAnimauxClient = tabDonnees[16];
+		// Nombre de tarif1
+		tabRetour.nbTarif1Client = tabDonnees[17];
+		// Nombre de tarif2
+		tabRetour.nbTarif2Client = tabDonnees[18];
+		// Nombre de tarif3
+		tabRetour.nbTarif3Client = tabDonnees[19];
 		// Electricité
-		tabRetour.electriciteClient = tabDonnees[23];
+		tabRetour.electriciteClient = tabDonnees[20];
 		// Nombre de nuités visiteur
-		tabRetour.nbNuitsVisiteursClient = tabDonnees[24];
+		tabRetour.nbNuitsVisiteursClient = tabDonnees[21];
 		// Nombre de véhicules supplémentaires
-		tabRetour.nbVehiculesSupp = tabDonnees[25];
+		tabRetour.nbVehiculesSupp = tabDonnees[22];
 		// Observations
-		tabRetour.observationsClient = tabDonnees[26];
+		tabRetour.observationsClient = tabDonnees[23];
 		// Id du bloc de réservation
-		tabRetour.idReservation = tabDonnees[27];
+		tabRetour.idReservation = tabDonnees[24];
 		// Arrhes sur la réservation
-		tabRetour.arrhes = tabDonnees[28];
+		tabRetour.arrhes = tabDonnees[25];
 		// Numéro d'emplacement de la réservation
-		tabRetour.numeroEmplacement = tabDonnees[29];
+		tabRetour.numeroEmplacement = tabDonnees[26];
 		// Roulotte rouge
-		tabRetour.roulotteRouge = tabDonnees[30];
+		tabRetour.roulotteRouge = tabDonnees[27];
 		// Roulotte bleue
-		tabRetour.roulotteBleue = tabDonnees[31];
+		tabRetour.roulotteBleue = tabDonnees[28];
 		// Référence facture
-		tabRetour.referenceFacture = tabDonnees[32];
+		tabRetour.referenceFacture = tabDonnees[29];
 		// Remise exceptionnelle sur la réservation
-		tabRetour.remiseExceptionnelle = tabDonnees[33];
+		tabRetour.remiseExceptionnelle = tabDonnees[30];
 		// Tente safari
-		tabRetour.tenteSafari = tabDonnees[34];
+		tabRetour.tenteSafari = tabDonnees[31];
 	}
 
 	return tabRetour;
@@ -1536,7 +1476,7 @@ function parseInfosClient(strInfos) {
 		tabRetour.prenomClient = tabDonnees[3];
 		// Rue
 		tabRetour.rueClient = tabDonnees[4];
-		// Complément adresse
+		// Adresse
 		tabRetour.adresseClient = tabDonnees[5];
 		// Code postal
 		tabRetour.codePostalClient = tabDonnees[6];
@@ -1572,8 +1512,7 @@ function serialiserInfosReservation(objInfos) {
 	// Infos-Reservation
 	return objInfos.version + separateur + objInfos.refClient + separateur
 			+ objInfos.idFiche + separateur + objInfos.nomClient + separateur
-			+ objInfos.prenomClient + separateur + objInfos.rueClient
-			+ separateur + objInfos.complementAdresseClient + separateur
+			+ objInfos.prenomClient + separateur + objInfos.rueClient + separateur
 			+ objInfos.codePostalClient + separateur + objInfos.villeClient
 			+ separateur + objInfos.paysClient + separateur
 			+ objInfos.portableClient + separateur + objInfos.emailClient
@@ -1583,11 +1522,9 @@ function serialiserInfosReservation(objInfos) {
 			+ $.datepicker.formatDate(DATE_FORMAT, objInfos.dateDepartClient)
 			+ separateur + objInfos.nbAdultesClient + separateur
 			+ objInfos.nbEnfantsClient + separateur + objInfos.nbAnimauxClient
-			+ separateur + objInfos.nbPetiteTenteClient + separateur
-			+ objInfos.nbGrandeTenteClient + separateur
-			+ objInfos.nbCaravaneClient + separateur + objInfos.nbVanClient
-			+ separateur + objInfos.nbCampingCarClient + separateur
-			+ objInfos.electriciteClient + separateur
+			+ separateur + objInfos.nbTarif1Client + separateur
+			+ objInfos.nbTarif2Client + separateur + objInfos.nbTarif3Client
+			+ separateur + objInfos.electriciteClient + separateur
 			+ objInfos.nbNuitsVisiteursClient + separateur
 			+ objInfos.nbVehiculesSupp + separateur
 			+ objInfos.observationsClient + separateur + objInfos.idReservation
@@ -1595,8 +1532,8 @@ function serialiserInfosReservation(objInfos) {
 			+ objInfos.numeroEmplacement + separateur + objInfos.roulotteRouge
 			+ separateur + objInfos.roulotteBleue + separateur
 			+ objInfos.referenceFacture + separateur
-			+ objInfos.remiseExceptionnelle + separateur
-			+ objInfos.tenteSafari + separateur;
+			+ objInfos.remiseExceptionnelle + separateur + objInfos.tenteSafari
+			+ separateur;
 }
 
 /**
@@ -1649,8 +1586,6 @@ function viderChampsClientPopup() {
 	$(popupAjoutModifRes).find("#prenomClientPopupAjoutReservation").val('');
 	$(popupAjoutModifRes).find("#nomClientPopupAjoutReservation").val('');
 	$(popupAjoutModifRes).find("#rueClientPopupAjoutReservation").val('');
-	$(popupAjoutModifRes).find("#complementAdresseClientPopupAjoutReservation")
-			.val('');
 	$(popupAjoutModifRes).find("#codePostalClientPopupAjoutReservation")
 			.val('');
 	$(popupAjoutModifRes).find("#villeClientPopupAjoutReservation").val('');

@@ -93,11 +93,19 @@ $htmlJours .= "</tr>";
 		
 		if (!is_null($tabReservations) && count($tabReservations) > 0) {
 			$reservations = '';
+			$i = 0;
 			foreach ($tabReservations as $reservation) {
+				$i++;
 				//On crée les blocs de réservation en javascript
 				echo 'var donnees = parseInfosReservation("' . str_replace('"', '\\"', 
 					$controleur->convertirReservationPourIHM($reservation)) . '");' . "\n";
-				echo 'creerBlocReservation("", donnees);' . "\n";
+				if ($i < count($tabReservations)) {
+					echo 'creerBlocReservation("", donnees, false);' . "\n";
+				}
+				else {
+					//Optimisation : on ne réorganise les réservations qu'à la fin
+					echo 'creerBlocReservation("", donnees, true);' . "\n";
+				}
 			}
 		}
 		
@@ -140,30 +148,32 @@ $htmlJours .= "</tr>";
 	</script>
 </head>
 <body>
-	<!-- Bouton d'ajout d'une réservation -->
-	<a id="boutonAjouterReservation"
-		class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-		<span class="ui-icon ui-icon-circle-plus ui-span-button">&nbsp;</span>
-		<span class="ui-button-text ui-span-button">Ajouter une réservation</span>
-	</a>
-
-	<!-- Bouton pour accéder au plan du camping -->
-	<a id="boutonEmplacementReservation"
-		class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-		href="plan_camping.php"> <span class="ui-button-text ui-span-button">
-			<img alt="Emplacements" src="images/carte.png" height="30px"
-			width="30px"> Emplacements
-	</span>
-	</a>
-
-	<!-- Bouton vers la popup de réglages -->
-	<a id="boutonReglages"
-		class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-		<span class="ui-button-text ui-span-button"> <img alt="Réglages"
-			src="images/reglages.png" height="30px" width="30px"> Réglages
-	</span>
-	</a>
-
+	<div id="blocBoutonsSuperieur">
+		<!-- Bouton d'ajout d'une réservation -->
+		<a id="boutonAjouterReservation"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+			<span class="ui-icon ui-icon-circle-plus ui-span-button">&nbsp;</span>
+			<span class="ui-button-text ui-span-button">Ajouter une réservation</span>
+		</a>
+	
+		<!-- Bouton pour accéder au plan du camping -->
+		<a id="boutonEmplacementReservation"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+			href="plan_camping.php"> <span class="ui-button-text ui-span-button">
+				<img alt="Emplacements" src="images/carte.png" height="30px"
+				width="30px"> Emplacements
+		</span>
+		</a>
+	
+		<!-- Bouton vers la popup de réglages -->
+		<a id="boutonReglages"
+			class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+			<span class="ui-button-text ui-span-button"> <img alt="Réglages"
+				src="images/reglages.png" height="30px" width="30px"> Réglages
+		</span>
+		</a>
+	</div>
+	<br />
 	<br />
 	<br />
 	<table id="tableauCalend" class="tableau_calendrier" 

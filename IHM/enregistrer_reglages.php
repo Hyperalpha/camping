@@ -8,8 +8,8 @@ include_once '../Controller/PlanningCampingController.php';
  * @param array POST Valeurs du formulaire passées en POST
  */
 $codeValeursARecuperer = array('Prix/nuitée_campeur_adulte', 'Prix/nuitée_campeur_enfant',
-	'Prix/nuitée_animal', 'Prix/nuitée_petit_emplacement', 'Prix/nuitée_grand_emplacement', 
-	'Prix/nuitée_emplacement_camping_car', 'Prix/nuitée_électricité', 
+	'Prix/nuitée_animal', 'Prix/nuitée_tarif1', 'Prix/nuitée_tarif2', 
+	'Prix/nuitée_emplacement_tarif3', 'Prix/nuitée_électricité', 
 	'Prix/nuitée_véhicule_supplémentaire', 'Prix/nuitée_visiteur', 
 	'Prix_roulotte_rouge_période_basse', 'Prix_roulotte_rouge_période_haute', 
 	'Prix_roulotte_bleue_période_basse', 'Prix_roulotte_bleue_période_haute',
@@ -31,9 +31,9 @@ $stdReglages = new \stdClass();
 $stdReglages->prixAdulte = $valeursARecuperer[0];
 $stdReglages->prixEnfant = $valeursARecuperer[1];
 $stdReglages->prixAnimal = $valeursARecuperer[2];
-$stdReglages->prixPetitEmplacement = $valeursARecuperer[3];
-$stdReglages->prixGrandEmplacement = $valeursARecuperer[4];
-$stdReglages->prixCampingCar = $valeursARecuperer[5];
+$stdReglages->prixTarif1 = $valeursARecuperer[3];
+$stdReglages->prixTarif2 = $valeursARecuperer[4];
+$stdReglages->prixTarif3 = $valeursARecuperer[5];
 $stdReglages->prixElectricite = $valeursARecuperer[6];
 $stdReglages->prixVehiculeSupp = $valeursARecuperer[7];
 $stdReglages->prixVisiteur = $valeursARecuperer[8];

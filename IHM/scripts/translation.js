@@ -16,7 +16,7 @@ var ERREUR_INCONNUE = "Une erreur inconnue est survenue. Veuillez réessayer ou 
 var FERMER = "Fermer";
 var MODIFIER = "Modifier";
 var MODIFIER_EMPLACEMENT_RESERVATION = "Voulez-vous modifier l'emplacement de la réservation?";
-var NOMBRE_HABITATION_INCORRECT = "Il faut au moins 1 tente, 1 caravane, 1 van ou un camping car.\n\n";
+var NOMBRE_HABITATION_INCORRECT = "Il faut au moins un emplacement tarif 1, tarif 2 ou tarif 3.\n\n";
 var NOMBRE_NUITEES_INCORRECT = "Le nombre de nuités est incorrecte. "
 	+ "Merci de remplir correctement la date d\'arrivée et la date de départ.\n\n";
 var NOMBRE_PERSONNES_INCORRECT = "Il faut au moins 1 adulte ou 1 enfant.\n\n";
@@ -55,6 +55,7 @@ var DIMANCHE_MIN = "Di";
 
 var DATE_FORMAT = "dd/mm/yy";
 var DATE_FORMAT_SANS_ANNEE = 'd MM';
+var DATE_FORMAT_AVEC_ANNEE = 'd MM yy';
 
 //Pays
 var PAYS_ALLEMAGNE_MIN = 'D';

@@ -73,27 +73,44 @@ class ReservationRepository {
 	}
 
 	/**
-	 * Renvoie un tableau contenant toutes les réservations de
-	 * l'année spécifiée en paramètre
+	 * Renvoie un tableau contenant toutes les réservations dans
+	 * l'interval spécifié en paramètre
 	 * @author Arnaud DUPUIS
-	 * @param integer $annee Année dont on veut toute les réservations
-	 * @param integer $mois Mois dont on veut toute les réservations (optionel)
-	 * @param integer $jour Jour dont on veut toute les réservations (optionel)
+	 * @param integer $anneeDebut Année de départ dont on veut toute les réservations
+	 * @param integer $moisDebut Mois de départ dont on veut toute les réservations (optionel)
+	 * @param integer $jourDebut Jour de départ dont on veut toute les réservations (optionel)
+	 * @param integer $anneeFin Année de fin dont on veut toute les réservations
+	 * @param integer $moisFin Mois de fin dont on veut toute les réservations (optionel)
+	 * @param integer $jourFin Jour de fin dont on veut toute les réservations (optionel)
 	 * @return array#Reservation Renvoie un tableau d'objet Reservation
 	 */
-	public function rechercherToutesReservations($annee, $mois = null, $jour = null) {
+	public function rechercherToutesReservations($anneeDebut, $moisDebut = null, $jourDebut = null,
+			$anneeFin, $moisFin = null, $jourFin = null) {
+		
+		if (is_null($moisDebut)) {
+			$moisDebut = '01';
+		}
+		if (is_null($jourDebut)) {
+			$jourDebut = '01';
+		}
+		if (is_null($moisFin)) {
+			$moisFin = '12';
+		}
+		if (is_null($jourFin)) {
+			$jourFin = '31';
+		}
 
-		if (!is_null($mois) and !is_null($mois)) {
-			$where = "(r.date_arrivee <= '" . $annee . "-" . $mois . "-" . $jour
-			. " 23:59:59' AND  r.date_depart >= '"
-					. $annee . "-" . $mois . "-" . $jour . " 00:00:00')";
-		}
-		else {
-			$where = "(r.date_arrivee > '" . $annee . "-01-01 00:00:00' AND r.date_arrivee < '"
-					. ($annee + 1) . "-01-01 00:00:00') OR (r.date_depart > '"
-							. $annee . "-01-01 00:00:00' AND r.date_depart < '"
-									. ($annee + 1) . "-01-01 00:00:00')";
-		}
+// 		if (!is_null($mois) and !is_null($jour)) {
+			$where = "(r.date_arrivee >= '" . $anneeDebut . "-" . $moisDebut . "-" . $jourDebut
+			. " 23:59:59' AND r.date_depart <= '"
+					. $anneeFin . "-" . $moisFin . "-" . $jourFin . " 00:00:00')";
+// 		}
+// 		else {
+// 			$where = "(r.date_arrivee > '" . $annee . "-01-01 00:00:00' AND r.date_arrivee < '"
+// 					. ($annee + 1) . "-01-01 00:00:00') OR (r.date_depart > '"
+// 							. $annee . "-01-01 00:00:00' AND r.date_depart < '"
+// 									. ($annee + 1) . "-01-01 00:00:00')";
+// 		}
 
 		return $this->rechercherReservations($where);
 	}
@@ -150,8 +167,8 @@ class ReservationRepository {
 			//A la création des coordonnées X et Y sont initialisés à 0
 			$sql = "INSERT INTO reservation (reference, id_client, date_arrivee, date_depart, "
 				. "piece_id_presentee, arrhes, nombre_adultes, nombre_enfants, nombre_animaux, "
-				. "nombre_petites_tentes, nombre_grandes_tentes, nombre_caravanes, "
-				. "nombre_vans, nombre_camping_cars, electricite, nombre_nuitees_visiteur, "
+				. "nombre_tarif1, nombre_tarif2, nombre_tarif3, "
+				. "electricite, nombre_nuitees_visiteur, "
 				. "nombre_vehicules_supplementaires, roulotte_rouge, roulotte_bleue, "
 				. "tente_safari, remise_exceptionnelle, observations, numero_emplacement, "
 				. "coordonnees_x_emplacement, coordonnees_y_emplacement) "
@@ -165,11 +182,9 @@ class ReservationRepository {
 				. "'" . intval($reservation->getNombreAdultes()) . "', "
 				. "'" . intval($reservation->getNombreEnfants()) . "', "
 				. "'" . intval($reservation->getNombreAnimaux()) . "', "
-				. "'" . intval($reservation->getNombrePetitesTentes()) . "', "
-				. "'" . intval($reservation->getNombreGrandesTentes()) . "', "
-				. "'" . intval($reservation->getNombreCaravanes()) . "', "
-				. "'" . intval($reservation->getNombreVans()) . "', "
-				. "'" . intval($reservation->getNombreCampingCars()) . "', "
+				. "'" . intval($reservation->getNombreTarif1()) . "', "
+				. "'" . intval($reservation->getNombreTarif2()) . "', "
+				. "'" . intval($reservation->getNombreTarif3()) . "', "
 				. "'" . $reservation->getElectricite() . "', "
 				. "'" . intval($reservation->getNombreNuitesVisiteur()) . "', "
 				. "'" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
@@ -194,11 +209,9 @@ class ReservationRepository {
 				. "r.nombre_adultes = '" . intval($reservation->getNombreAdultes()) . "', "
 				. "r.nombre_enfants = '" . intval($reservation->getNombreEnfants()) . "', "
 				. "r.nombre_animaux = '" . intval($reservation->getNombreAnimaux()) . "', "
-				. "r.nombre_petites_tentes = '" . intval($reservation->getNombrePetitesTentes()) . "', "
-				. "r.nombre_grandes_tentes = '" . intval($reservation->getNombreGrandesTentes()) . "', "
-				. "r.nombre_caravanes = '" . intval($reservation->getNombreCaravanes()) . "', "
-				. "r.nombre_vans = '" . intval($reservation->getNombreVans()) . "', "
-				. "r.nombre_camping_cars = '" . intval($reservation->getNombreCampingCars()) . "', "
+				. "r.nombre_tarif1 = '" . intval($reservation->getNombreTarif1()) . "', "
+				. "r.nombre_tarif2 = '" . intval($reservation->getNombreTarif2()) . "', "
+				. "r.nombre_tarif3 = '" . intval($reservation->getNombreTarif3()) . "', "
 				. "r.electricite = '" . $reservation->getElectricite() . "', "
 				. "r.nombre_nuitees_visiteur = '" . intval($reservation->getNombreNuitesVisiteur()) . "', "
 				. "r.nombre_vehicules_supplementaires = '" . intval($reservation->getNombreVehiculesSupplementaires()) . "', "
@@ -294,9 +307,9 @@ class ReservationRepository {
 		$prixCampeurAdulte = $this->referentielRepository->getPrixCampeurAdulte();
 		$prixCampeurEnfant = $this->referentielRepository->getPrixCampeurEnfant();
 		$prixAnimal = $this->referentielRepository->getPrixAnimal();
-		$prixPetitEmplacement = $this->referentielRepository->getPrixPetiteTenteVan();
-		$prixGrandEmplacement = $this->referentielRepository->getPrixGrandeTenteCaravane();
-		$prixCampingCar = $this->referentielRepository->getPrixCampingCar();
+		$prixEmplacementTarif1 = $this->referentielRepository->getPrixTarif1();
+		$prixEmplacementTarif2 = $this->referentielRepository->getPrixTarif2();
+		$prixEmplacementTarif3 = $this->referentielRepository->getPrixTarif3();
 		$prixElectricite = $this->referentielRepository->getPrixElectricite();
 		$prixVehiculeSupp = $this->referentielRepository->getPrixVehiculeSupp();
 		$prixVisiteur = $this->referentielRepository->getPrixVisiteur();
@@ -312,11 +325,9 @@ class ReservationRepository {
 					$cAReservation += $prixCampeurAdulte * $reservation->getNombreAdultes();
 					$cAReservation += $prixCampeurEnfant * $reservation->getNombreEnfants();
 					$cAReservation += $prixAnimal * $reservation->getNombreAnimaux();
-					$cAReservation += $prixPetitEmplacement * $reservation->getNombrePetitesTentes();
-					$cAReservation += $prixPetitEmplacement * $reservation->getNombreVans();
-					$cAReservation += $prixGrandEmplacement * $reservation->getNombreGrandesTentes();
-					$cAReservation += $prixGrandEmplacement * $reservation->getNombreCaravanes();
-					$cAReservation += $prixCampingCar * $reservation->getNombreCampingCars();
+					$cAReservation += $prixEmplacementTarif1 * $reservation->getNombreTarif1();
+					$cAReservation += $prixEmplacementTarif2 * $reservation->getNombreTarif2();
+					$cAReservation += $prixEmplacementTarif3 * $reservation->getNombreTarif3();
 					$cAReservation += $prixElectricite * $reservation->getElectricite();
 					$cAReservation += $prixVehiculeSupp * $reservation->getNombreVehiculesSupplementaires();
 					$cAReservation += $prixVisiteur * $reservation->getNombreNuitesVisiteur();
@@ -476,8 +487,8 @@ class ReservationRepository {
 		//Requête SQL pour récupérer les réservations
 		$sql = 'SELECT r.id, r.reference, r.id_client, r.date_arrivee, r.date_depart, '
 			. 'r.piece_id_presentee, r.arrhes, r.nombre_adultes, r.nombre_enfants, r.nombre_animaux, '
-			. 'r.nombre_petites_tentes, r.nombre_grandes_tentes, r.nombre_caravanes, '
-			. 'r.nombre_vans, r.nombre_camping_cars, r.electricite, r.nombre_nuitees_visiteur, '
+			. 'r.nombre_tarif1, r.nombre_tarif2, '
+			. 'r.nombre_tarif3, r.electricite, r.nombre_nuitees_visiteur, '
 			. 'r.nombre_vehicules_supplementaires, r.roulotte_rouge, r.roulotte_bleue, '
 			. 'r.tente_safari, r.remise_exceptionnelle, r.observations, r.numero_emplacement, '
 			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
@@ -504,40 +515,38 @@ class ReservationRepository {
 			$newRes->setNombreAdultes($data[7]);
 			$newRes->setNombreEnfants($data[8]);
 			$newRes->setNombreAnimaux($data[9]);
-			$newRes->setNombrePetitesTentes($data[10]);
-			$newRes->setNombreGrandesTentes($data[11]);
-			$newRes->setNombreCaravanes($data[12]);
-			$newRes->setNombreVans($data[13]);
-			$newRes->setNombreCampingCars($data[14]);
+			$newRes->setNombreTarif1($data[10]);
+			$newRes->setNombreTarif2($data[11]);
+			$newRes->setNombreTarif3($data[12]);
 			$elec = false;
-			if ($data[15] == "1" or $data[15] == true) {
+			if ($data[13] == "1" or $data[13] == true) {
 				$elec = true;
 			}
 			$newRes->setElectricite($elec);
-			$newRes->setNombreNuitesVisiteur($data[16]);
-			$newRes->setNombreVehiculesSupplementaires($data[17]);
+			$newRes->setNombreNuitesVisiteur($data[14]);
+			$newRes->setNombreVehiculesSupplementaires($data[15]);
 			$roulotteRouge = false;
-			if ($data[18] == "1" or $data[18] == true) {
+			if ($data[16] == "1" or $data[16] == true) {
 				$roulotteRouge = true;
 			}
 			$newRes->setRoulotteRouge($roulotteRouge);
 			$roulotteBleue = false;
-			if ($data[19] == "1" or $data[19] == true) {
+			if ($data[17] == "1" or $data[17] == true) {
 				$roulotteBleue = true;
 			}
 			$newRes->setRoulotteBleue($roulotteBleue);
 			$tenteSafari = false;
-			if ($data[20] == "1" or $data[20] == true) {
+			if ($data[18] == "1" or $data[18] == true) {
 				$tenteSafari = true;
 			}
 			$newRes->setTenteSafari($tenteSafari);
-			$newRes->setRemiseExceptionnelle($data[21]);
-			$newRes->setObservations($data[22]);
-			$newRes->setNumeroEmplacement($data[23]);
-			$newRes->setCoordonneesXEmplacement($data[24]);
-			$newRes->setCoordonneesYEmplacement($data[25]);
-			$newRes->setDateCreation(new DateTime($data[26]));
-			$newRes->setDateModification(new DateTime($data[27]));
+			$newRes->setRemiseExceptionnelle($data[19]);
+			$newRes->setObservations($data[20]);
+			$newRes->setNumeroEmplacement($data[21]);
+			$newRes->setCoordonneesXEmplacement($data[22]);
+			$newRes->setCoordonneesYEmplacement($data[23]);
+			$newRes->setDateCreation(new DateTime($data[24]));
+			$newRes->setDateModification(new DateTime($data[25]));
 
 			//Récupération du client
 			if ($data[2]) {

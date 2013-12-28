@@ -47,8 +47,15 @@ class PlanningCampingController {
 		$retour = array();
 
 		//On récupère toute les réservations
-		$annee = date("Y");
-		$retour = $this->reservationRepository->rechercherToutesReservations($annee);
+		$dateDebut = $this->referentielRepository->getDebutAffichageTableauReservations();
+		$dateFin = $this->referentielRepository->getFinAffichageTableauReservations();
+		$anneeDebut = $dateDebut->format("Y");
+		$moisDebut = $dateDebut->format("m");
+		$jourDebut = $dateDebut->format("d");
+		$anneeFin = $dateFin->format("Y");
+		$moisFin = $dateFin->format("m");
+		$jourFin = $dateFin->format("d");
+		$retour = $this->reservationRepository->rechercherToutesReservations($anneeDebut, $moisDebut, $jourDebut, $anneeFin, $moisFin, $jourFin);
 
 		return $retour;
 	}
@@ -65,7 +72,7 @@ class PlanningCampingController {
 		$annee = date("Y");
 		$mois = date("m");
 		$jour = date("d");
-		$retour = $this->reservationRepository->rechercherToutesReservations($annee, $mois, $jour);
+		$retour = $this->reservationRepository->rechercherToutesReservations($annee, $mois, $jour, $annee, $mois, $jour);
 			
 		return $retour;
 	}
@@ -297,8 +304,6 @@ class PlanningCampingController {
 			$chaineRetour .= $client->getPrenom() . $sep;
 			//Rue
 			$chaineRetour .= $client->getAdresse1() . $sep;
-			//Complément adresse
-			$chaineRetour .= $client->getAdresse2() . $sep;
 			//Code postal
 			$chaineRetour .= $client->getCodePostal() . $sep;
 			//Ville
@@ -338,16 +343,12 @@ class PlanningCampingController {
 		$chaineRetour .= intval($reservation->getNombreEnfants()) . $sep;
 		//Nombre d'animaux
 		$chaineRetour .= intval($reservation->getNombreAnimaux()) . $sep;
-		//Nombre de petites tentes
-		$chaineRetour .= intval($reservation->getNombrePetitesTentes()) . $sep;
-		//Nombre de grandes tentes
-		$chaineRetour .= intval($reservation->getNombreGrandesTentes()) . $sep;
-		//Nombre de caravanes
-		$chaineRetour .= intval($reservation->getNombreCaravanes()) . $sep;
-		//Nombre de vans
-		$chaineRetour .= intval($reservation->getNombreVans()) . $sep;
-		//Nombre de camping cars
-		$chaineRetour .= intval($reservation->getNombreCampingCars()) . $sep;
+		//Nombre de tarif 1
+		$chaineRetour .= intval($reservation->getNombreTarif1()) . $sep;
+		//Nombre de tarif 2
+		$chaineRetour .= intval($reservation->getNombreTarif2()) . $sep;
+		//Nombre de tarif 3
+		$chaineRetour .= intval($reservation->getNombreTarif3()) . $sep;
 		//Electricité
 		$chaineRetour .= $reservation->getElectricite() . $sep;
 		//Nombre de nuités visiteur
@@ -439,9 +440,9 @@ class PlanningCampingController {
 			$retour = str_replace('{{PRIX_NUIT_ADULTE}}', $this->referentielRepository->getPrixCampeurAdulte(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_ENFANT}}', $this->referentielRepository->getPrixCampeurEnfant(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_ANIMAL}}', $this->referentielRepository->getPrixAnimal(), $retour);
-			$retour = str_replace('{{PRIX_NUIT_PETIT_EMPLACEMENT}}', $this->referentielRepository->getPrixPetiteTenteVan(), $retour);
-			$retour = str_replace('{{PRIX_NUIT_GRAND_EMPLACEMENT}}', $this->referentielRepository->getPrixGrandeTenteCaravane(), $retour);
-			$retour = str_replace('{{PRIX_NUIT_EMPLACEMENT_CAMPING_CAR}}', $this->referentielRepository->getPrixCampingCar(), $retour);
+			$retour = str_replace('{{PRIX_NUIT_TARIF1}}', $this->referentielRepository->getPrixTarif1(), $retour);
+			$retour = str_replace('{{PRIX_NUIT_TARIF2}}', $this->referentielRepository->getPrixTarif2(), $retour);
+			$retour = str_replace('{{PRIX_NUIT_TARIF3}}', $this->referentielRepository->getPrixTarif3(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_ELECTRICITE}}', $this->referentielRepository->getPrixElectricite(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_VEHICULE_SUPP}}', $this->referentielRepository->getPrixVehiculeSupp(), $retour);
 			$retour = str_replace('{{PRIX_NUIT_VISITEUR}}', $this->referentielRepository->getPrixVisiteur(), $retour);
@@ -455,8 +456,8 @@ class PlanningCampingController {
 
 			$retour = str_replace('{{DATE_DEBUT_PERIODE_HAUTE_ROULOTTE}}', $this->formatterDateSansAnnee($this->referentielRepository->getDateDebutPeriodeHauteRoulotte()), $retour);
 			$retour = str_replace('{{DATE_FIN_PERIODE_HAUTE_ROULOTTE}}', $this->formatterDateSansAnnee($this->referentielRepository->getDateFinPeriodeHauteRoulotte()), $retour);
-			$retour = str_replace('{{DATE_DEBUT_TABLEAU_RESERVATIONS}}', $this->formatterDateSansAnnee($this->referentielRepository->getDebutAffichageTableauReservations()), $retour);
-			$retour = str_replace('{{DATE_FIN_TABLEAU_RESERVATIONS}}', $this->formatterDateSansAnnee($this->referentielRepository->getFinAffichageTableauReservations()), $retour);
+			$retour = str_replace('{{DATE_DEBUT_TABLEAU_RESERVATIONS}}', $this->formatterDateAvecAnnee($this->referentielRepository->getDebutAffichageTableauReservations()), $retour);
+			$retour = str_replace('{{DATE_FIN_TABLEAU_RESERVATIONS}}', $this->formatterDateAvecAnnee($this->referentielRepository->getFinAffichageTableauReservations()), $retour);
 		}
 		catch (\Exception $ex) {
 			$retour = false;
@@ -479,9 +480,9 @@ class PlanningCampingController {
 			$this->referentielRepository->setPrixCampeurAdulte($stdReglages->prixAdulte, false);
 			$this->referentielRepository->setPrixCampeurEnfant($stdReglages->prixEnfant, false);
 			$this->referentielRepository->setPrixAnimal($stdReglages->prixAnimal, false);
-			$this->referentielRepository->setPrixPetiteTenteVan($stdReglages->prixPetitEmplacement, false);
-			$this->referentielRepository->setPrixGrandeTenteCaravane($stdReglages->prixGrandEmplacement, false);
-			$this->referentielRepository->setPrixCampingCar($stdReglages->prixCampingCar, false);
+			$this->referentielRepository->setPrixTarif1($stdReglages->prixTarif1, false);
+			$this->referentielRepository->setPrixTarif2($stdReglages->prixTarif2, false);
+			$this->referentielRepository->setPrixTarif3($stdReglages->prixTarif3, false);
 			$this->referentielRepository->setPrixElectricite($stdReglages->prixElectricite, false);
 			$this->referentielRepository->setPrixVehiculeSupp($stdReglages->prixVehiculeSupp, false);
 			$this->referentielRepository->setPrixVisiteur($stdReglages->prixVisiteur, false);
@@ -591,10 +592,10 @@ class PlanningCampingController {
 	public function recupererPourcentagePaysClients() {
 		$retourPourcentage = null;
 
-		//On récupère les pays pour les réservation de l'année en cours
-		$dateDebutInterval = new DateTime(date('Y') . '-01-01 00:00:00');
-		$dateFinInterval = new DateTime(date('Y') . '-12-31 23:59:59');
-
+		//On récupère les pays pour les réservation de l'interval sélectionné
+		$dateDebutInterval = $this->referentielRepository->getDebutAffichageTableauReservations();
+		$dateFinInterval = $this->referentielRepository->getFinAffichageTableauReservations();
+		
 		$paysClient = $this->reservationRepository->recupererPaysClients($dateDebutInterval,
 			 $dateFinInterval);
 
@@ -662,72 +663,66 @@ class PlanningCampingController {
 			$client->setPrenom($tabDonnees[4]);
 			// Rue du client
 			$client->setAdresse1($tabDonnees[5]);
-			// Complément adresse du client
-			$client->setAdresse2($tabDonnees[6]);
 			// Code postal du client
-			$client->setCodePostal($tabDonnees[7]);
+			$client->setCodePostal($tabDonnees[6]);
 			// Ville du client
-			$client->setVille($tabDonnees[8]);
+			$client->setVille($tabDonnees[7]);
 			// Pays du client
-			$client->setPays($tabDonnees[9]);
+			$client->setPays($tabDonnees[8]);
 			// Portable du client
-			$client->setTelephonePortable($tabDonnees[10]);
+			$client->setTelephonePortable($tabDonnees[9]);
 			// Email du client
-			$client->setEmail($tabDonnees[11]);
+			$client->setEmail($tabDonnees[10]);
 			// Piece d'identité présentée
-			$reservation->setPieceIdPresentee($tabDonnees[12]);
+			$reservation->setPieceIdPresentee($tabDonnees[11]);
 			// Date d'arrivée
-			$tabDateArrivee = explode("/", $tabDonnees[13]);
+			$tabDateArrivee = explode("/", $tabDonnees[12]);
 			$dateArrivee = new DateTime();
 			$dateArrivee->setDate($tabDateArrivee[2], $tabDateArrivee[1], $tabDateArrivee[0]);
 			$reservation->setDateArrivee($dateArrivee);
 			// Date de départ
-			$tabDateDepart = explode("/", $tabDonnees[14]);
+			$tabDateDepart = explode("/", $tabDonnees[13]);
 			$dateDepart = new DateTime();
 			$dateDepart->setDate($tabDateDepart[2], $tabDateDepart[1], $tabDateDepart[0]);
 			$reservation->setDateDepart($dateDepart);
 			// Nombre d'adultes
-			$reservation->setNombreAdultes($tabDonnees[15]);
+			$reservation->setNombreAdultes($tabDonnees[14]);
 			// Nombre d'enfants
-			$reservation->setNombreEnfants($tabDonnees[16]);
+			$reservation->setNombreEnfants($tabDonnees[15]);
 			// Nombre d'animaux
-			$reservation->setNombreAnimaux($tabDonnees[17]);
-			// Nombre de petites tentes
-			$reservation->setNombrePetitesTentes($tabDonnees[18]);
-			// Nombre de grandes tentes
-			$reservation->setNombreGrandesTentes($tabDonnees[19]);
-			// Nombre de caravanes
-			$reservation->setNombreCaravanes($tabDonnees[20]);
-			// Nombre de vans
-			$reservation->setNombreVans($tabDonnees[21]);
-			// Nombre de camping cars
-			$reservation->setNombreCampingCars($tabDonnees[22]);
+			$reservation->setNombreAnimaux($tabDonnees[16]);
+			// Nombre de tarif 1
+			$reservation->setNombreTarif1($tabDonnees[17]);
+			// Nombre de tarif 2
+			$reservation->setNombreTarif2($tabDonnees[18]);
+			// Nombre de tarif 3
+			$reservation->setNombreTarif3($tabDonnees[19]);
 			// Electricité
-			if ($tabDonnees[23] == "1") {
+			if ($tabDonnees[20] == "1") {
 				$reservation->setElectricite(true);
 			}
 			else {
 				$reservation->setElectricite(false);
 			}
 			// Nombre de nuités visiteur
-			$reservation->setNombreNuitesVisiteur($tabDonnees[24]);
+			$reservation->setNombreNuitesVisiteur($tabDonnees[21]);
 			// Nombre de véhicules supplémentaires
-			$reservation->setNombreVehiculesSupplementaires($tabDonnees[25]);
+			$reservation->setNombreVehiculesSupplementaires($tabDonnees[22]);
 			// Observations
-			$reservation->setObservations($tabDonnees[26]);
+			$reservation->setObservations($tabDonnees[23]);
 			// Arrhes
-			$reservation->setArrhes($tabDonnees[28]);
+			$reservation->setArrhes($tabDonnees[25]);
 			// Numéro d'emplacement
-			$reservation->setNumeroEmplacement($tabDonnees[29]);
+			$reservation->setNumeroEmplacement($tabDonnees[26]);
 			// Roulotte rouge
-			if ($tabDonnees[30] == "1") {
+			if ($tabDonnees[27] == "1") {
 				$reservation->setRoulotteRouge(true);
 			}
 			else {
 				$reservation->setRoulotteRouge(false);
 			}
 			// Roulotte bleue
-			if ($tabDonnees[31] == "1") {
+			if ($tabDonnees[28] == "1") {
 				$reservation->setRoulotteBleue(true);
 			}
 			else {
@@ -739,9 +734,9 @@ class PlanningCampingController {
 				$reservation->setFacture($facture[0]);
 			}
 			// Remise exceptionnelle
-			$reservation->setRemiseExceptionnelle($tabDonnees[33]);
+			$reservation->setRemiseExceptionnelle($tabDonnees[30]);
 			// Tente safari
-			if ($tabDonnees[34] == "1") {
+			if ($tabDonnees[31] == "1") {
 				$reservation->setTenteSafari(true);
 			}
 			else {
@@ -769,16 +764,12 @@ class PlanningCampingController {
 			$reservation->setNombreEnfants(null);
 			// Nombre d'animaux
 			$reservation->setNombreAnimaux(null);
-			// Nombre de petites tentes
-			$reservation->setNombrePetitesTentes(null);
-			// Nombre de grandes tentes
-			$reservation->setNombreGrandesTentes(null);
-			// Nombre de caravanes
-			$reservation->setNombreCaravanes(null);
-			// Nombre de vans
-			$reservation->setNombreVans(null);
-			// Nombre de camping cars
-			$reservation->setNombreCampingCars(null);
+			// Nombre de tarif 1
+			$reservation->setNombreTarif1(null);
+			// Nombre de tarif 2
+			$reservation->setNombreTarif2(null);
+			// Nombre de tarif 3
+			$reservation->setNombreTarif3(null);
 			// Electricité
 			$reservation->setElectricite(null);
 			// Nombre de nuités visiteur
@@ -817,7 +808,24 @@ class PlanningCampingController {
 
 		return $retour;
 	}
+	
+	/**
+	 * Converti un DateTime en chaine de caractère avec les années
+	 * @param \DateTime $date
+	 * @return string Date au format français avec année. Exemple : 2 Avril 2013
+	 */
+	private function formatterDateAvecAnnee(\DateTime $date = null) {
+		$retour = null;
 
+		if (!is_null($date)) {
+			$retour = $date->format('j F Y');
+			
+			$retour = $this->convertirStrDateEnToFr($retour);
+		}
+
+		return $retour;
+	}
+	
 	/**
 	 * Converti un DateTime en chaine de caractère sans les années
 	 * @param \DateTime $date
@@ -825,25 +833,34 @@ class PlanningCampingController {
 	 */
 	private function formatterDateSansAnnee(\DateTime $date = null) {
 		$retour = null;
-
+	
 		if (!is_null($date)) {
 			$retour = $date->format('j F');
-
-			$retour = str_ireplace("January", "Janvier",
-				str_ireplace("February", "Février",
-				str_ireplace("March", "Mars",
-				str_ireplace("April", "Avril",
-				str_ireplace("May", "Mai",
-				str_ireplace("June", "Juin",
-				str_ireplace("July", "Juillet",
-				str_ireplace("August", "Août",
-				str_ireplace("September", "Septembre",
-				str_ireplace("October", "Octobre",
-				str_ireplace("November", "Novembre",
-				str_ireplace("December", "Décembre", $retour))))))))))));
+	
+			$retour = $this->convertirStrDateEnToFr($retour);
 		}
-
+	
 		return $retour;
+	}
+	
+	/**
+	 * Converti les mois d'une date en français
+	 * @param string $strDate
+	 * @return string Date au format français sans année. Exemple : 2 Avril 2013
+	 */
+	private function convertirStrDateEnToFr($strDate) {
+		return str_ireplace("January", "Janvier",
+			str_ireplace("February", "Février",
+			str_ireplace("March", "Mars",
+			str_ireplace("April", "Avril",
+			str_ireplace("May", "Mai",
+			str_ireplace("June", "Juin",
+			str_ireplace("July", "Juillet",
+			str_ireplace("August", "Août",
+			str_ireplace("September", "Septembre",
+			str_ireplace("October", "Octobre",
+			str_ireplace("November", "Novembre",
+			str_ireplace("December", "Décembre", $strDate))))))))))));
 	}
 
 	/**

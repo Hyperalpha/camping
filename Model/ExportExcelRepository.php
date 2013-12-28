@@ -14,9 +14,9 @@ include_once 'ReservationRepository.php';
  */
 class ExportExcelRepository {
 
-	const NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING = 'Fiche Inscription Camping-1.docx';
-	const NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES = 'Fiche Inscription Roulotte-1.docx';
-	const NOM_TEMPLATE_FACTURE_CAMPING = 'Formulaire Facture Camping-1.docx';
+	const NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING = 'Fiche Inscription Camping-2.docx';
+	const NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES = 'Fiche Inscription Roulotte-2.docx';
+	const NOM_TEMPLATE_FACTURE_CAMPING = 'Formulaire Facture Camping-2.docx';
 	const NOM_TEMPLATE_FACTURE_ROULOTTES = 'Formulaire Facture Roulotte-1.docx';
 
 	const ASCII_CARTE_ID = 'F0A4';
@@ -206,16 +206,12 @@ class ExportExcelRepository {
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixCampeurEnfant());
 				$facture->setAnimal(intval($reservation->getNombreAnimaux())
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixAnimal());
-				$facture->setPetiteTente(intval($reservation->getNombrePetitesTentes())
-						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixPetiteTenteVan());
-				$facture->setVan(intval($reservation->getNombreVans())
-						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixPetiteTenteVan());
-				$facture->setGrandeTente(intval($reservation->getNombreGrandesTentes())
-						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixGrandeTenteCaravane());
-				$facture->setCaravane(intval($reservation->getNombreCaravanes())
-						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixGrandeTenteCaravane());
-				$facture->setCampingCar(intval($reservation->getNombreCampingCars())
-						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixCampingCar());
+				$facture->setTarif1(intval($reservation->getNombreTarif1())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixTarif1());
+				$facture->setTarif2(intval($reservation->getNombreTarif2())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixTarif2());
+				$facture->setTarif3(intval($reservation->getNombreTarif3())
+						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixTarif3());
 				$facture->setElectricite(intval($reservation->getElectricite())
 						. self::SEPARATEUR_PRIX_FACTURE . $this->referentielRepo->getPrixElectricite());
 				$facture->setVehiculeSupplementaire(intval($reservation->getNombreVehiculesSupplementaires())
@@ -338,12 +334,11 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{NOM}}', strtoupper($client->getNom()),
 			str_replace('{{PRENOM}}', ucfirst($client->getPrenom()),
 			str_replace('{{RUE}}', $client->getAdresse1(),
-			str_replace('{{COMPLEMENT}}', $client->getAdresse2(),
 			str_replace('{{CODE_POSTAL}}', $client->getCodePostal(),
 			str_replace('{{VILLE}}', $client->getVille(),
 			str_replace('{{PAYS}}', $client->getPays(),
 			str_replace('{{TEL_MOBILE}}', $client->getTelephonePortable(),
-			str_replace('{{EMAIL}}', $client->getEmail(), $newContenu)))))))));
+			str_replace('{{EMAIL}}', $client->getEmail(), $newContenu))))))));
 
 		//Partie réservation
 		/*******************/
@@ -351,11 +346,9 @@ class ExportExcelRepository {
 		$nombreAdultes = intval($reservation->getNombreAdultes());
 		$nombreEnfants = intval($reservation->getNombreEnfants());
 		$nombreAnimaux = intval($reservation->getNombreAnimaux());
-		$nombrePetitesTentes = intval($reservation->getNombrePetitesTentes());
-		$nombreVans = intval($reservation->getNombreVans());
-		$nombreGrandesTentes = intval($reservation->getNombreGrandesTentes());
-		$nombreCaravanes = intval($reservation->getNombreCaravanes());
-		$nombreCampingCars = intval($reservation->getNombreCampingCars());
+		$nombreTarif1 = intval($reservation->getNombreTarif1());
+		$nombreTarif2 = intval($reservation->getNombreTarif2());
+		$nombreTarif3 = intval($reservation->getNombreTarif3());
 		$electricite = intval($reservation->getElectricite());
 		$nombreVehiculesSupp = intval($reservation->getNombreVehiculesSupplementaires());
 		$nombreVisiteurs = intval($reservation->getNombreNuitesVisiteur());
@@ -393,9 +386,9 @@ class ExportExcelRepository {
 		$prixAdulte = $this->referentielRepo->getPrixCampeurAdulte();
 		$prixEnfant = $this->referentielRepo->getPrixCampeurEnfant();
 		$prixAnimal = $this->referentielRepo->getPrixAnimal();
-		$prixPetiteTenteVan = $this->referentielRepo->getPrixPetiteTenteVan();
-		$prixGrandeTenteCaravane = $this->referentielRepo->getPrixGrandeTenteCaravane();
-		$prixCampingCar = $this->referentielRepo->getPrixCampingCar();
+		$prixTarif1 = $this->referentielRepo->getPrixTarif1();
+		$prixTarif2 = $this->referentielRepo->getPrixTarif2();
+		$prixTarif3 = $this->referentielRepo->getPrixTarif3();
 		$prixElectricite = $this->referentielRepo->getPrixElectricite();
 		$prixVehiculeSupp = $this->referentielRepo->getPrixVehiculeSupp();
 		$prixVisiteur = $this->referentielRepo->getPrixVisiteur();
@@ -429,9 +422,9 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{PRIX_CAMPEUR_ADULTE}}', $prixAdulte,
 			str_replace('{{PRIX_CAMPEUR_ENFANT}}', $prixEnfant,
 			str_replace('{{PRIX_ANIMAL}}', $prixAnimal,
-			str_replace('{{PRIX_PETITE_TENTE_VAN}}', $prixPetiteTenteVan,
-			str_replace('{{PRIX_GRANDE_TENTE_CARAVANE}}', $prixGrandeTenteCaravane,
-			str_replace('{{PRIX_CAMPING_CAR}}', $prixCampingCar,
+			str_replace('{{PRIX_TARIF1}}', $prixTarif1,
+			str_replace('{{PRIX_TARIF2}}', $prixTarif2,
+			str_replace('{{PRIX_TARIF3}}', $prixTarif3,
 			str_replace('{{PRIX_ELECTRICITE}}', $prixElectricite,
 			str_replace('{{PRIX_VEHICULE_SUPP}}', $prixVehiculeSupp,
 			str_replace('{{PRIX_VISITEUR}}', $prixVisiteur,
@@ -447,24 +440,20 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{NB_ADULTES}}', $nombreAdultes,
 			str_replace('{{NB_ENFANTS}}', $nombreEnfants,
 			str_replace('{{NB_ANIMAUX}}', $nombreAnimaux,
-			str_replace('{{NB_PETITES_TENTES}}', $nombrePetitesTentes,
-			str_replace('{{NB_VANS}}', $nombreVans,
-			str_replace('{{NB_GRANDES_TENTES}}', $nombreGrandesTentes,
-			str_replace('{{NB_CARAVANES}}', $nombreCaravanes,
-			str_replace('{{NB_CAMPING_CAR}}', $nombreCampingCars,
+			str_replace('{{NB_TARIF1}}', $nombreTarif1,
+			str_replace('{{NB_TARIF2}}', $nombreTarif2,
+			str_replace('{{NB_TARIF3}}', $nombreTarif3,
 			str_replace('{{ELECTRICITE}}', $electricite,
 			str_replace('{{NB_VEHICULES_SUPP}}', $nombreVehiculesSupp,
-			str_replace('{{NB_VISITEURS}}', $nombreVisiteurs, $newContenu)))))))))));
+			str_replace('{{NB_VISITEURS}}', $nombreVisiteurs, $newContenu)))))))));
 
 		//Sous total
 		$sousTotalAdulte = $nombreAdultes * $prixAdulte;
 		$sousTotalEnfant = $nombreEnfants * $prixEnfant;
 		$sousTotalAnimal = $nombreAnimaux * $prixAnimal;
-		$sousTotalPetiteTente = $nombrePetitesTentes * $prixPetiteTenteVan;
-		$sousTotalVan = $nombreVans * $prixPetiteTenteVan;
-		$sousTotalGrandeTente = $nombreGrandesTentes * $prixGrandeTenteCaravane;
-		$sousTotalCaravane = $nombreCaravanes * $prixGrandeTenteCaravane;
-		$sousTotalCampingCar = $nombreCampingCars * $prixCampingCar;
+		$sousTotalTarif1 = $nombreTarif1 * $prixTarif1;
+		$sousTotalTarif2 = $nombreTarif2 * $prixTarif2;
+		$sousTotalTarif3 = $nombreTarif3 * $prixTarif3;
 		$sousTotalElectricite = $electricite * $prixElectricite;
 		$sousTotalVehiculeSupp = $nombreVehiculesSupp * $prixVehiculeSupp;
 		$sousTotalVisiteur = $nombreVisiteurs * $prixVisiteur;
@@ -483,8 +472,8 @@ class ExportExcelRepository {
 				* ($prixTenteSafariPeriodeHaute / 7) * 100) / 100;
 
 		$sousTotalNuitees = $sousTotalAdulte + $sousTotalEnfant + $sousTotalAnimal +
-		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
-		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
+		$sousTotalTarif1 + $sousTotalTarif2 +
+		$sousTotalTarif3 + $sousTotalElectricite +
 		$sousTotalVehiculeSupp + $sousTotalVisiteur;
 		$totalSejourRoulottes = $sousTotalRoulotteRougePeriodeBasse +
 		$sousTotalRoulotteRougePeriodeHaute + $sousTotalRoulotteBleuePeriodeBasse +
@@ -495,11 +484,9 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
 			str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,
 			str_replace('{{SOUS_TOTAL_ANIMAL}}', $sousTotalAnimal,
-			str_replace('{{SOUS_TOTAL_PETITE_TENTE}}', $sousTotalPetiteTente,
-			str_replace('{{SOUS_TOTAL_VAN}}', $sousTotalVan,
-			str_replace('{{SOUS_TOTAL_GRANDE_TENTE}}', $sousTotalGrandeTente,
-			str_replace('{{SOUS_TOTAL_CARAVANE}}', $sousTotalCaravane,
-			str_replace('{{SOUS_TOTAL_CAMPING_CAR}}', $sousTotalCampingCar,
+			str_replace('{{SOUS_TOTAL_TARIF1}}', $sousTotalTarif1,
+			str_replace('{{SOUS_TOTAL_TARIF2}}', $sousTotalTarif2,
+			str_replace('{{SOUS_TOTAL_TARIF3}}', $sousTotalTarif3,
 			str_replace('{{SOUS_TOTAL_ELECTRICITE}}', $sousTotalElectricite,
 			str_replace('{{SOUS_TOTAL_VEHICULE_SUPP}}', $sousTotalVehiculeSupp,
 			str_replace('{{SOUS_TOTAL_VISITEUR}}', $sousTotalVisiteur,
@@ -511,7 +498,7 @@ class ExportExcelRepository {
 			str_replace('{{SOUS_TOTAL_TENTE_SAFARI_HAUTE}}', $sousTotalTenteSafariPeriodeHaute,
 			str_replace('{{SOUS_TOTAL_NUITEES}}', $sousTotalNuitees,
 			str_replace('{{TOTAL_SEJOUR_ROULOTTES}}', $totalSejourRoulottes,
-			str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu))))))))))))))))))));
+			str_replace('{{TOTAL_SEJOUR}}', $totalSejour, $newContenu))))))))))))))))));
 
 		//Acompte
 		$acompte = floatval($reservation->getArrhes());
@@ -540,11 +527,9 @@ class ExportExcelRepository {
 		$nombreAdultes = null;
 		$nombreEnfants = null;
 		$nombreAnimaux = null;
-		$nombrePetitesTentes = null;
-		$nombreVans = null;
-		$nombreGrandesTentes = null;
-		$nombreCaravanes = null;
-		$nombreCampingCars = null;
+		$nombreTarif1 = null;
+		$nombreTarif2 = null;
+		$nombreTarif3 = null;
 		$electricite = null;
 		$nombreVehiculesSupp = null;
 		$nombreVisiteurs = null;
@@ -557,9 +542,9 @@ class ExportExcelRepository {
 		$prixAdulte = null;
 		$prixEnfant = null;
 		$prixAnimal = null;
-		$prixPetiteTenteVan = null;
-		$prixGrandeTenteCaravane = null;
-		$prixCampingCar = null;
+		$prixTarif1 = null;
+		$prixTarif2 = null;
+		$prixTarif3 = null;
 		$prixElectricite = null;
 		$prixVehiculeSupp = null;
 		$prixVisiteur = null;
@@ -587,11 +572,9 @@ class ExportExcelRepository {
 			$tabCampeurAdulte = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampeurAdulte());
 			$tabCampeurEnfant = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampeurEnfant());
 			$tabAnimal = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getAnimal());
-			$tabPetiteTente = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getPetiteTente());
-			$tabVan = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getVan());
-			$tabGrandeTente = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getGrandeTente());
-			$tabCaravane = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCaravane());
-			$tabCampingCar = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getCampingCar());
+			$tabTarif1 = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getTarif1());
+			$tabTarif2 = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getTarif2());
+			$tabTarif3 = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getTarif3());
 			$tabElectricite = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getElectricite());
 			$tabVehiculeSupplementaire = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getVehiculeSupplementaire());
 			$tabNombreVisiteurs = explode(self::SEPARATEUR_PRIX_FACTURE, $facture->getNombreVisiteurs());
@@ -620,25 +603,17 @@ class ExportExcelRepository {
 				$nombreAnimaux = intval($tabAnimal[0]);
 				$prixAnimal = floatval($tabAnimal[1]);
 			}
-			if (count($tabPetiteTente) == 2) {
-				$nombrePetitesTentes = intval($tabPetiteTente[0]);
-				$prixPetiteTenteVan = floatval($tabPetiteTente[1]);
+			if (count($tabTarif1) == 2) {
+				$nombreTarif1 = intval($tabTarif1[0]);
+				$prixTarif1 = floatval($tabTarif1[1]);
 			}
-			if (count($tabVan) == 2) {
-				$nombreVans = intval($tabVan[0]);
-				$prixPetiteTenteVan = floatval($tabVan[1]);
+			if (count($tabTarif2) == 2) {
+				$nombreTarif2 = intval($tabTarif2[0]);
+				$prixTarif2 = floatval($tabTarif2[1]);
 			}
-			if (count($tabGrandeTente) == 2) {
-				$nombreGrandesTentes = intval($tabGrandeTente[0]);
-				$prixGrandeTenteCaravane = floatval($tabGrandeTente[1]);
-			}
-			if (count($tabCaravane) == 2) {
-				$nombreCaravanes = intval($tabCaravane[0]);
-				$prixGrandeTenteCaravane = floatval($tabCaravane[1]);
-			}
-			if (count($tabCampingCar) == 2) {
-				$nombreCampingCars = intval($tabCampingCar[0]);
-				$prixCampingCar = floatval($tabCampingCar[1]);
+			if (count($tabTarif3) == 2) {
+				$nombreTarif3 = intval($tabTarif3[0]);
+				$prixTarif3 = floatval($tabTarif3[1]);
 			}
 			if (count($tabElectricite) == 2) {
 				$electricite = intval($tabElectricite[0]);
@@ -692,9 +667,9 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{PRIX_CAMPEUR_ADULTE}}', $prixAdulte,
 			str_replace('{{PRIX_CAMPEUR_ENFANT}}', $prixEnfant,
 			str_replace('{{PRIX_ANIMAL}}', $prixAnimal,
-			str_replace('{{PRIX_PETITE_TENTE_VAN}}', $prixPetiteTenteVan,
-			str_replace('{{PRIX_GRANDE_TENTE_CARAVANE}}', $prixGrandeTenteCaravane,
-			str_replace('{{PRIX_CAMPING_CAR}}', $prixCampingCar,
+			str_replace('{{PRIX_TARIF1}}', $prixTarif1,
+			str_replace('{{PRIX_TARIF2}}', $prixTarif2,
+			str_replace('{{PRIX_TARIF3}}', $prixTarif3,
 			str_replace('{{PRIX_ELECTRICITE}}', $prixElectricite,
 			str_replace('{{PRIX_VEHICULE_SUPP}}', $prixVehiculeSupp,
 			str_replace('{{PRIX_VISITEUR}}', $prixVisiteur,
@@ -710,11 +685,9 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{NB_ADULTES}}', $nombreAdultes,
 			str_replace('{{NB_ENFANTS}}', $nombreEnfants,
 			str_replace('{{NB_ANIMAUX}}', $nombreAnimaux,
-			str_replace('{{NB_PETITES_TENTES}}', $nombrePetitesTentes,
-			str_replace('{{NB_VANS}}', $nombreVans,
-			str_replace('{{NB_GRANDES_TENTES}}', $nombreGrandesTentes,
-			str_replace('{{NB_CARAVANES}}', $nombreCaravanes,
-			str_replace('{{NB_CAMPING_CAR}}', $nombreCampingCars,
+			str_replace('{{NB_TARIF1}}', $nombreTarif1,
+			str_replace('{{NB_TARIF2}}', $nombreTarif2,
+			str_replace('{{NB_TARIF3}}', $nombreTarif3,
 			str_replace('{{ELECTRICITE}}', $electricite,
 			str_replace('{{NB_VEHICULES_SUPP}}', $nombreVehiculesSupp,
 			str_replace('{{NB_VISITEURS}}', $nombreVisiteurs,
@@ -724,17 +697,15 @@ class ExportExcelRepository {
 			str_replace('{{NB_ROULOTTE_BLEUE_PERIODE_HAUTE}}', $nombreRoulotteBleueHaut,
 			str_replace('{{NB_TENTE_SAFARI_PERIODE_BASSE}}', $nombreTenteSafariBas,
 			str_replace('{{NB_TENTE_SAFARI_PERIODE_HAUTE}}', $nombreTenteSafariHaut,
-			$newContenu)))))))))))))))));
+			$newContenu)))))))))))))));
 
 		//Sous total
 		$sousTotalAdulte = $nombreAdultes * $prixAdulte;
 		$sousTotalEnfant = $nombreEnfants * $prixEnfant;
 		$sousTotalAnimal = $nombreAnimaux * $prixAnimal;
-		$sousTotalPetiteTente = $nombrePetitesTentes * $prixPetiteTenteVan;
-		$sousTotalVan = $nombreVans * $prixPetiteTenteVan;
-		$sousTotalGrandeTente = $nombreGrandesTentes * $prixGrandeTenteCaravane;
-		$sousTotalCaravane = $nombreCaravanes * $prixGrandeTenteCaravane;
-		$sousTotalCampingCar = $nombreCampingCars * $prixCampingCar;
+		$sousTotalTarif1 = $nombreTarif1 * $prixTarif1;
+		$sousTotalTarif2 = $nombreTarif2 * $prixTarif2;
+		$sousTotalTarif3 = $nombreTarif3 * $prixTarif3;
 		$sousTotalElectricite = $electricite * $prixElectricite;
 		$sousTotalVehiculeSupp = $nombreVehiculesSupp * $prixVehiculeSupp;
 		$sousTotalVisiteur = $nombreVisiteurs * $prixVisiteur;
@@ -745,8 +716,8 @@ class ExportExcelRepository {
 		$sousTotalTenteSafariBas = $nombreTenteSafariBas * $prixTenteSafariBas;
 		$sousTotalTenteSafariHaut = $nombreTenteSafariHaut * $prixTenteSafariHaut;
 		$sousTotalNuitees = $sousTotalAdulte + $sousTotalEnfant + $sousTotalAnimal +
-		$sousTotalPetiteTente + $sousTotalVan + $sousTotalGrandeTente +
-		$sousTotalCaravane + $sousTotalCampingCar + $sousTotalElectricite +
+		$sousTotalTarif1 + $sousTotalTarif2 +
+		$sousTotalTarif3 + $sousTotalElectricite +
 		$sousTotalVehiculeSupp + $sousTotalVisiteur;
 		$totalSejour = $sousTotalNuitees * $nbNuitees;
 		$totalSejourRoulottes = $sousTotalRoulotteRougeBas + $sousTotalRoulotteRougeHaut +
@@ -776,11 +747,9 @@ class ExportExcelRepository {
 		$newContenu = str_replace('{{SOUS_TOTAL_ADULTE}}', $sousTotalAdulte,
 			str_replace('{{SOUS_TOTAL_ENFANT}}', $sousTotalEnfant,
 			str_replace('{{SOUS_TOTAL_ANIMAL}}', $sousTotalAnimal,
-			str_replace('{{SOUS_TOTAL_PETITE_TENTE}}', $sousTotalPetiteTente,
-			str_replace('{{SOUS_TOTAL_VAN}}', $sousTotalVan,
-			str_replace('{{SOUS_TOTAL_GRANDE_TENTE}}', $sousTotalGrandeTente,
-			str_replace('{{SOUS_TOTAL_CARAVANE}}', $sousTotalCaravane,
-			str_replace('{{SOUS_TOTAL_CAMPING_CAR}}', $sousTotalCampingCar,
+			str_replace('{{SOUS_TOTAL_TARIF1}}', $sousTotalTarif1,
+			str_replace('{{SOUS_TOTAL_TARIF2}}', $sousTotalTarif2,
+			str_replace('{{SOUS_TOTAL_TARIF3}}', $sousTotalTarif3,
 			str_replace('{{SOUS_TOTAL_ELECTRICITE}}', $sousTotalElectricite,
 			str_replace('{{SOUS_TOTAL_VEHICULE_SUPP}}', $sousTotalVehiculeSupp,
 			str_replace('{{SOUS_TOTAL_VISITEUR}}', $sousTotalVisiteur,
@@ -795,7 +764,7 @@ class ExportExcelRepository {
 			str_replace('{{LABEL_REMISE_EXCEPTIONNELLE}}', $libelleRemise,
 			str_replace('{{TOTAL_SEJOUR}}', $totalSejour,
 			str_replace('{{TOTAL_SEJOUR_ROULOTTES}}', $totalSejourRoulottes,
-			$newContenu))))))))))))))))))))));
+			$newContenu))))))))))))))))))));
 
 		return $newContenu;
 	}

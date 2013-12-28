@@ -13,9 +13,9 @@ class ReferentielRepository {
 	const CODE_PRIX_NUIT_CAMPEUR_ADULTE = 'PRIX_NUIT_CAMPEUR_ADULTE';
 	const CODE_PRIX_NUIT_CAMPEUR_ENFANT = 'PRIX_NUIT_CAMPEUR_ENFANT';
 	const CODE_PRIX_NUIT_ANIMAL = 'PRIX_NUIT_ANIMAL';
-	const CODE_PRIX_NUIT_PETITE_TENTE_VAN = 'PRIX_NUIT_PETITE_TENTE_VAN';
-	const CODE_PRIX_NUIT_GRANDE_TENTE_CARAVANE = 'PRIX_NUIT_GRANDE_TENTE_CARAVANE';
-	const CODE_PRIX_NUIT_CAMPING_CAR = 'PRIX_NUIT_CAMPING_CAR';
+	const CODE_PRIX_NUIT_TARIF1 = 'PRIX_NUIT_TARIF1';
+	const CODE_PRIX_NUIT_TARIF2 = 'PRIX_NUIT_TARIF2';
+	const CODE_PRIX_NUIT_TARIF3 = 'PRIX_NUIT_TARIF3';
 	const CODE_PRIX_NUIT_ELECTRICITE = 'PRIX_NUIT_ELECTRICITE';
 	const CODE_PRIX_NUIT_VEHICULE_SUPP = 'PRIX_NUIT_VEHICULE_SUPP';
 	const CODE_PRIX_NUIT_VISITEUR = 'PRIX_NUIT_VISITEUR';
@@ -140,12 +140,12 @@ class ReferentielRepository {
 	}
 
 	/**
-	 * Renvoie le prix d'une petite tente ou van pour une nuit
+	 * Renvoie le prix du tarif 1 pour une nuit
 	 * @author Arnaud DUPUIS
-	 * @return float Prix d'une petite tente ou van pour une nuit
+	 * @return float Prix du tarif 1 pour une nuit
 	 */
-	public function getPrixPetiteTenteVan() {
-		$retour = $this->getRef(self::CODE_PRIX_NUIT_PETITE_TENTE_VAN);
+	public function getPrixTarif1() {
+		$retour = $this->getRef(self::CODE_PRIX_NUIT_TARIF1);
 
 		//Mise en forme
 		if (!is_null($retour) && !is_null($retour->getValeur())) {
@@ -156,27 +156,27 @@ class ReferentielRepository {
 	}
 
 	/**
-	 * Initialise le prix d'une petite tente ou van pour une nuit
+	 * Initialise le prix du tarif 1 pour une nuit
 	 * @author Arnaud DUPUIS
-	 * @param float $valeur Prix d'une petite tente ou van pour une nuit
+	 * @param float $valeur Prix du tarif 1 pour une nuit
 	 * @param Boolean $flush Enregistrer ou pas en base de données
 	 */
-	public function setPrixPetiteTenteVan($valeur, $flush = false) {
+	public function setPrixTarif1($valeur, $flush = false) {
 		//Mise en forme
 		if (!is_null($valeur)) {
 			$valeur = floatval($valeur);
 		}
 
-		$this->setRef(self::CODE_PRIX_NUIT_PETITE_TENTE_VAN, $valeur, $flush);
+		$this->setRef(self::CODE_PRIX_NUIT_TARIF1, $valeur, $flush);
 	}
 
 	/**
-	 * Renvoie le prix d'une grande tente ou caravane pour une nuit
+	 * Renvoie le prix du tarif 2 pour une nuit
 	 * @author Arnaud DUPUIS
-	 * @return float Prix d'une grande tente ou caravane pour une nuit
+	 * @return float Prix du tarif 2 pour une nuit
 	 */
-	public function getPrixGrandeTenteCaravane() {
-		$retour = $this->getRef(self::CODE_PRIX_NUIT_GRANDE_TENTE_CARAVANE);
+	public function getPrixTarif2() {
+		$retour = $this->getRef(self::CODE_PRIX_NUIT_TARIF2);
 
 		//Mise en forme
 		if (!is_null($retour) && !is_null($retour->getValeur())) {
@@ -187,27 +187,27 @@ class ReferentielRepository {
 	}
 
 	/**
-	 * Initialise le prix d'une grande tente ou caravane pour une nuit
+	 * Initialise le prix du tarif 2 pour une nuit
 	 * @author Arnaud DUPUIS
-	 * @param float $valeur Prix d'une grande tente ou caravane pour une nuit
+	 * @param float $valeur Prix du tarif 2 pour une nuit
 	 * @param Boolean $flush Enregistrer ou pas en base de données
 	 */
-	public function setPrixGrandeTenteCaravane($valeur, $flush = false) {
+	public function setPrixTarif2($valeur, $flush = false) {
 		//Mise en forme
 		if (!is_null($valeur)) {
 			$valeur = floatval($valeur);
 		}
 
-		$this->setRef(self::CODE_PRIX_NUIT_GRANDE_TENTE_CARAVANE, $valeur, $flush);
+		$this->setRef(self::CODE_PRIX_NUIT_TARIF2, $valeur, $flush);
 	}
 
 	/**
-	 * Renvoie le prix d'un camping car pour une nuit
+	 * Renvoie le prix du tarif 3 pour une nuit
 	 * @author Arnaud DUPUIS
-	 * @return float Prix d'un camping car pour une nuit
+	 * @return float Prix du tarif 3 pour une nuit
 	 */
-	public function getPrixCampingCar() {
-		$retour = $this->getRef(self::CODE_PRIX_NUIT_CAMPING_CAR);
+	public function getPrixTarif3() {
+		$retour = $this->getRef(self::CODE_PRIX_NUIT_TARIF3);
 
 		//Mise en forme
 		if (!is_null($retour) && !is_null($retour->getValeur())) {
@@ -218,18 +218,18 @@ class ReferentielRepository {
 	}
 
 	/**
-	 * Initialise le prix d'un camping car pour une nuit
+	 * Initialise le prix du tarif 3 pour une nuit
 	 * @author Arnaud DUPUIS
-	 * @param float $valeur Prix d'un camping car pour une nuit
+	 * @param float $valeur Prix du tarif 3 pour une nuit
 	 * @param Boolean $flush Enregistrer ou pas en base de données
 	 */
-	public function setPrixCampingCar($valeur, $flush = false) {
+	public function setPrixTarif3($valeur, $flush = false) {
 		//Mise en forme
 		if (!is_null($valeur)) {
 			$valeur = floatval($valeur);
 		}
 
-		$this->setRef(self::CODE_PRIX_NUIT_CAMPING_CAR, $valeur, $flush);
+		$this->setRef(self::CODE_PRIX_NUIT_TARIF3, $valeur, $flush);
 	}
 
 	/**
@@ -700,9 +700,9 @@ class ReferentielRepository {
 		$this->referentiel[self::CODE_PRIX_NUIT_CAMPEUR_ADULTE] = null;
 		$this->referentiel[self::CODE_PRIX_NUIT_CAMPEUR_ENFANT] = null;
 		$this->referentiel[self::CODE_PRIX_NUIT_ANIMAL] = null;
-		$this->referentiel[self::CODE_PRIX_NUIT_PETITE_TENTE_VAN] = null;
-		$this->referentiel[self::CODE_PRIX_NUIT_GRANDE_TENTE_CARAVANE] = null;
-		$this->referentiel[self::CODE_PRIX_NUIT_CAMPING_CAR] = null;
+		$this->referentiel[self::CODE_PRIX_NUIT_TARIF1] = null;
+		$this->referentiel[self::CODE_PRIX_NUIT_TARIF2] = null;
+		$this->referentiel[self::CODE_PRIX_NUIT_TARIF3] = null;
 		$this->referentiel[self::CODE_PRIX_NUIT_ELECTRICITE] = null;
 		$this->referentiel[self::CODE_PRIX_NUIT_VEHICULE_SUPP] = null;
 		$this->referentiel[self::CODE_PRIX_NUIT_VISITEUR] = null;

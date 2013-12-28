@@ -70,26 +70,18 @@ include_once '../Controller/PlanningCampingController.php';
 				//Tente safari
 				$roulotte = true;
 			}
-			if ($reservation->getNombreCampingCars() > 0) {
-				//Camping-car
-				$labelLogement = "Camping-car : ";
-				$classLogement = "bloc-camping-car";
-			} elseif ($reservation->getNombreVans() > 0) {
-				//Van
-				$labelLogement = "Van : ";
-				$classLogement = "bloc-van";
-			} elseif ($reservation->getNombreCaravanes() > 0) {
-				//Caravane
-				$labelLogement = "Caravane : ";
-				$classLogement = "bloc-caravane";
-			} elseif ($reservation->getNombreGrandesTentes() > 0) {
-				//Grande tente
-				$labelLogement = "Grande tente : ";
-				$classLogement = "bloc-grande-tente";
-			} elseif ($reservation->getNombrePetitesTentes() > 0) {
-				//Petite tente
-				$labelLogement = "Petite tente : ";
-				$classLogement = "bloc-petite-tente";
+			if ($reservation->getNombreTarif3() > 0) {
+				//Tarif 3
+				$labelLogement = "Tarif 3 : ";
+				$classLogement = "bloc-tarif3";
+			} elseif ($reservation->getNombreTarif2() > 0) {
+				//Tarif 2
+				$labelLogement = "Tarif 2 : ";
+				$classLogement = "bloc-tarif2";
+			} elseif ($reservation->getNombreTarif1() > 0) {
+				//Tarif 1
+				$labelLogement = "Tarif 1 : ";
+				$classLogement = "bloc-tarif1";
 			}
 
 			//Si la réservation n'a jamais été placée, on la dépose à un endroit calculé

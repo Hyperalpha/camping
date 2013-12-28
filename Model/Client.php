@@ -37,12 +37,6 @@ class Client {
 	private $adresse1;
 
 	/**
-	 * Complément d'adresse du client
-	 * @var string
-	 */
-	private $adresse2;
-
-	/**
 	 * Code postal du client
 	 * @var string
 	 */
@@ -168,22 +162,6 @@ class Client {
 	 */
 	public function setAdresse1($adresse1) {
 		$this->adresse1 = $adresse1;
-	}
-
-	/**
-	 * Getter pour le complément d'adresse du client
-	 * @return string
-	 */
-	public function getAdresse2() {
-		return $this->adresse2;
-	}
-
-	/**
-	 * Setter pour le complément d'adresse du client
-	 * @var string
-	 */
-	public function setAdresse2($adresse2) {
-		$this->adresse2 = $adresse2;
 	}
 
 	/**

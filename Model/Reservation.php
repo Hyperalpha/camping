@@ -66,34 +66,22 @@ class Reservation {
 	private $nombreAnimaux;
 
 	/**
-	 * Nombre de petites tentes sur l'emplacement
+	 * Nombre de tarif 1 sur l'emplacement
 	 * @var integer
 	 */
-	private $nombrePetitesTentes;
+	private $nombreTarif1;
 
 	/**
-	 * Nombre de grandes tentes sur l'emplacement
+	 * Nombre de tarif 2 sur l'emplacement
 	 * @var integer
 	 */
-	private $nombreGrandesTentes;
+	private $nombreTarif2;
 
 	/**
-	 * Nombre de caravanes sur l'emplacement
+	 * Nombre de tarif 3 sur l'emplacement
 	 * @var integer
 	 */
-	private $nombreCaravanes;
-
-	/**
-	 * Nombre de vans sur l'emplacement
-	 * @var integer
-	 */
-	private $nombreVans;
-
-	/**
-	 * Nombre de camping cars sur l'emplacement
-	 * @var integer
-	 */
-	private $nombreCampingCars;
+	private $nombreTarif3;
 
 	/**
 	 * L'emplacement dispose de l'électricité
@@ -330,83 +318,51 @@ class Reservation {
 	}
 
 	/**
-	 * Getter pour le nombre de petites tentes sur l'emplacement
+	 * Getter pour le nombre de tarif 1 sur l'emplacement
 	 * @return integer
 	 */
-	public function getNombrePetitesTentes() {
-		return $this->nombrePetitesTentes;
+	public function getNombreTarif1() {
+		return $this->nombreTarif1;
 	}
 
 	/**
-	 * Setter pour le nombre de petites tentes sur l'emplacement
+	 * Setter pour le nombre de tarif 1 sur l'emplacement
 	 * @var integer
 	 */
-	public function setNombrePetitesTentes($nombrePetitesTentes) {
-		$this->nombrePetitesTentes = $nombrePetitesTentes;
+	public function setNombreTarif1($nombreTarif1) {
+		$this->nombreTarif1 = $nombreTarif1;
 	}
 
 	/**
-	 * Getter pour le nombre de grandes tentes sur l'emplacement
+	 * Getter pour le nombre de tarif 2 sur l'emplacement
 	 * @return integer
 	 */
-	public function getNombreGrandesTentes() {
-		return $this->nombreGrandesTentes;
+	public function getNombreTarif2() {
+		return $this->nombreTarif2;
 	}
 
 	/**
-	 * Setter pour le nombre de grandes tentes sur l'emplacement
+	 * Setter pour le nombre de tarif 2 sur l'emplacement
 	 * @var integer
 	 */
-	public function setNombreGrandesTentes($nombreGrandesTentes) {
-		$this->nombreGrandesTentes = $nombreGrandesTentes;
+	public function setNombreTarif2($nombreTarif2) {
+		$this->nombreTarif2 = $nombreTarif2;
 	}
 
 	/**
-	 * Getter pour le nombre de caravanes sur l'emplacement
+	 * Getter pour le nombre de tarif 3 sur l'emplacement
 	 * @return integer
 	 */
-	public function getNombreCaravanes() {
-		return $this->nombreCaravanes;
+	public function getNombreTarif3() {
+		return $this->nombreTarif3;
 	}
 
 	/**
-	 * Setter pour le nombre de caravanes sur l'emplacement
+	 * Setter pour le nombre de tarif 3 sur l'emplacement
 	 * @var integer
 	 */
-	public function setNombreCaravanes($nombreCaravanes) {
-		$this->nombreCaravanes = $nombreCaravanes;
-	}
-
-	/**
-	 * Getter pour le nombre de vans sur l'emplacement
-	 * @return integer
-	 */
-	public function getNombreVans() {
-		return $this->nombreVans;
-	}
-
-	/**
-	 * Setter pour le nombre de vans sur l'emplacement
-	 * @var integer
-	 */
-	public function setNombreVans($nombreVans) {
-		$this->nombreVans = $nombreVans;
-	}
-
-	/**
-	 * Getter pour le nombre de camping cars sur l'emplacement
-	 * @return integer
-	 */
-	public function getNombreCampingCars() {
-		return $this->nombreCampingCars;
-	}
-
-	/**
-	 * Setter pour le nombre de camping cars sur l'emplacement
-	 * @var integer
-	 */
-	public function setNombreCampingCars($nombreCampingCars) {
-		return $this->nombreCampingCars = $nombreCampingCars;
+	public function setNombreTarif3($nombreTarif3) {
+		return $this->nombreTarif3 = $nombreTarif3;
 	}
 
 	/**
