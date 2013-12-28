@@ -172,6 +172,9 @@ $htmlJours .= "</tr>";
 				src="images/reglages.png" height="30px" width="30px"> Réglages
 		</span>
 		</a>
+		
+		<!-- Champ de recherche d'une réservation -->
+		<input id="rechercheReservation" type="search"/>
 	</div>
 	<br />
 	<br />

@@ -59,3 +59,11 @@ function formaterChampDecimal(input) {
 	
 	$(input).val(valeur);
 }
+
+/**
+ * Création d'un nouveau sélecteur jQuery case insensitive
+ */
+$.expr[':'].iTitleContains = function(a, i, m) {
+  return $(a).text().toUpperCase()
+      .indexOf(m[3].toUpperCase()) >= 0;
+};

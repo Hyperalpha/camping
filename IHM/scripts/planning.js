@@ -33,7 +33,34 @@ $(document).ready(function() {
 
 	// goto popup_reglages.js
 	relierEvenementsPopupReglages();
+	
+	// Evenements pour la recherche en live d'une réservation
+	relierEvenementsRechercheReservation();
 });
+
+/**
+ * Relie les événements pour rechercher une réservation dans le tableau
+ * 
+ * @author adupuis
+ */
+function relierEvenementsRechercheReservation() {
+	$('#rechercheReservation').on('keyup', function() {
+		var valeurRecherchee = $(this).val();
+		
+		if (valeurRecherchee == '') {
+			//Recherche vide : on affiche toutes les réservations
+			$('div.logo-habitation-mini').show();
+		}
+		else {
+			//Sélecteur icontains perso (goto commun.js)
+			//On masque toutes les réservations qui n'ont pas la valeur recherchée
+			$('div.logo-habitation-mini:not(:iTitleContains(' + valeurRecherchee + '))').hide();
+			
+			//On affiche toutes les réservations qui ont la valeur recherchée
+			$('div.logo-habitation-mini:iTitleContains(' + valeurRecherchee + ')').show();
+		}
+	});
+}
 
 /**
  * Construit le graphique de type camembert (Pie) de la répartition des clients

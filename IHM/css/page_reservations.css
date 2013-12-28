@@ -148,6 +148,18 @@ input.texte-gras1, label.texte-gras1, span.texte-gras1 {
 #boutonReglages {margin-left: 50px;}
 #boutonReglages span img {margin: -5px 5px -9px -5px;}
 
+input#rechercheReservation {
+	background: url(../images/recherche-petit.png);
+	background-repeat: no-repeat;
+	border: 4px solid #327E04;
+	border-radius: 6px;
+	color: #327E04;
+	font-weight: bold;
+	height: 23px;
+	margin-left: 50px;
+	padding-left: 27px;
+}
+
 /* Tableau des réservations */
 table.tableau_calendrier {
 	font-family: "Trebuchet MS", sans-serif;
