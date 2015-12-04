@@ -70,7 +70,6 @@ $htmlJours .= "</tr>";
 <head>
 <title>Tableau des réservations</title>
 <meta charset="utf-8">
-<link rel="stylesheet" href="/resources/demos/style.css" />
 <link rel="stylesheet" href="css/jquery-ui-1.10.2.custom.css" />
 <link rel="stylesheet" href="css/page_reservations.css" />
 <link rel="stylesheet" type="text/css" href="css/jquery.jqplot.css" />
@@ -205,7 +204,7 @@ $htmlJours .= "</tr>";
 			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td id="celluleRoulotteRouge_<?php echo $i; ?>"
-					class="cellule_du_jour" title="Roulotte rouge"><label>&nbsp;</label>
+					title="Roulotte rouge"><label class="cellule_du_jour">&nbsp;</label>
 				</td>
 				<?php
 				}
@@ -229,7 +228,7 @@ $htmlJours .= "</tr>";
 			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td id="celluleRoulotteBleue_<?php echo $i; ?>"
-					class="cellule_du_jour" title="Roulotte bleue"><label>&nbsp;</label>
+					title="Roulotte bleue"><label class="cellule_du_jour">&nbsp;</label>
 				</td>
 				<?php
 				}
@@ -255,7 +254,7 @@ $htmlJours .= "</tr>";
 			if ($nbJoursAvantToday < $nbJours) {
 			?>
 				<td id="celluleTenteSafari_<?php echo $i; ?>"
-					class="cellule_du_jour" title="Tente Safari"><label>&nbsp;</label>
+					title="Tente Safari"><label class="cellule_du_jour">&nbsp;</label>
 				</td>
 				<?php
 				}
@@ -279,7 +278,7 @@ $htmlJours .= "</tr>";
 			//On insère la cellule du jour
 			if ($nbJoursAvantToday < $nbJours) {
 			?>
-				<td class="cellule_calendrier cellule_du_jour">&nbsp;</td>
+				<td class="cellule_calendrier"><label class="cellule_du_jour">&nbsp;</label></td>
 				<?php
 				}
 				for ($i = ($nbJoursAvantToday + 1) ; $i < ($nbJours) ; $i++) {

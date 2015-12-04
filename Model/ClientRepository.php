@@ -28,11 +28,7 @@ class ClientRepository {
 		$this->initBdd();
 
 		//Requête SQL pour rechercher les clients
-		$sql = 'SELECT c.id, c.reference, c.nom, c.prenom, c.adresse1, '
-		. 'c.code_postal, c.ville, c.pays, c.telephone, c.telephone_portable, c.email, '
-		. 'c.date_creation as date_creation_client, '
-		. 'c.date_modification as date_modification_client '
-		. 'FROM client c';
+		$sql = 'SELECT ' . self::genererSelectClient() . ' FROM client c';
 		if (array_key_exists('id', $criteres) && $criteres['id']) {
 			$where .= " c.id = '" . $criteres['id'] . "' AND";
 		}
@@ -57,22 +53,7 @@ class ClientRepository {
 		//On récupère les résultats
 		while($data = $result->fetch_row()) {
 			//Création du client
-			$client = new Client();
-			$client->setId($data[0]);
-			$client->setReference($data[1]);
-			$client->setNom($data[2]);
-			$client->setPrenom($data[3]);
-			$client->setAdresse1($data[4]);
-			$client->setCodePostal($data[5]);
-			$client->setVille($data[6]);
-			$client->setPays($data[7]);
-			$client->setTelephone($data[8]);
-			$client->setTelephonePortable($data[9]);
-			$client->setEmail($data[10]);
-			$client->setDateCreation(new DateTime($data[11]));
-			$client->setDateModification(new DateTime($data[12]));
-
-			$retour[] = $client;
+			$retour[] = self::fetchClient($data);
 		}
 
 		$this->fermerBdd();
@@ -151,6 +132,51 @@ class ClientRepository {
 
 		$this->fermerBdd();
 	}
+	
+	/**
+	 * Génère le select pour la récupération des clients
+	 * Attention, le mot clé SELECT n'est pas inclut dans la chaine de retour
+	 * Alias de la table client : c
+	 * @return string Renvoie le select généré
+	 */
+	public static function genererSelectClient() {
+		$select = 'c.id, c.reference, c.nom, c.prenom, c.adresse1, '
+			. 'c.code_postal, c.ville, c.pays, c.telephone, c.telephone_portable, c.email, '
+			. 'c.date_creation as date_creation_client, '
+			. 'c.date_modification as date_modification_client';
+	
+		return $select;
+	}
+	
+	/**
+	 * Convertit les données ramenées par la base de données en objet Client
+	 * L'ordre des champs du tableau est le même que la requête de génération du Select
+	 * @param array#mixed $tabRetourBdd
+	 * @return Client
+	 */
+	public static function fetchClient($tabRetourBdd) {
+		$client = null;
+		
+		if (!is_null($tabRetourBdd)) {
+			//Création du client
+			$client = new Client();
+			$client->setId($tabRetourBdd[0]);
+			$client->setReference($tabRetourBdd[1]);
+			$client->setNom($tabRetourBdd[2]);
+			$client->setPrenom($tabRetourBdd[3]);
+			$client->setAdresse1($tabRetourBdd[4]);
+			$client->setCodePostal($tabRetourBdd[5]);
+			$client->setVille($tabRetourBdd[6]);
+			$client->setPays($tabRetourBdd[7]);
+			$client->setTelephone($tabRetourBdd[8]);
+			$client->setTelephonePortable($tabRetourBdd[9]);
+			$client->setEmail($tabRetourBdd[10]);
+			$client->setDateCreation(new DateTime($tabRetourBdd[11]));
+			$client->setDateModification(new DateTime($tabRetourBdd[12]));
+		}
+		
+		return $client;
+	}
 
 	/**
 	 * Fonction initialisant la connexion à la base de données
@@ -173,7 +199,7 @@ class ClientRepository {
 
 		return $retour;
 	}
-
+	
 	/**
 	 * Fonction fermant la connexion à la base de données
 	 */

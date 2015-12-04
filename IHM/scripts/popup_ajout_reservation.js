@@ -63,7 +63,7 @@ function relierEvenementsAjoutReservation() {
 			.dialog(
 					{
 						autoOpen : false,
-						height : 302,
+						height : 303,
 						resizable : false,
 						width : 390,
 						buttons : [
@@ -1476,24 +1476,22 @@ function parseInfosClient(strInfos) {
 		tabRetour.prenomClient = tabDonnees[3];
 		// Rue
 		tabRetour.rueClient = tabDonnees[4];
-		// Adresse
-		tabRetour.adresseClient = tabDonnees[5];
 		// Code postal
-		tabRetour.codePostalClient = tabDonnees[6];
+		tabRetour.codePostalClient = tabDonnees[5];
 		// Ville
-		tabRetour.villeClient = tabDonnees[7];
+		tabRetour.villeClient = tabDonnees[6];
 		// Pays
-		tabRetour.paysClient = tabDonnees[8];
+		tabRetour.paysClient = tabDonnees[7];
 		// Telephone
-		tabRetour.telephoneClient = tabDonnees[9];
+		tabRetour.telephoneClient = tabDonnees[8];
 		// Portable
-		tabRetour.portableClient = tabDonnees[10];
+		tabRetour.portableClient = tabDonnees[9];
 		// Email
-		tabRetour.emailClient = tabDonnees[11];
+		tabRetour.emailClient = tabDonnees[10];
 		// Date de création
-		tabRetour.dateCreationClient = tabDonnees[12];
+		tabRetour.dateCreationClient = tabDonnees[11];
 		// Date de modification
-		tabRetour.dateModificationClient = tabDonnees[13];
+		tabRetour.dateModificationClient = tabDonnees[12];
 	}
 
 	return tabRetour;

@@ -8,8 +8,8 @@ include_once '../Controller/PlanningCampingController.php';
  * @param array POST Valeurs du formulaire passées en POST
  */
 $codeValeursARecuperer = array('Prix/nuitée_campeur_adulte', 'Prix/nuitée_campeur_enfant',
-	'Prix/nuitée_animal', 'Prix/nuitée_tarif1', 'Prix/nuitée_tarif2', 
-	'Prix/nuitée_emplacement_tarif3', 'Prix/nuitée_électricité', 
+	'Prix/nuitée_animal', 'Prix/nuitée_emplacement_tarif_1', 'Prix/nuitée_emplacement_tarif_2', 
+	'Prix/nuitée_emplacement_tarif_3', 'Prix/nuitée_électricité', 
 	'Prix/nuitée_véhicule_supplémentaire', 'Prix/nuitée_visiteur', 
 	'Prix_roulotte_rouge_période_basse', 'Prix_roulotte_rouge_période_haute', 
 	'Prix_roulotte_bleue_période_basse', 'Prix_roulotte_bleue_période_haute',

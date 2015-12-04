@@ -152,15 +152,20 @@ class ReservationRepository {
 		if ($estCreationRes == true) {
 			//Création d'une réservation
 			$dateNow = new \DateTime();
+			$yNow = $dateNow->format("Y");
 			//On génère une référence de réservation
-			$referenceMax = $this->rechercherReferenceMaxReservation($dateNow->format("Y"));
+			$referenceMax = $this->rechercherReferenceMaxReservation($yNow);
 			//S'il existe une référence max pour l'année en cours, on fait +1
 			if (is_null($referenceMax)) {
 				//S'il n'existe pas de référence max pour l'année en cours, on en crée une
-				$referenceReservation = $dateNow->format("y") . "0001";
+				$referenceReservation = $yNow . "0001";
 			}
 			else {
-				$referenceReservation = intval($referenceMax) + 1;
+				$referenceMax = intval($referenceMax);
+				if (strlen($referenceMax) > 4) {
+					$referenceMax = substr($referenceMax, strlen($referenceMax) - 4);
+				}
+				$referenceReservation = $yNow . ($referenceMax + 1);
 			}
 
 			$this->initBdd();
@@ -492,8 +497,12 @@ class ReservationRepository {
 			. 'r.nombre_vehicules_supplementaires, r.roulotte_rouge, r.roulotte_bleue, '
 			. 'r.tente_safari, r.remise_exceptionnelle, r.observations, r.numero_emplacement, '
 			. 'r.coordonnees_x_emplacement, r.coordonnees_y_emplacement, '
-			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res '
-			. 'FROM reservation r';
+			. 'r.date_creation as date_creation_res, r.date_modification as date_modification_res, '
+			. ClientRepository::genererSelectClient() . ', '
+			. FactureRepository::genererSelectFacture() . ' '
+			. 'FROM reservation r '
+			. 'LEFT JOIN client c ON r.id_client = c.id '
+			. 'LEFT JOIN facture f ON r.reference = f.reference_reservation';
 	
 		if (!is_null($where)) {
 			$sql .= ' WHERE ' . $where;
@@ -547,16 +556,16 @@ class ReservationRepository {
 			$newRes->setCoordonneesYEmplacement($data[23]);
 			$newRes->setDateCreation(new DateTime($data[24]));
 			$newRes->setDateModification(new DateTime($data[25]));
-
+			
 			//Récupération du client
 			if ($data[2]) {
-				$clients = $this->clientRepository->rechercherClientsCriteres(Array('id' => $data[2]));
-				$newRes->setClient($clients[0]);
+				$dataClient = array_slice($data, 26, 13);
+				$newRes->setClient(ClientRepository::fetchClient($dataClient));
 			}
 			
 			//Récupération de la facture
-			$factures = $this->factureRepository->rechercherFacture($data[1]);
-			$newRes->setFacture($factures[0]);
+			$dataFacture = array_slice($data, 39, 15);
+			$newRes->setFacture(FactureRepository::fetchFacture($dataFacture));
 
 			$retour[] = $newRes;
 		}

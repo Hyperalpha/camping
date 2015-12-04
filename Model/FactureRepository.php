@@ -35,12 +35,7 @@ class FactureRepository {
 
 		//Requête SQL pour rechercher les clients
 		if (!is_null($referenceReservation)) {
-			$sql = 'SELECT f.id, f.reference_reservation, f.date_generation, f.devise, '
-				. 'f.campeur_adulte, f.campeur_enfant, f.animal, f.tarif1, '
-				. 'f.tarif2, f.tarif3, f.electricite, '
-				. 'f.vehicule_supplementaire, f.nombre_visiteurs, '
-				. 'f.date_creation as date_creation_facture, '
-				. 'f.date_modification as date_modification_facture '
+			$sql = 'SELECT ' . self::genererSelectFacture() . ' '
 				. 'FROM facture f '
 				. "WHERE f.reference_reservation = '" . $referenceReservation . "';";
 		}
@@ -51,24 +46,7 @@ class FactureRepository {
 		//On récupère les résultats
 		while($data = $result->fetch_row()) {
 			//Création de la facture
-			$facture = new Facture();
-			$facture->setId($data[0]);
-			$facture->setReferenceReservation($data[1]);
-			$facture->setDateGeneration(new DateTime($data[2]));
-			$facture->setDevise($data[3]);
-			$facture->setCampeurAdulte($data[4]);
-			$facture->setCampeurEnfant($data[5]);
-			$facture->setAnimal($data[6]);
-			$facture->setTarif1($data[7]);
-			$facture->setTarif2($data[8]);
-			$facture->setTarif3($data[9]);
-			$facture->setElectricite($data[10]);
-			$facture->setVehiculeSupplementaire($data[11]);
-			$facture->setNombreVisiteurs($data[12]);
-			$facture->setDateCreation(new DateTime($data[13]));
-			$facture->setDateModification(new DateTime($data[14]));
-
-			$retour[] = $facture;
+			$retour[] = self::fetchFacture($data);
 		}
 
 		$this->fermerBdd();
@@ -159,6 +137,55 @@ class FactureRepository {
 		//On recharge l'objet depuis la base
 		$newFacture = $this->rechercherFacture($facture->getReferenceReservation());
 		return $newFacture[0];
+	}
+	
+	/**
+	 * Génère le select pour la récupération des factures
+	 * Attention, le mot clé SELECT n'est pas inclut dans la chaine de retour
+	 * Alias de la table facture : f
+	 * @return string Renvoie le select généré
+	 */
+	public static function genererSelectFacture() {
+		$select = 'f.id, f.reference_reservation, f.date_generation, f.devise, '
+			. 'f.campeur_adulte, f.campeur_enfant, f.animal, f.tarif1, '
+			. 'f.tarif2, f.tarif3, f.electricite, '
+			. 'f.vehicule_supplementaire, f.nombre_visiteurs, '
+			. 'f.date_creation as date_creation_facture, '
+			. 'f.date_modification as date_modification_facture';
+	
+		return $select;
+	}
+	
+	/**
+	 * Convertit les données ramenées par la base de données en objet Facture
+	 * L'ordre des champs du tableau est le même que la requête de génération du Select
+	 * @param array#mixed $tabRetourBdd
+	 * @return Facture
+	 */
+	public static function fetchFacture($tabRetourBdd) {
+		$facture = null;
+	
+		if (!is_null($tabRetourBdd)) {
+			//Création de la facture
+			$facture = new Facture();
+			$facture->setId($tabRetourBdd[0]);
+			$facture->setReferenceReservation($tabRetourBdd[1]);
+			$facture->setDateGeneration(new DateTime($tabRetourBdd[2]));
+			$facture->setDevise($tabRetourBdd[3]);
+			$facture->setCampeurAdulte($tabRetourBdd[4]);
+			$facture->setCampeurEnfant($tabRetourBdd[5]);
+			$facture->setAnimal($tabRetourBdd[6]);
+			$facture->setTarif1($tabRetourBdd[7]);
+			$facture->setTarif2($tabRetourBdd[8]);
+			$facture->setTarif3($tabRetourBdd[9]);
+			$facture->setElectricite($tabRetourBdd[10]);
+			$facture->setVehiculeSupplementaire($tabRetourBdd[11]);
+			$facture->setNombreVisiteurs($tabRetourBdd[12]);
+			$facture->setDateCreation(new DateTime($tabRetourBdd[13]));
+			$facture->setDateModification(new DateTime($tabRetourBdd[14]));
+		}
+	
+		return $facture;
 	}
 
 	/**

@@ -14,7 +14,7 @@ include_once 'ReservationRepository.php';
  */
 class ExportExcelRepository {
 
-	const NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING = 'Fiche Inscription Camping-2.docx';
+	const NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING = 'Fiche Inscription Camping-3.docx';
 	const NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES = 'Fiche Inscription Roulotte-2.docx';
 	const NOM_TEMPLATE_FACTURE_CAMPING = 'Formulaire Facture Camping-2.docx';
 	const NOM_TEMPLATE_FACTURE_ROULOTTES = 'Formulaire Facture Roulotte-1.docx';
@@ -331,14 +331,14 @@ class ExportExcelRepository {
 
 		//Partie client
 		/**************/
-		$newContenu = str_replace('{{NOM}}', strtoupper($client->getNom()),
-			str_replace('{{PRENOM}}', ucfirst($client->getPrenom()),
-			str_replace('{{RUE}}', $client->getAdresse1(),
-			str_replace('{{CODE_POSTAL}}', $client->getCodePostal(),
-			str_replace('{{VILLE}}', $client->getVille(),
-			str_replace('{{PAYS}}', $client->getPays(),
-			str_replace('{{TEL_MOBILE}}', $client->getTelephonePortable(),
-			str_replace('{{EMAIL}}', $client->getEmail(), $newContenu))))))));
+		$newContenu = str_replace('{{NOM}}', self::echapperPourWord(strtoupper($client->getNom())),
+			str_replace('{{PRENOM}}', self::echapperPourWord(ucfirst($client->getPrenom())),
+			str_replace('{{RUE}}', self::echapperPourWord($client->getAdresse1()),
+			str_replace('{{CODE_POSTAL}}', self::echapperPourWord($client->getCodePostal()),
+			str_replace('{{VILLE}}', self::echapperPourWord($client->getVille()),
+			str_replace('{{PAYS}}', self::echapperPourWord($client->getPays()),
+			str_replace('{{TEL_MOBILE}}', self::echapperPourWord($client->getTelephonePortable()),
+			str_replace('{{EMAIL}}', self::echapperPourWord($client->getEmail()), $newContenu))))))));
 
 		//Partie réservation
 		/*******************/
@@ -507,6 +507,9 @@ class ExportExcelRepository {
 			$replaceCarre[2] = self::ASCII_CASE_PLEINE;
 		}
 		$newContenu = str_replace('{{MONTANT_ACOMPTE}}', $acompte, $newContenu);
+		
+		//Observations
+		$newContenu = str_replace('{{OBSERVATIONS}}', self::echapperPourWord($reservation->getObservations()), $newContenu);
 
 		//Remplacement des carrés
 		$newContenu = str_replace($searchCarre, $replaceCarre, $newContenu);
@@ -562,8 +565,8 @@ class ExportExcelRepository {
 		//En tête
 		/********/
 		$newContenu = str_replace('{{DATE_FACTURE}}', $facture->getDateGeneration()->format('d/m/Y'),
-			str_replace('{{NOM}}', strtoupper($client->getNom()),
-			str_replace('{{PRENOM}}', ucfirst($client->getPrenom()), $contenu)));
+			str_replace('{{NOM}}', strtoupper(self::echapperPourWord($client->getNom())),
+			str_replace('{{PRENOM}}', ucfirst(self::echapperPourWord($client->getPrenom())), $contenu)));
 
 		//Partie réservation
 		/*******************/
@@ -767,6 +770,18 @@ class ExportExcelRepository {
 			$newContenu))))))))))))))))))));
 
 		return $newContenu;
+	}
+	
+	/**
+	 * Echappe les caractères pour Word
+	 * @author adupuis
+	 * @param string $strTexte
+	 * @return string
+	 */
+	private function echapperPourWord($strTexte) {
+		$retour = str_replace('<', "-", str_replace('>', ">", $strTexte));
+		
+		return $retour;
 	}
 }
 
