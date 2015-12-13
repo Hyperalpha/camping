@@ -1,42 +1,13 @@
 #################
 ## Specific
 #################
-/perso/
 /IHM/images/originaux
+/IHM/images/plan_camping.png
 /IHM/template/archive
-
-
-
-#################
-## Eclipse
-#################
-
-*.pydevproject
-.project
-.metadata
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-
-# External tool builders
-.externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
-
+/IHM/template
+/Model/tmp/*
+/outils
+/perso/
 
 ############
 ## Windows
