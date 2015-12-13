@@ -15,9 +15,9 @@ include_once 'ReservationRepository.php';
 class ExportExcelRepository {
 
 	const NOM_TEMPLATE_FICHE_INSCRIPTION_CAMPING = 'Fiche Inscription Camping-3.docx';
-	const NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES = 'Fiche Inscription Roulotte-2.docx';
-	const NOM_TEMPLATE_FACTURE_CAMPING = 'Formulaire Facture Camping-2.docx';
-	const NOM_TEMPLATE_FACTURE_ROULOTTES = 'Formulaire Facture Roulotte-1.docx';
+	const NOM_TEMPLATE_FICHE_INSCRIPTION_ROULOTTES = 'Fiche Inscription Roulotte-3.docx';
+	const NOM_TEMPLATE_FACTURE_CAMPING = 'Formulaire Facture Camping-3.docx';
+	const NOM_TEMPLATE_FACTURE_ROULOTTES = 'Formulaire Facture Roulotte-2.docx';
 
 	const ASCII_CARTE_ID = 'F0A4';
 	const ASCII_AUTRE_ID = 'F0A5';
@@ -763,7 +763,7 @@ class ExportExcelRepository {
 			str_replace('{{SOUS_TOTAL_TENTE_SAFARI_PERIODE_BASSE}}', $sousTotalTenteSafariBas,
 			str_replace('{{SOUS_TOTAL_TENTE_SAFARI_PERIODE_HAUTE}}', $sousTotalTenteSafariHaut,
 			str_replace('{{SOUS_TOTAL_NUITEES}}', $sousTotalNuitees,
-			str_replace('{{PRIX_REMISE_EXCEPTIONNELLE}}', $strRemise,
+			str_replace('{{PRIX_REMISE_EXCEPTIONNELLE}}', $strRemise . ' euros',
 			str_replace('{{LABEL_REMISE_EXCEPTIONNELLE}}', $libelleRemise,
 			str_replace('{{TOTAL_SEJOUR}}', $totalSejour,
 			str_replace('{{TOTAL_SEJOUR_ROULOTTES}}', $totalSejourRoulottes,

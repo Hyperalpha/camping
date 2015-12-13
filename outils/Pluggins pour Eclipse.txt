@@ -1,4 +1,0 @@
-Depuis http://download.eclipse.org/releases/juno : 
-
-PHP PDT
-EGit

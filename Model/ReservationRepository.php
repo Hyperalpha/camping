@@ -151,21 +151,21 @@ class ReservationRepository {
 
 		if ($estCreationRes == true) {
 			//Création d'une réservation
-			$dateNow = new \DateTime();
-			$yNow = $dateNow->format("Y");
+			$dateRes = $reservation->getDateArrivee();
+			$yRes = $dateRes->format("Y");
 			//On génère une référence de réservation
-			$referenceMax = $this->rechercherReferenceMaxReservation($yNow);
+			$referenceMax = $this->rechercherReferenceMaxReservation($yRes);
 			//S'il existe une référence max pour l'année en cours, on fait +1
 			if (is_null($referenceMax)) {
 				//S'il n'existe pas de référence max pour l'année en cours, on en crée une
-				$referenceReservation = $yNow . "0001";
+				$referenceReservation = $yRes . "0001";
 			}
 			else {
 				$referenceMax = intval($referenceMax);
 				if (strlen($referenceMax) > 4) {
 					$referenceMax = substr($referenceMax, strlen($referenceMax) - 4);
 				}
-				$referenceReservation = $yNow . ($referenceMax + 1);
+				$referenceReservation = $yRes . ($referenceMax + 1);
 			}
 
 			$this->initBdd();

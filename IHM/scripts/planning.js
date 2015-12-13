@@ -19,6 +19,19 @@ $(document).ready(function() {
 	majLignesTableau();
 	majColonnesTableau();
 
+	//Offset de la vue sur la date du jour
+	var dateJ = new Date();
+	var jour = dateJ.getDate();
+	if (jour < 10) {
+		jour = '0' + jour;
+	}
+	var scrollTo = $('input#' + dateJ.getFullYear() + '_' + (parseInt(dateJ.getMonth())+1) + '_' + jour);
+	if (scrollTo.length > 0) {
+		$('html, body').stop().animate({
+            scrollLeft: $(scrollTo).parent().offset().left - ($(window).width() / 2)
+        }, 0);
+	}
+
 	// Evenement dès qu'on commence à déplacer un blos de réservation
 	$(".draggable").on("dragstart", onDragStartBlocReservation);
 

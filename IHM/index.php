@@ -29,19 +29,27 @@ if ($tabCalendrier) {
 				//Traitement des jours
 				if ($mois) {
 					foreach ($tabM as $jour => $v) {
+						$datetimeJ = DateTime::createFromFormat('d/m/Y', $v);
+						$idInput = $datetimeJ->format('Y_m_d');
+						
 						if (strcmp($dateJour, $v) === 0) {
 							//Mise en surbrillance de la date du jour
-							$htmlJours .= "<th id=\"colonneJour_" . $numJour . "\" "
+							$htmlJours .= 
+								"<th id=\"colonneJour_" . $numJour . "\" "
 									. "class=\"header_jours_calendrier_today\">" . $jour
-									. "<input class=\"date_jour_calendrier\" value=\"" . $v
-									. "\" type=\"hidden\"/></th>\n";
+									. "<input id=\"" . $idInput . "\" "
+										. "class=\"date_jour_calendrier\" " 
+										. "value=\"" . $v
+										. "\" type=\"hidden\"/></th>\n";
 							$dateJourPassee = true;
 						}
 						else {
 							//On crée un input caché avec la date du jour
-							$htmlJours .= "<th id=\"colonneJour_" . $numJour . "\" "
-									. "class=\"header_jours_calendrier\">" . $jour
-									. "<input class=\"date_jour_calendrier\" value=\"" . $v
+							$htmlJours .= 
+								'<th id="colonneJour_' . $numJour . '" '
+									. 'class="header_jours_calendrier">' . $jour
+									. '<input id="' . $idInput . '" ' 
+									. 'class="date_jour_calendrier" value="' . $v
 									. "\" type=\"hidden\"/></th>\n";
 						}
 						$numJour += 1;

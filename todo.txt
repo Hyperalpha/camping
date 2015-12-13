@@ -1,3 +1,22 @@
 afficher message bloquant si pas firefox
 
-écraser blabla peut-être, 115€.@&é"'(§è!çà)-^$`ù=:;,n~#{[`\^@]}€
+Modifier facture 2016
+Réservation tente safari KO pour 2016. Noms enregistrés mais pas apparition planning
+configurer les git ignore. A ignorer :
+ - IHM/images/plan_camping.png
+ - IHM/template
+ - Contenu de Model/tmp
+ - outils
+ - perso
+Refaire les actions bdd avec des prepare et execute (PDO)
+Créer jeu de tests de non regression
+Créer procédure zip pour livraison. Contient :
+ - /Controller
+ - /IHM sans :
+     - /images/originaux
+ - /install
+ - /Model avec le répertoire tmp vide
+ - /parameters.ini
+ - /translation.php
+Masquer mois en accordeon
+Reste des erreurs JS sur la page du planning
