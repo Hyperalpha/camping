@@ -13,3 +13,4 @@ Créer procédure zip pour livraison. Contient :
 Masquer mois en accordeon
 Reste des erreurs JS sur la page du planning
 Créer mail auto-rempli pour reception Arrhes
+Si date inférieure à date début saison, init calendriers (créer réservation) à la date de début de la saison
