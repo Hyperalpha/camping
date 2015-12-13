@@ -6,8 +6,9 @@
 /IHM/template/archive
 /IHM/template
 /Model/tmp/*
+/install
 /outils
-/perso/
+/perso
 
 ############
 ## Windows
